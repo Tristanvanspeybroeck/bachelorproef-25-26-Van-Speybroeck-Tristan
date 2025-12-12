@@ -47,7 +47,7 @@ Naast beeldgebaseerde analyse komt kunstmatige intelligentie meer en meer om de 
 
 Tegelijkertijd is er een snelle ontwikkeling richting veelzijdige AI-modellen die beeld- en tekstinvoer combineren. OpenAI's CLIP-model kan bijvoorbeeld afbeeldingen en beschrijvingen ingebouwd in dezelfde vectorruimte en wordt in sommige studies gebruikt om overeenstemming tussen gegenereerde en echte beelden te meten~\autocite{Lee2025}. Nieuwere ``visuele taalmodellen'' (zoals GPT-4o Vision) kunnen volledige screenshots of opnames analyseren als input en tekstuele output generen. Dit opent perspectieven voor sporttoepassingen, men zou kunnen denken aan een systeem  dat videofragmenten van een oefening verwerkt en automatisch verbale of geschreven feedback formuleert. Hoewel concrete toepassingen nog experimenteel zijn, wijzen initiatieven in de sportwereld erop dat soortgelijke AI-coaches mogelijk bruikbaar zijn. ~\textcite{Lee2025} toonde recent aan dat een LLM periodiseerdeels schema's en oefenaanpassingen kon voorstellen en uitleg kon geven bij een halve marathon voorbereiding. Dit impliceert dat LLM's in staat zijn om complexe trainingsplannen aan te maken en simpele motiverende feedback te geven.
 
-Echter zitten hier beperkingen aan. huidige LLM's kunnen geen directe sensordata verwerken en opteren vaak op tekstuele input/feedback. Uit de studie van ~\textcite{Lee2025} blijkt dat AI-coach zonder integratie van realtime gegevens (zoals hartslag of houding) geen directe correcties kon doen, en alleen via tekst communiceerde, wat subtiele vormcorrecties bemoeilijkt. Bovendien is de betrouwbaarheid nog een zorg. Nieuw onderzoek naar LLM's in sportgerelateerde taken (zoals voedingsadvies) laat zien dat de nauwkeurigheid vaak slechts matig is en sterk varieer per model~\autocite. In andere woorden, hoewel de technologie snel ontwikkelt, moet men kritisch blijven. LLM-output moet zorgvuldig gecontroleerd worden op feitelijke juistheid en volledigheid, zeker wanneer het om veiligheid en gezondheid gaat. In het algemeen kunnen we stellen dat geavanceerde AI-systemen veel beloven voor sportcoaching, maar dat de praktijk nu nog zwakheden kent in nauwkeurigheid en consistentie.~\autocite{Lee2025,Solomon2025}
+Echter zitten hier beperkingen aan. huidige LLM's kunnen geen directe sensordata verwerken en opteren vaak op tekstuele input/feedback. Uit de studie van ~\textcite{Lee2025} blijkt dat AI-coach zonder integratie van realtime gegevens (zoals hartslag of houding) geen directe correcties kon doen, en alleen via tekst communiceerde, wat subtiele vormcorrecties bemoeilijkt. Bovendien is de betrouwbaarheid nog een zorg. Nieuw onderzoek naar LLM's in sportgerelateerde taken (zoals voedingsadvies) laat zien dat de nauwkeurigheid vaak slechts matig is en varieert per model. In andere woorden, hoewel de technologie snel ontwikkelt, moet men kritisch blijven. LLM-output moet zorgvuldig gecontroleerd worden op feitelijke juistheid en volledigheid, zeker wanneer het om veiligheid en gezondheid gaat. In het algemeen kunnen we stellen dat geavanceerde AI-systemen veel beloven voor sportcoaching, maar dat de praktijk nu nog zwakheden kent in nauwkeurigheid en consistentie.~\autocite{Lee2025,Solomon2025}
 
 \subsection{Samenvatting en vooruitblik}
 
@@ -59,25 +59,79 @@ Nog uit te werken.
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor literatuurstudie, interviews met belanghebbenden (bv.~voor requirements-analyse), experimenten, simulaties, vergelijkende studie, risico-analyse, PoC, \ldots?
+Het onderzoek volgt een stapsgewijze aanpak in meerde fasen, van dataverzameling tot evaluatie. In Fase 1 verzamelen we videobeelden van de kip-oefening en labelen we relevante gebeurtenissen. In Fase 2 gebruiken we pose-estimatie-algoritmes om lichaamsskeletten uit de video af te leiden. Tijdens Fase 3 analyseren we deze poses om veelvoorkomende technische fouten te detecteren. In Fase 4 wordt op basis van de gedetecteerde fouten   begrijpelijke taal gegenereerd via LLM (bijv. GPT-4) om feedback te formuleren. Ten slotte volgt in Fase 5 een grondige evaluatie van zowel de foutendetectie als kwaliteit van de de gegenereerde feedback, waarna het systeem iteratief wordt verbeterd, Hieronder worden deze fasen in detail beschreven, inclusief de gebruikte methoden, tools en geschatte tijdsplanning.
 
-Valt je onderwerp onder één van de typische soorten bachelorproeven die besproken zijn in de lessen Research Methods (bv.\ vergelijkende studie of risico-analyse)? Zorg er dan ook voor dat we duidelijk de verschillende stappen terug vinden die we verwachten in dit soort onderzoek!
+\subsection{Fase 1: Dataverzameling en annotatie}
 
-Vermijd onderzoekstechnieken die geen objectieve, meetbare resultaten kunnen opleveren. Enquêtes, bijvoorbeeld, zijn voor een bachelorproef informatica meestal \textbf{niet geschikt}. De antwoorden zijn eerder meningen dan feiten en in de praktijk blijkt het ook bijzonder moeilijk om voldoende respondenten te vinden. Studenten die een enquête willen voeren, hebben meestal ook geen goede definitie van de populatie, waardoor ook niet kan aangetoond worden dat eventuele resultaten representatief zijn.
+In deze fase wordt een trainings- en testset aan met een video-opnames van de kip aan de barre vast gelegd. Dit gaat als volg te werk:
 
-Uit dit onderdeel moet duidelijk naar voor komen dat je bachelorproef ook technisch voldoen\-de diepgang zal bevatten. Het zou niet kloppen als een bachelorproef informatica ook door bv.\ een student marketing zou kunnen uitgevoerd worden.
+\begin{itemize}
+    \item \textbf{Video-opnames}: Tijdens trainingssessies bij de turnvereniging worden video-opnames gemaakt van sporters die de kip-oefening uitvoeren, zowel in correcte als foutieve vorm. Indien beschikbaar zal er gebruik gemaakt worden van bestaande videomateriaal. Er zal aandacht besteed worden op variatie in uitvoerders en hoeken om generaliseerbaarheid te vergroten.
+    \item \textbf{Annotatie van gebeurtenissen}: In de verzamelde video's worden de momenten gemarkeerd in de oefening. Voor elke opname word er genoteerd of er fouttypes voorkomen (bijv. te vroege heupopening). Er gaat gebruik gemaakt worden van eenvoudige annotatietools of Python-scripts om belangrijke tijdstippen en labels in een gestructureerd (bv. JSON) formaat op te slaan.
+    \item \textbf{Dataset-samenstelling}: Het resultaat is een dataset van enkele tientallen tot honderd gelabelde kip opnames. Deze dataset wordt gesplitst in trainings-en validatiesets. Het doel is een representatieve verzameling video's met bijhorende foutlabels en relevante metadata op te bouwen, Dit biedt de basis voor de volgende fasen
+\end{itemize}
 
-Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
+De doorlooptijd voor Fase 1 wordt geschat op ongeveer 2-3 weken. De concrete deliverables zijn een geannoteerde videodatabase en bijhorende labelbestanden.
 
-Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
+\subsection{Fase 2: Pose-estimatie en bewegingsextractie}
+
+In deze fase worden uit de video-opnames de lichaamshouding gehaald in de vorm van gewrichtscoördinaten. Voor deze taak worden populaire markerloze frameworks zoals MediaPipe Pose en OpenPose overwogen, die in de sportanalyse veel worden toegepast. MediaPipe biedt een gebruiksvriendelijke API en is effectief gebleken voor real-time lichaamsdetectie in sportomgeving~\autocite{Lyu2025}, terwijl OpenPose een volwassen en robuust alternatief vormt voor 2D-pose-estimatie. De volgende stappen worden doorlopen:
+
+\begin{itemize}
+    \item \textbf{ Pose-tracking implementatie}: Met Python-tools (bijv. OpenCV) word frame-voor-frame pose-estimatie uitgevoerd. Bijvoorbeeld wordt voor elke videoframe een skelet gegenereerd met 2D-coördinaten van hoof- en ledemaat punten (schouders, heupen, knieën, enkels, enz.). Dit kan met MediaPipe Pose of OpenPose. De videobestanden worden scriptmatig behandeld, zodat per frame de gewrichtsposities en bijhorende vertrouwensscores opslaan kunnen worden.
+    \item \textbf{Validatie van Poses}: De output word gecontroleerd op kwaliteit. Een eerder onderzoek toont aan dat dergelijke markerloze systemen enige onnauwkeurigheid hebben, vaak worden systematische afwijkingen waargenomen (bijv. ~30-50 mm bij heup/knee) vergeleken met lab-sensoren~\autocite{Needham2021}. Desondanks is de verkregen bewegingsschatting voldoende voor het beoordelen van houdingspatronen. De camera-instellingen kunnen eventueel afgestemd worden om perspectief te beperken.
+    \item \textbf{Feature-extractie}: Uit de gemeten gewrichtsposities worden relevante afgeleiden berekend, zoals gewrichtshoeken en hoeksnelheden op cruciale momenten. Deze tijdreeksen van kenmerken vormen vervolgens de input voor foutanalyse in de volgende fase
+\end{itemize}
+
+De geschatte duur van deze fase is ongeveer 3-4 weken. De deliverable omvat een geautomatiseerde pipeline die van elke videofragment de pose-gegevens exporteert en scripts die deze data voorbereiden voor analyse.
+
+\subsection{Fase 3: technische analyse en foutdetectie}
+
+In deze fase worden de verworven poses op aanwezigheid van technische fouten. Voor coaches zijn typische fouten voor de kip oefening bekend. We voeren de volgende analyses uit:
+
+\begin{itemize}
+    \item \textbf{Kenmerken en regels}: Er worden kwantitatieve regels voor de belangrijkste fouttypes. Bijvoorbeeld een correcte kip vereist een bepaalde romphoek, volledige armextensie  en voldoende schouderflexie. Deze voorwaarden vertalen worden vertaalt naar drempelwaarden voor de gewrichtshoeken op specifieke tijdstippen.
+    \item  \textbf{Foutclassificatie}: Met de regels of met begeleide leermethoden wordt gecontroleerd voor elke oefening of conditie dat er voldaan wordt. Mogelijks kan er een eenvoudige classifier (bijv. een SVM) op de gelabelde dataset om vlagen of foutcategorieën te onderscheiden. Daarbij kan gebruik worden gemaakt van algoritmes zoals Dynamic Time Warping, dat is toegepast in soortgelijke studies om bewegingstrajecten te vergelijken~\autocite{Lyu2025}. Zo zal er vergeleken worden op het verloop van de gewrichtshoeken met een ideaalprofiel en markeren afwijkingen als fouten.
+    \item \textbf{Tooling}: Er zal gebruik gemaakt worden van Python-libraries zoals NumPy en scikit-learn voor berekeningen en classificaties. De input zijn de pose-features uit fase 2 en eventueel extra annotaties. Het resultaat per video is een lijst van gedetecteerde fouten (type + tijdstip).
+\end{itemize}
+
+De duur voor Fase 3 wordt geraamd op ongeveer 4 weken. De deliverables zijn software-scripts voor foutdetectie en een beschrijving van de gedetecteerde foutpatronen per scherm.
+
+\subsection{Fase 4: Generatieve feedback via een LLM}
+
+Nadat de technische gouten zijn gelokaliseerd, worden heldere toepasbare feedback gegenereerd in duidelijke taal. Hiervoor zetten we een taalmodel in (bijv. GPT-4 via de OpenAI API). De workflow is als volgt:
+
+\begin{itemize}
+    \item \textbf{Prompt engineering}: Voor elke video-oefening word een tekstprompt opgebouwd waarin de gevonden fouten en context beschrijven.
+    \item \textbf{Feedbackgeneratie}: Het LLm krijgt de geannoteerde oefeningstekst (bijv. ``De schouders zijn niet genoeg doorgedrukt tijdens de zwaai'') als input en genereert daarop een advieszin of -paragraaf. Er word geëxperimenteerd met verschillende formuleringen en formats, en vragen het model om in het Nederlands feedback te geven.
+    \item \textbf{Kwaliteitscontrole}: Uit studies blijkt dat LLM-gegenereerde adviezen nuttig kunnen zijn voor planning en uitleg, maar momenteel vooral tekst-only zijn en geen directe sensorische context gebruiken~\autocite{Lee2025}. Hierdoor word de output kritisch beoordeeld of het correct en bruikbaar is. Bij onduidelijkheden wirdt feedback manueel bijgesteld.
+\end{itemize}
+
+De duur voor Fase 4 is ongeveer 3 weken, met als deliverables de gegenereerde feedbacktesten per oefening en documentatie van de prompt samenstelling.
+
+\subsection{Fase 5: Evaluatie en iteratie}
+
+In de laatste fase worden de prestaties beoordeeld van het volledige systeem en voeren we verbeteringen door. Dit verloopt in meerder cycli:
+
+\begin{itemize}
+    \item \textbf{Evaluatie van detectie en feedback}: Er word objectief gemeten op de foutdetectie-kwaliteit met meetwaarden zoals precisie en recall (bijv. F1-score) op een aparte testset. Daarnaast zullen ervaren coaches de gegenereerde feedback beoordelen op correctheid en bruikbaarheid.
+    \item \textbf{Iteratieve verbeteringen}: Op basis van de evaluatieresultaten zal het systeem aangepast worden. Dit kan beteken dat de dataset word uitgebreid met extra videomateriaal, de regels of classifier voor foutdetectie verfijnen, of de prompts en voorbeeldvarianten voor de LLM bijsturen. 
+\end{itemize}
+
+De initiële evaluatiecyclus neemt naar verwachting 2-3 weken in beslag. De verwachte uitkomsten zijn een meetbare verbetering in detectieprecisie en meer accurate, consistentere feedback in opeenvolgende versies.
+
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
 \label{sec:verwachte_resultaten}
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
+Er word verwacht dat het PoC-systeem meerdere veelvoorkomende technische fouten bij de kip kan detecteren en daarvoor bruikbare feedback genereert. Dit kan blijken uit een vergelijkingstabel of grafiek waarin de door coaches geïdentificeerde fouten staan tegenover het systeem. Bijvoorbeeld kan een balkdiagram aantonen dat het systeem een groot deel van de schouderfouten en arm positie fouten correct signaleert, in lijn met de coachobservaties. Hoewel exacte voorspellingen lastig, is het aannemelijk dat de genereerde feedback in grote lijnen overeenkomt met wat ervaren coaches zouden zeggen.
 
-Wat heeft de doelgroep van je onderzoek aan het resultaat? Op welke manier zorgt jouw bachelorproef voor een meerwaarde?
+Voor de doelgroep (trainers en turnsters) zit de meerwaarde vooral in extra ondersteuning. Het systeem kan dienen als een tweede oog, in drukke groepen vangt het details op die een coach op dat moment misschien mist of indien die persoon bezig is met een andere turnster. Hierdoor krijgen turnsters sneller gerichte tips, wat hun vooruitgang en blessurepreventie ten goede komt. In de praktijk zou een coach bijvoorbeeld na een oefening de video via het systeem kunnen laten lopen en zo onmiddellijke, objectieve feedback krijgen, naast zijn eigen observaties. Dit kan leiden tot efficiënter trainen en eventuele technische achterstanden sneller corrigeren.
 
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+Doch worden er beperkingen verwacht. Het is voorspelbaar dat de AI-feedback niet foutloos is. In de sportcontext blijkt uit onderzoek dat generatieve LLM-adviezen nu vaak slechts matig accuraat zijn en per model verschillen. Dit betekent dat sommige adviezen oppervlakkig of te algemeen kunnen blijven. In de resultaten van het onderzoek zullen dit zich uiten in verschillen tussen coach- en AI-feedback. Zulke afwijkingen kunnen bijvoorbeeld in gevallen voorkomen waar een subtiel verschil niet goed door het model wordt opgenomen, of waar het model een onnodige detail-instructie geeft. Dit is geen falen, maar een waardevolle uitkomst, het laat zien op welke gebieden LLM's nog te kort schieten en welke verbeteringen nodig zijn. Als we merken dat het systeem consistent dezelfde zwakke punten heeft, vormt dat een uitgangspunt voor verdere verfijning.
+
+In ons PoC wordt er alleen gebruik gemaakt van standaard camera's en AI-software. Uit de literatuur blijkt dat draagbare sensoren en marker-gebaseerde systemen de bewegingsdata veel nauwkeuriger kan vastleggen. Deze meten direct gewrichtshoeken en krachten, en zijn de ``gouden standaard'' in fysiomechanica. Er mag verwacht worden dat deze soort opstellingen een hogere meetnauwkeurigheid geven. Tegelijkertijd blijkt dat een gecombineerde opstelling 3D-locaties met hoge precisie kan reconstrueren. Dit suggereert dat ons systeem weliswaar praktisch en goedkoop is, maar dat de precisie lager ligt. Er wordt een algemene nauwkeurigheid verwacht maar niet met dezelfde precisie als met een sensorgebaseerd systeem. Indien er uit de experimenten blijken dat de output te onnauwkeurige is, dan kan er worden voorgesteld dat toekomstige studies beter gebruik maken van sensoren of meerdere camera's om de feedbackkwaliteit te verbeteren.
+
+In conclusie wordt er verwacht dat het onderzoek aantoont dat moderne AI-technieken veelbelovende aanvullingen kunnen leveren in sportcoaching, maar ook dar ze grenzen hebben. Het PoC zal vermoedelijk bruikbare, zij het niet perfecte, feedback opleveren. Het resultaat voor de doelgroep is een prototype dat laat zien hoe coaches ondersteund kunnen worden. Als de uitkomsten anders zijn dan de hypothesen, dan belicht het waarom en welke factoren daarbij een rol spelen. In alle gevallen zal het een waardevolle inzichten over de haalbaarheid van AI-gebaseerd hulpmiddel voor turntrainingen leveren, en vormt een basis voor verdere verbeteringen in deze richting.
 
