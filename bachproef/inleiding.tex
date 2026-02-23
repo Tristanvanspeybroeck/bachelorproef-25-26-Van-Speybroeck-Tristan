@@ -5,32 +5,66 @@
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
 
-De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te begrijpen en in te zien waarom de onderzoeksvraag de moeite waard is om te onderzoeken. In de inleiding ga je literatuurverwijzingen beperken, zodat de tekst vlot leesbaar blijft. Je kan de inleiding verder onderverdelen in secties als dit de tekst verduidelijkt. Zaken die aan bod kunnen komen in de inleiding~\autocite{Pollefliet2011}:
+Artistieke gymnastiek is een technisch veeleisende sport waarbij coördinatie, kracht, mobiliteit en timing goed op elkaar afgestemd moeten worden. Zelfs eenvoudige bewegingen vereisen een correcte uitvoering om efficiënt en veilig uitgevoerd te worden. Binnen recreatieve contexten worden gymnasten regelmatig geconfronteerd met complexe elementen waarvoor zij nog onvoldoende lichaamscontrole of kracht hebben ontwikkeld. Hierdoor ontstaan vaak technische uitvoeringsfouten.
 
-\begin{itemize}
-  \item context, achtergrond
-  \item afbakenen van het onderwerp
-  \item verantwoording van het onderwerp, methodologie
-  \item probleemstelling
-  \item onderzoeksdoelstelling
-  \item onderzoeksvraag
-  \item \ldots
-\end{itemize}
+De kip aan barre is een belangrijk overgangselement binnen de damesgymnastiek. Het element vereist een combinatie van zwaaimomentum, heupsluiting, armstrekking en actieve schouderwerking om vanuit hangpositie tot steun op de barre te komen. Vooral bij recreatieve turnsters blijkt deze beweging technisch uitdagend. Dit leidt regelmatig tot fouten zoals gebogen armen, onvoldoende heupsluiting of onvoldoende schouderdruk.
+
+Een correcte technische uitvoering is niet alleen belangrijk voor prestatieverbetering, maar ook voor blessurepreventie. Herhaaldelijk uitvoeren van foutieve bewegingspatronen kan bijdragen aan overbelastingsletsels, vooral ter hoogte van schouder en pols bij bewegingen aan de barre. Het vroegtijdig detecteren en corrigeren van technische fouten is daarom belangrijk binnen een veilige trainingsomgeving.
+
+Binnen recreatieve gymnastiekclubs worden technische elementen meestal in groepsverband aangeleerd. Trainers begeleiden meerdere sporters tegelijk, waardoor er beperkte tijd is voor een grondige individuele analyse van elke uitvoering. Feedback gebeurt voornamelijk op basis van visuele observatie en ervaring van de coach. Geavanceerde 3D bewegingsanalysesystemen bestaan, maar vereisen gespecialiseerde apparatuur en zijn meestal financieel niet haalbaar voor recreatieve clubs. Er is dus een duidelijke kloof tussen laboratoriumgebaseerde bewegingsanalyse en de praktische realiteit in de trainingszaal.
+
+Recente ontwikkelingen in markerloze pose-estimatie maken het mogelijk om gewrichtsposities te bepalen op basis van standaard videobeelden, zonder gebruik van sensoren of markers. Daarnaast kunnen Large Language Models (LLM’s) informatie omzetten in begrijpelijke tekstuele feedback. De combinatie van deze technologieën biedt mogelijkheden voor het ontwikkelen van een laagdrempelig AI-gebaseerd ondersteuningssysteem voor technische analyse in recreatieve gymnastiek.
+
+Deze bachelorproef onderzoekt in welke mate een dergelijk systeem haalbaar en bruikbaar is voor het genereren van technische feedback bij de kip aan barre.
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
+Binnen recreatieve en laagcompetitieve gymnastiekclubs worden technische elementen zoals de kip aan barre aangeleerd aan turnsters van ongeveer 10 jaar en ouder. In deze context beschikken clubs doorgaans niet over gespecialiseerde bewegingsanalyseapparatuur en zijn trainers aangewezen op visuele observatie.
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+De doelgroep van dit onderzoek bestaat uit:
+
+\begin{itemize}
+    \item Recreatieve en laagcompetitieve turnsters
+    \item Trainers binnen recreatieve gymnastiekclubs
+    \item Gymnastiekclubs zonder toegang tot gespecialiseerde bewegingsanalyse
+\end{itemize}
+
+Voor deze doelgroep kan een laagdrempelig video-gebaseerd analysesysteem een meerwaarde bieden door:
+
+\begin{itemize}
+    \item Consistente detectie van vooraf gedefinieerde technische fouten
+    \item Ondersteuning van trainers bij het formuleren van gerichte feedback
+    \item Verhoogd bewustzijn van uitvoeringskwaliteit bij sporters
+\end{itemize}
+
+De centrale uitdaging bestaat erin te onderzoeken of een AI-gebaseerde oplossing op basis van standaard videobeelden een haalbare en bruikbare ondersteuning kan vormen binnen deze recreatieve trainingscontext.
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
+De centrale onderzoeksvraag luidt als volgt:
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+``\textit{In welke mate kan een AI-gebaseerd systeem op basis van markerloze video-analyse technisch bruikbare feedback genereren voor recreatieve turnsters bij de kip aan barre?}''
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
+Het doel van deze bachelorproef is het ontwikkelen en evalueren van een proof-of-concept van een AI-gebaseerd systeem dat:
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+\begin{enumerate}
+    \item Gewrichtsposities extraheert uit 2D videobeelden via markerloze pose-estimatie.
+    \item Vier frequent voorkomende technische fouten bij de kip aan barre rule-based detecteert:
+    \begin{itemize}
+        \item Gebogen armen tijdens de trekfase
+        \item Onvoldoende heupsluiting
+        \item Te vroege heupopening
+        \item Onvoldoende schouderdruk in steunfase
+    \end{itemize}
+    \item Gedetecteerde fouten omzet in gestructureerde parameters.
+    \item Op basis van deze parameters via een Large Language Model begrijpelijke en gerichte technische feedback genereert.
+\end{enumerate}
+
+Daarnaast wordt onderzocht in welke mate de geselecteerde fouttypes detecteerbaar zijn via 2D pose-estimatie en of de gegenereerde feedback als correct en bruikbaar wordt beoordeeld door een ervaren coach.
+
+Het onderzoek richt zich op de technische haalbaarheid en praktische bruikbaarheid binnen een recreatieve context, en niet op de ontwikkeling van een volledig gevalideerd diagnostisch systeem.
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
