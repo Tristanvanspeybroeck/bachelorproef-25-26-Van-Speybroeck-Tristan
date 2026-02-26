@@ -6,48 +6,76 @@
 % bijzonder aan wat de link is met het vorige en volgende hoofdstuk.
 
 % Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
+\section{Techniek en blessurerisico in gymnastiek}
+\label{sec:techniek-blessures}
+Gymnastiek is een technisch veeleisende sport waarbij hoge belastingen op het lichaam ontstaan. In de praktijk zien we dat de meeste blessures optreden in de onderste ledematen, met name enkels (verstuikingen) en knieën, terwijl bij mannen vaker de bovenste extremiteiten (schouders) zijn aangedaan. Zo noteerden \textcite{Hart2018} dat enkels en knieën de meest voorkomende blessurelocaties zijn, terwijl bij mannelijke turners schouderletsels domineren. Uit systematische analyses (Thomas & Thomas, 2019) blijkt dat meer dan de helft van alle turnblessures zich in het onderlichaam voordoet, voornamelijk aan enkels en knieën~\autocite{Thomas2019}. De bijzondere aard van gymnastiek – waarbij gymnasten zich herhaaldelijk op handen en armen landen leidt tot specifieke overbelastingsletsels, stressfracturen en groeischijfletsels van de pols zijn bekende voorbeelden die onder de verzamelnaam “gymnast’s wrist” vallen. \textcite{Concannon2020} onderschrijft dit, zij rapporteren dat bij vrouwelijke gymnasten polsblessures vaker voorkomen, terwijl mannelijke gymnasten relatief meer schouderproblemen kennen.
+\newline
+\newline
+Techniek speelt een cruciale rol in deze blessurepatronen. Harde landingen en elementen als handsprings en salto’s genereren extreem hoge krachten. \textcite{Hart2018} noemen specifiek dat voorwaartse en achterwaartse handsprings en salto’s de meest blessureveroorzakende oefeningen zijn. Biomechanische studies bevestigen dat kleine aanpassingen in techniek het letselrisico kunnen beïnvloeden. Zo vonden \textcite{FARANA201588} dat het uitvoeren van een rond-off met een ‘T-vormige’ handplaatsing resulteert in lagere piekbelastingen en valversnellingen in de elleboog in vergelijking met een parallelle handplaatsing. Deze ‘T-vormige’ techniek reduceert de verticale en anteroposteriore krachten aanzienlijk, wat erop wijst dat een gerichte techniekkeuze effectief letsel kan verminderen. Dergelijke bevindingen illustreren dat techniekkeuzes onmiskenbaar van invloed zijn op gewrichtslast. Tegelijkertijd wijst \textcite{Daly1999HighImpact} erop dat trainingsomgevingen zeer belastend zijn, een turntraining kan gemakkelijk meer dan 100 stuiterende hand-landingen per sessie inhouden. Deze herhaalde impactbelastingen leiden tot cumulatieve microtraumata aan de bovenste extremiteiten, wat chronische overbelastingsletsel in de hand en pols bevordert.
+\newline
+\newline
+Kortom, de combinatie van hoge krachten, herhaalde landingen en complexe bewegingen maakt gymnastiek kwetsbaar voor blessures. Traditionele blessures als enkelverstuikingen en knieverstuikingen wijzen op akoesto-mechanische belasting, terwijl “gymnast’s wrist” en rugproblemen het gevolg zijn van repetitieve overbelasting van unieke houdingen (zoals handstanden). Aangezien veel gymnasten jong zijn en in de groeiperiode trainen, dragen ook groeigerelateerde kwetsbaarheden bij aan deze blessurepatronen~\autocite{Wolf2020,Concannon2020}. Deze bevindingen schetsen het probleemkader, precieze techniekcontrole en tijdige feedback zijn essentieel om blessures te voorkomen, maar in de praktijk blijven coachobservatie en training traditioneel en menselijk. Dit legt de basis voor de noodzaak van geautomatiseerde analyse- en feedbacksystemen in het ontwerp van ons proof-of-concept.
+
+\section{Feedback in motorisch leren}
+\label{sec:feedback-motorisch}
+Traditionele gymnastiektraining steunt sterk op coachobservatie en directe terugkoppeling. Coaches geven mondelinge aanwijzingen over houding en techniek (kennis van prestaties, KP) en beoordelen de uitkomst (kennis van resultaat, KR)\autocite{Niznikowski2025}. Vaak werkt dit via directe demonstratie, verbale correctie en het gebruik van videoanalyse. Bijvoorbeeld kan een coach turners laten oefenen voor en achter spiegels, of video-opnamen gebruiken om de oefening terug te kijken. Onderzoek wijst uit dat het hanteren van videofeedback een effectief hulpmiddel is. \textcite{Boyer2009} toonden aan dat jongere gymnasten die zowel expertvideo’s als video-opnames van hun eigen uitvoering bekeken, significant sneller en met betere techniek leerden.
+\newline
+\newline
+Naast visuele middelen speelt verbale feedback een belangrijke rol. \textcite{Niznikowski2025} laten zien dat gerichte feedback over kernpunten in de techniek uitermate effectief is. In hun studie kregen gymnasten ofwel feedback over alle fouten, ofwel alleen over de belangrijkste elementen van de oefening. De groep die uitsluitend ‘sleutelelementen’ teruggekoppeld kreeg, behaalden significant hogere scores bij een complexe balanceerbaloefening (de saldana op de balk) vergeleken met de groep die alle fouten hoorde. Hun conclusie is duidelijk, het doseren van feedback, minder frequent en gericht leidt tot betere leerresultaten dan voortdurende, allesomvattende foutencorrectie. Coaches dienen dus strategisch te zijn, het aanwijzen van cruciale bewegingsfouten (bijv. juiste armhoek of lichaamsrotatie) bevordert het leerproces aanzienlijk, in lijn met theorieën in motorisch leren.
+\newline
+\newline
+Deze bevindingen onderstrepen de rol van feedback als leerinstrument, maar ze wijzen ook op knelpunten. De huidige praktijk is afhankelijk van de ervaring en het moment van de coach. Observatie kan worden bemoeilijkt door complexe hoeken of snelle bewegingen die het oog van een coach ontgaan. Bovendien is beoordeling vaak kwalitatief en subjectief, zonder directe kwantificering van de beweging. Deze beperkingen vormen het vertrekpunt voor technische oplossingen. Geautomatiseerde systemen kunnen coaches ondersteunen door objectieve data te leveren over hoekafwijkingen, snelheid of positie. Daarmee kunnen zij aanvullende, gedetailleerde feedback genereren op basis van videobeelden of sensoren, zodat gymnasten direct inzicht krijgen in hun prestatie.
+
+\section{Markerloze pose-estimatie en bewegingsanalyse}
+\label{sec:pose-estimatie-bewegingsanalyse}
+Markerloze bewegingsanalyse is een technologie waarbij de lichaamspositie van sporters automatisch wordt geschat zonder dat markers of dure sensoren nodig zijn. Traditioneel is voor biomechanische analyse vaak gebruikgemaakt van marker-gebaseerde systemen in laboratoria (met infraroodcamera’s en reflecterende markers), maar deze zijn kostbaar en weinig praktisch voor alledaags gebruik. De recente opkomst van markerloze alternatieven maakt grootschalige analyses in de ‘werkelijkheid’ mogelijk. Zoals \textcite{Ota2025Markerless} beschrijft, omvat markerloze analyse diverse technieken, draagbare IMU-sensoren (accelerometers/gyroscopen), depth-camera’s (bijv. Microsoft Kinect), handmatige digitalisering van video en AI-gebaseerde houdingsschatters. AI-algoritmes (zoals OpenPose of mediapipe) analyseren conventionele videosignalen en berekenen daarmee de posities van gewrichten in 2D of 3D.
+
+\section{Automatische foutdetectie en AI in sportanalyse}
+\label{sec:auto-foutdetectie}
+
+\section{Large Language Models en automatische feedbackgeneratie}
+\label{sec:LLM-feedback}
 
 
-
-Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
-
-Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.
-
-\textcite{Knuth1998} schreef een van de standaardwerken over sorteer- en zoekalgoritmen. Experten zijn het erover eens dat cloud computing een interessante opportuniteit vormen, zowel voor gebruikers als voor dienstverleners op vlak van informatietechnologie~\autocite{Creeger2009}.
-
-Let er ook op: het \texttt{cite}-commando voor de punt, dus binnen de zin. Je verwijst meteen naar een bron in de eerste zin die erop gebaseerd is, dus niet pas op het einde van een paragraaf.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\textwidth]{grail.jpg}
-  \caption[Voorbeeld figuur.]{\label{fig:grail}Voorbeeld van invoegen van een figuur. Zorg altijd voor een uitgebreid bijschrift dat de figuur volledig beschrijft zonder in de tekst te moeten gaan zoeken. Vergeet ook je bronvermelding niet!}
-\end{figure}
-
-\begin{listing}
-  \begin{minted}{python}
-    import pandas as pd
-    import seaborn as sns
-
-    penguins = sns.load_dataset('penguins')
-    sns.relplot(data=penguins, x="flipper_length_mm", y="bill_length_mm", hue="species")
-  \end{minted}
-  \caption[Voorbeeld codefragment]{Voorbeeld van het invoegen van een codefragment.}
-\end{listing}
-
-\lipsum[7-20]
-
-\begin{table}
-  \centering
-  \begin{tabular}{lcr}
-    \toprule
-    \textbf{Kolom 1} & \textbf{Kolom 2} & \textbf{Kolom 3} \\
-    $\alpha$         & $\beta$          & $\gamma$         \\
-    \midrule
-    A                & 10.230           & a                \\
-    B                & 45.678           & b                \\
-    C                & 99.987           & c                \\
-    \bottomrule
-  \end{tabular}
-  \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
-\end{table}
+%Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
+%
+%Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.
+%
+%\textcite{Knuth1998} schreef een van de standaardwerken over sorteer- en zoekalgoritmen. Experten zijn het erover eens dat cloud computing een interessante opportuniteit vormen, zowel voor gebruikers als voor dienstverleners op vlak van informatietechnologie~\autocite{Creeger2009}.
+%
+%Let er ook op: het \texttt{cite}-commando voor de punt, dus binnen de zin. Je verwijst meteen naar een bron in de eerste zin die erop gebaseerd is, dus niet pas op het einde van een paragraaf.
+%
+%\begin{figure}
+%  \centering
+%  \includegraphics[width=0.8\textwidth]{grail.jpg}
+%  \caption[Voorbeeld figuur.]{\label{fig:grail}Voorbeeld van invoegen van een figuur. Zorg altijd voor een uitgebreid bijschrift dat de figuur volledig beschrijft zonder in de tekst te moeten gaan zoeken. Vergeet ook je bronvermelding niet!}
+%\end{figure}
+%
+%\begin{listing}
+%  \begin{minted}{python}
+%    import pandas as pd
+%    import seaborn as sns
+%
+%    penguins = sns.load_dataset('penguins')
+%    sns.relplot(data=penguins, x="flipper_length_mm", y="bill_length_mm", hue="species")
+%  \end{minted}
+%  \caption[Voorbeeld codefragment]{Voorbeeld van het invoegen van een codefragment.}
+%\end{listing}
+%
+%\lipsum[7-20]
+%
+%\begin{table}
+%  \centering
+%  \begin{tabular}{lcr}
+%    \toprule
+%    \textbf{Kolom 1} & \textbf{Kolom 2} & \textbf{Kolom 3} \\
+%    $\alpha$         & $\beta$          & $\gamma$         \\
+%    \midrule
+%    A                & 10.230           & a                \\
+%    B                & 45.678           & b                \\
+%    C                & 99.987           & c                \\
+%    \bottomrule
+%  \end{tabular}
+%  \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
+%\end{table}
 
