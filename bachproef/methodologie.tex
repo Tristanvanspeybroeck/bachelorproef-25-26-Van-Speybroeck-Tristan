@@ -25,6 +25,57 @@
 %%
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
+Dit onderzoek volgt een ontwerpgericht en experimenteel onderzoeksdesign waarbij een proof-of-concept wordt ontwikkeld en geëvalueerd. Het doel is om na te gaan in welke mate AI-technieken ingezet kunnen worden voor automatische foutdetectie en feedbackgeneratie bij de kip aan barre.
 
-\lipsum[21-25]
+Het onderzoeksproces wordt onderverdeeld in vier grote fasen.
+
+\section{Fase 1: Literatuurstudie}
+
+In de eerste fase werd een literatuurstudie uitgevoerd rond drie kerncomponenten: (1) biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten, (2) markerloze pose-estimatie in sportanalyse, en (3) automatische foutdetectie en AI-gebaseerde feedbacksystemen.
+
+\textbf{Doelstelling:} theoretisch kader opbouwen en technische haalbaarheid inschatten.  
+
+\textbf{Deliverable:} uitgewerkt literatuurhoofdstuk met onderbouwing van de gekozen aanpak.  
+
+\textbf{Onderzoeksmethode:} systematische analyse van wetenschappelijke publicaties en bestaande toepassingen binnen sportanalyse.
+
+\section{Fase 2: Specificatie van fouttypes en systeemvereisten}
+
+Op basis van de literatuur en praktijkervaring binnen recreatieve gymnastiek werden concrete fouttypes gedefinieerd die automatisch detecteerbaar moeten zijn (zoals gebogen armen of onvoldoende heupsluiting).
+
+Daarnaast werden functionele vereisten voor het systeem opgesteld, waaronder het gebruik van standaard videobeelden en beperkte technische infrastructuur, om de toepasbaarheid binnen clubs te waarborgen.
+
+\textbf{Doelstelling:} afbakenen wat het systeem precies moet detecteren en genereren.  
+
+\textbf{Deliverable:} lijst van fouttypes en bijhorende meetbare parameters.  
+
+\textbf{Onderzoeksmethode:} conceptuele analyse en vertaling van biomechanische fouten naar kwantificeerbare bewegingskenmerken.
+
+\section{Fase 3: Ontwikkeling van een proof-of-concept}
+
+In deze fase wordt een proof-of-concept ontwikkeld waarin videobeelden worden verwerkt via markerloze pose-estimatie. Op basis van de geëxtraheerde keypoints worden relevante hoeken en bewegingsparameters berekend.
+
+De foutdetectie gebeurt via een rule-based benadering, waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is. Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren. 
+
+Binnen een proof-of-concept is dit een geschikte eerste stap om de technische haalbaarheid van automatische foutdetectie te onderzoeken. 
+
+Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
+
+\textbf{Doelstelling:} aantonen dat automatische detectie en feedbackgeneratie technisch haalbaar zijn.  
+
+\textbf{Deliverable:} werkend prototype dat fouten detecteert en feedback genereert.  
+
+\textbf{Onderzoeksmethode:} experimentele implementatie en iteratieve ontwikkeling.
+
+\section{Fase 4: Evaluatie}
+
+Tot slot wordt het systeem geëvalueerd op twee niveaus: technische detectienauwkeurigheid en bruikbaarheid van de gegenereerde feedback.
+
+De automatische foutdetectie wordt vergeleken met manuele beoordeling door een trainer. De feedbackoutput wordt kwalitatief beoordeeld op technische correctheid en toepasbaarheid binnen een trainingscontext.
+
+\textbf{Doelstelling:} inschatten in welke mate het systeem betrouwbaar en pedagogisch bruikbaar is.  
+
+\textbf{Deliverable:} evaluatie-analyse en interpretatie van de resultaten.  
+
+\textbf{Onderzoeksmethode:} vergelijkende analyse en kwalitatieve expertbeoordeling.
 
