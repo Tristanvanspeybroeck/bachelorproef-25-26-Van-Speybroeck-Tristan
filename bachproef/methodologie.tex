@@ -51,7 +51,19 @@ Daarnaast werden functionele vereisten voor het systeem opgesteld, waaronder het
 
 \textbf{Onderzoeksmethode:} conceptuele analyse en vertaling van biomechanische fouten naar kwantificeerbare bewegingskenmerken.
 
-\section{Fase 3: Ontwikkeling van een proof-of-concept}
+\section{Fase 3: Exploratief experiment met bestaande AI-systemen}
+
+Voorafgaand aan de ontwikkeling van het eigen proof-of-concept werd een verkennend experiment uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
+
+In dit experiment werd eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen werd een gelijkaardige prompt gebruikt waarbij het model werd gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+
+\textbf{Doelstelling:} inzicht verkrijgen in de mogelijkheden en beperkingen van bestaande AI-systemen voor automatische bewegingsanalyse en feedbackgeneratie.
+
+\textbf{Deliverable:} kwalitatieve analyse van de gegenereerde feedback per inputtype.
+
+\textbf{Onderzoeksmethode:} exploratief experiment waarbij verschillende inputmodaliteiten systematisch worden vergeleken op basis van de gegenereerde output.
+
+\section{Fase 4: Ontwikkeling van een proof-of-concept}
 
 In deze fase wordt een proof-of-concept ontwikkeld waarin videobeelden worden verwerkt via markerloze pose-estimatie. Op basis van de geëxtraheerde keypoints worden relevante hoeken en bewegingsparameters berekend.
 
@@ -59,11 +71,15 @@ De videobeelden worden verwerkt met behulp van een Python-gebaseerde analysepipe
 
 De gedetecteerde landmarks worden frame per frame geëxtraheerd en opgeslagen, waardoor een tijdreeks van lichaamsposities ontstaat. Op basis van deze gegevens worden bijkomende bewegingskenmerken berekend, zoals gewrichtshoeken. Deze kenmerken vormen de basis voor de verdere analyse van de beweging en de detectie van technische fouten in de kip-oefening.
 
-De foutdetectie gebeurt via een rule-based benadering, waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is. Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren. 
+De foutdetectie gebeurt via een rule-based benadering, waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is. Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren.
 
 Binnen een proof-of-concept is dit een geschikte eerste stap om de technische haalbaarheid van automatische foutdetectie te onderzoeken. 
 
 Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
+
+Om de output van het systeem te structureren en consistent te maken, werd een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
+
+Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Door gebruik te maken van een vast outputformaat wordt de interpreteerbaarheid verhoogd en kan de gegenereerde feedback consistent worden opgebouwd.
 
 \textbf{Doelstelling:} aantonen dat automatische detectie en feedbackgeneratie technisch haalbaar zijn.  
 
@@ -71,7 +87,7 @@ Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in g
 
 \textbf{Onderzoeksmethode:} experimentele implementatie en iteratieve ontwikkeling.
 
-\section{Fase 4: Evaluatie}
+\section{Fase 5: Evaluatie}
 
 Tot slot wordt het systeem geëvalueerd op twee niveaus: technische detectienauwkeurigheid en bruikbaarheid van de gegenereerde feedback.
 

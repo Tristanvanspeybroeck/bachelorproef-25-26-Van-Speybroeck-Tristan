@@ -85,6 +85,40 @@ Om deze redenen wordt in de literatuur benadrukt dat LLM-systemen vooral een ond
 
 Samenvattend suggereert de literatuur dat LLM’s een veelbelovende technologie vormen voor het genereren van begrijpelijke feedback op basis van technische bewegingsanalyse. Door output van systemen zoals pose-estimatie en automatische foutdetectie te vertalen naar duidelijke coachinginstructies kunnen dergelijke modellen bijdragen aan meer toegankelijke en gestructureerde feedback binnen sporttraining \autocite{Lai2025,He2026}. Tegelijk blijft zorgvuldige validatie noodzakelijk om de betrouwbaarheid van gegenereerde adviezen te waarborgen.
 
+Binnen deze studie wordt gebruikgemaakt van verschillende LLM-systemen, met name Google Gemini en OpenAI GPT-modellen. Aangezien deze modellen verschillen in multimodale verwerkingsmogelijkheden, gestructureerde output en integratie, is een beknopte vergelijking relevant.
+
+Deze vergelijking is niet bedoeld als een alomvattende benchmarkstudie, maar als een praktische onderbouwing voor de keuze van tools binnen dit onderzoek. In het bijzonder wordt nagegaan in welke mate de modellen geschikt zijn voor (1) analyse van videodata, (2) genereren van gestructureerde output en (3) integratie binnen een proof-of-concept systeem.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{4cm}p{6cm}p{6cm}}
+        \toprule
+        \textbf{Aspect} & \textbf{Google Gemini} & \textbf{OpenAI GPT-modellen} \\
+        \midrule
+        \textbf{Multimodale mogelijkheden} 
+        & Ondersteunt video- en audiobronnen en kan volledige videobestanden analyseren, waarbij frames worden gesampled (~1 fps) voor verwerking \autocite{gemini_video}. 
+        & GPT-4o ondersteunt tekst, beeld, audio en video-input binnen één model en is geoptimaliseerd voor snelle multimodale verwerking \autocite{gpt4o}. \\
+        
+        \textbf{Gestructureerde output} 
+        & Ondersteunt JSON-output via JSON Schema, waarbij de output strikt voldoet aan het opgegeven formaat \autocite{gemini_json}. 
+        & Ondersteunt gestructureerde output via JSON Schema en function calling, wat betrouwbare en consistente JSON-generatie mogelijk maakt \autocite{openai_json}. \\
+        
+        \textbf{Consistentie en betrouwbaarheid} 
+        & Levert consistente output binnen opgegeven schema’s, maar prestaties kunnen variëren afhankelijk van de taak. 
+        & GPT-4o toont hoge prestaties en betrouwbaarheid in diverse benchmarks en toepassingen \autocite{gpt4o}. \\
+        
+        \textbf{Integratie (SDK/API)} 
+        & Beschikbaar via Google GenAI SDK (Python, JavaScript, etc.) en integreerbaar binnen Google Cloud \autocite{gemini_sdk}. 
+        & Beschikt over brede SDK-ondersteuning (Python, JS, …) en eenvoudige API-integratie \autocite{openai_json}. \\
+        \bottomrule
+    \end{tabular}
+    \caption[Vergelijking Gemini vs GPT]{Vergelijking tussen Google Gemini en OpenAI GPT-modellen met betrekking tot multimodaliteit, gestructureerde output en integratie.}
+\end{table}
+
+Uit deze vergelijking blijkt dat Google Gemini sterke ondersteuning biedt voor multimodale analyse van videodata, wat het geschikt maakt voor exploratieve experimenten met bewegingsanalyse. OpenAI GPT-modellen daarentegen bieden meer mature ondersteuning voor gestructureerde output en API-integratie.
+
+Op basis hiervan wordt in dit onderzoek gekozen om Gemini te gebruiken in een verkennende fase voor analyse van videoinput, terwijl OpenAI GPT-modellen worden ingezet binnen het proof-of-concept voor het genereren van gestructureerde feedback.
+
 %Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
 %
 %Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.
