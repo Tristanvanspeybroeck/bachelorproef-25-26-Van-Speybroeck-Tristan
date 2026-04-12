@@ -31,7 +31,7 @@ Het onderzoeksproces wordt onderverdeeld in vijf grote fasen.
 
 \section{Fase 1: Literatuurstudie}
 
-In de eerste fase werd een literatuurstudie uitgevoerd rond drie kerncomponenten: (1) biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten, (2) markerloze pose-estimatie in sportanalyse, en (3) automatische foutdetectie en AI-gebaseerde feedbacksystemen.
+In de eerste fase word een literatuurstudie uitgevoerd rond drie kerncomponenten: (1) biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten, (2) markerloze pose-estimatie in sportanalyse, en (3) automatische foutdetectie en AI-gebaseerde feedbacksystemen.
 
 \textbf{Doelstelling:} theoretisch kader opbouwen en technische haalbaarheid inschatten.  
 
@@ -41,9 +41,9 @@ In de eerste fase werd een literatuurstudie uitgevoerd rond drie kerncomponenten
 
 \section{Fase 2: Specificatie van fouttypes en systeemvereisten}
 
-Op basis van de literatuur en praktijkervaring binnen recreatieve gymnastiek werden concrete fouttypes gedefinieerd die automatisch detecteerbaar moeten zijn (zoals gebogen armen of onvoldoende heupsluiting).
+Op basis van de literatuur en praktijkervaring binnen recreatieve gymnastiek worden concrete fouttypes gedefinieerd die automatisch detecteerbaar moeten zijn (zoals gebogen armen of onvoldoende heupsluiting).
 
-Daarnaast werden functionele vereisten voor het systeem opgesteld, waaronder het gebruik van standaard videobeelden en beperkte technische infrastructuur, om de toepasbaarheid binnen clubs te waarborgen.
+Daarnaast worden functionele vereisten voor het systeem opgesteld, waaronder het gebruik van standaard videobeelden en beperkte technische infrastructuur, om de toepasbaarheid binnen clubs te waarborgen.
 
 Naast deze foutdefinities op basis van gewrichtshoeken wordt in de literatuur ook gewezen op het belang van kritieke tussenpunten (via-points) in de beweging \autocite{Yamasaki2010}.
 
@@ -59,9 +59,9 @@ De integratie van via-points als aanvullende analysemethode wordt voorzien als m
 
 \section{Fase 3: Exploratief experiment met bestaande AI-systemen}
 
-Voorafgaand aan de ontwikkeling van het eigen proof-of-concept werd een verkennend experiment uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
+Voorafgaand aan de ontwikkeling van het eigen proof-of-concept word een verkennend experiment uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
 
-In dit experiment werd eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen werd een gelijkaardige prompt gebruikt waarbij het model werd gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+In dit experiment word eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen word een gelijkaardige prompt gebruikt waarbij het model word gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
 
 \textbf{Doelstelling:} inzicht verkrijgen in de mogelijkheden en beperkingen van bestaande AI-systemen voor automatische bewegingsanalyse en feedbackgeneratie.
 
@@ -87,7 +87,7 @@ Binnen de context van dit proof-of-concept vormt deze aanpak een geschikte eerst
 
 Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
 
-Om de output van het systeem te structureren en consistent te maken, werd een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
+Om de output van het systeem te structureren en consistent te maken, word een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
 
 Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Door gebruik te maken van een vast outputformaat wordt de interpreteerbaarheid verhoogd en kan de gegenereerde feedback consistent worden opgebouwd.
 
