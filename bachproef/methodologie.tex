@@ -31,7 +31,13 @@ Het onderzoeksproces wordt onderverdeeld in vijf grote fasen.
 
 \section{Fase 1: Literatuurstudie}
 
-In de eerste fase word een literatuurstudie uitgevoerd rond drie kerncomponenten: (1) biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten, (2) markerloze pose-estimatie in sportanalyse, en (3) automatische foutdetectie en AI-gebaseerde feedbacksystemen.
+In de eerste fase gebeurt een literatuurstudie uitgevoerd rond drie kerncomponenten: 
+
+\begin{itemize}
+    \item biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten
+    \item markerloze pose-estimatie in sportanalyse
+    \item automatische foutdetectie en AI-gebaseerde feedbacksystemen
+\end{itemize}
 
 \textbf{Doelstelling:} theoretisch kader opbouwen en technische haalbaarheid inschatten.  
 
@@ -41,9 +47,11 @@ In de eerste fase word een literatuurstudie uitgevoerd rond drie kerncomponenten
 
 \section{Fase 2: Specificatie van fouttypes en systeemvereisten}
 
+\subsection{Specificatie van detecteerbare fouttypes}
+
 Op basis van de literatuur en praktijkervaring binnen recreatieve gymnastiek worden concrete fouttypes gedefinieerd die automatisch detecteerbaar moeten zijn (zoals gebogen armen of onvoldoende heupsluiting).
 
-Daarnaast worden functionele vereisten voor het systeem opgesteld, waaronder het gebruik van standaard videobeelden en beperkte technische infrastructuur, om de toepasbaarheid binnen clubs te waarborgen.
+Daarnaast worden systeemvereisten opgesteld die bepalen welke functionaliteiten het proof-of-concept minimaal moet bevatten. Hierbij wordt expliciet rekening gehouden met de praktische context van recreatieve gymnastiek, waarin gewerkt wordt met standaard videobeelden en beperkte technische infrastructuur.
 
 Naast deze foutdefinities op basis van gewrichtshoeken wordt in de literatuur ook gewezen op het belang van kritieke tussenpunten (via-points) in de beweging \autocite{Yamasaki2010}.
 
@@ -51,17 +59,89 @@ Binnen dit onderzoek worden deze via-points initieel niet expliciet gemodelleerd
 
 De integratie van via-points als aanvullende analysemethode wordt voorzien als mogelijke uitbreiding in een iteratieve ontwikkelingsfase.
 
+\subsection{Systeemvereisten}
+\subsubsection{Functionele vereisten}
+
+De functionele vereisten beschrijven welke functionaliteiten het systeem moet implementeren om de vooropgestelde doelstelling te bereiken. Voor dit proof-of-concept worden de volgende vereisten gedefinieerd:
+
+\begin{enumerate}
+    \item Het systeem moet een videofragment van een kip aan de barre kunnen inladen.
+    \item Het systeem moet automatisch gewrichtsposities extraheren uit de video via markerloze pose-estimatie.
+    \item Het systeem moet de beweging opdelen in relevante fasen (zwaai, trek, heupsluiting en steunfase).
+    \item Het systeem moet vooraf gedefinieerde technische fouten detecteren op basis van pose-data:
+    \begin{itemize}
+        \item Gebogen armen tijdens de trekfase
+        \item Onvoldoende heupsluiting
+        \item Te vroege heupopening
+        \item Onvoldoende schouderdruk in de steunfase
+    \end{itemize}
+    \item Het systeem moet de gedetecteerde fouten omzetten naar gestructureerde parameters.
+    \item Het systeem moet op basis van deze parameters automatisch tekstuele feedback genereren via een Large Language Model.
+    \item Het systeem moet de gegenereerde feedback tonen aan de gebruiker.
+\end{enumerate}
+
+\subsubsection{Niet-functionele vereisten}
+
+Naast de functionele vereisten worden ook niet-functionele vereisten gedefinieerd. Deze beschrijven kwaliteitsaspecten waaraan het systeem moet voldoen en worden opgesteld volgens het SMART-principe.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llll}
+        \toprule
+        NFR & Indicator & Meetvoorschrift & Norm \\
+        \midrule
+        Prestatie-efficiëntie & Snelheid & Tijd tussen input video en gegenereerde feedback & $\leq$ 10 s \\
+        Functionele geschiktheid & Correctheid & Vergelijking met annotatie door expert & $\geq$ 70\% \\
+        Bruikbaarheid & Begrijpelijkheid & Evaluatie door coach (Likert-schaal) & $\geq$ 3/5 \\
+        Betrouwbaarheid & Foutbestendigheid & Testen met verschillende video’s & Geen crashes \\
+        Overdraagbaarheid & Compatibiliteit & Ondersteunde videoformaten & Minstens MP4 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Niet-functionele vereisten}
+\end{table}
+
+\subsection{Prioritering van vereisten (MoSCoW)}
+
+Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereisten geprioriteerd volgens de MoSCoW-methode.
+
+\textbf{Must have}
+\begin{itemize}
+    \item Video-invoer
+    \item Pose-estimatie
+    \item Detectie van de vier gedefinieerde fouttypes
+    \item Generatie van tekstuele feedback
+\end{itemize}
+
+\textbf{Should have}
+\begin{itemize}
+    \item Opsplitsing van de beweging in fasen
+    \item Structurering van parameters
+\end{itemize}
+
+\textbf{Could have}
+\begin{itemize}
+    \item Visualisatie van het skelet op de video
+    \item Vergelijking van meerdere pogingen
+\end{itemize}
+
+\textbf{Won't have}
+\begin{itemize}
+    \item Real-time analyse
+    \item Mobiele applicatie
+    \item Volledig gevalideerd coachesysteem
+\end{itemize}
+
 \textbf{Doelstelling:} afbakenen wat het systeem precies moet detecteren en genereren.  
 
-\textbf{Deliverable:} lijst van fouttypes en bijhorende meetbare parameters.  
+\textbf{Deliverable:} lijst van fouttypes, systeemvereisten en bijhorende meetbare parameters.  
 
 \textbf{Onderzoeksmethode:} conceptuele analyse en vertaling van biomechanische fouten naar kwantificeerbare bewegingskenmerken.
 
 \section{Fase 3: Exploratief experiment met bestaande AI-systemen}
 
-Voorafgaand aan de ontwikkeling van het eigen proof-of-concept word een verkennend experiment uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
+Voorafgaand aan de ontwikkeling van het proof-of-concept vindt een verkennend experiment plaats uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
 
-In dit experiment word eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen word een gelijkaardige prompt gebruikt waarbij het model word gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+In dit experiment wordt eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen wordt een gelijkaardige prompt gebruikt waarbij het model wordt gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
 
 \textbf{Doelstelling:} inzicht verkrijgen in de mogelijkheden en beperkingen van bestaande AI-systemen voor automatische bewegingsanalyse en feedbackgeneratie.
 
@@ -73,7 +153,7 @@ In dit experiment word eenzelfde kip-oefening aangeboden aan het model in drie v
 
 In deze fase wordt een proof-of-concept ontwikkeld waarin videobeelden worden verwerkt via markerloze pose-estimatie. Op basis van de geëxtraheerde keypoints worden relevante hoeken en bewegingsparameters berekend.
 
-De videobeelden worden verwerkt met behulp van een Python-gebaseerde analysepipeline. Hiervoor wordt gebruikgemaakt van het MediaPipe Pose Landmarker model, dat markerloze pose-estimatie uitvoert op RGB-videoframes. Het model detecteert per frame een set van 33 lichaamslandmarks die de positie van belangrijke gewrichten beschrijven, zoals schouders, heupen, knieën en enkels.
+De videobeelden worden verwerkt met behulp van een Python-gebaseerde analysepipeline. Hiervoor wordt gebruikgemaakt van het MediaPipe Pose Landmarker model, dat markerloze pose-estimatie uitvoert op RGB-videoframes. Het gebruikte model detecteert per frame lichaamslandmarks die de positie van gewrichten beschrijven.
 
 De gedetecteerde landmarks worden frame per frame geëxtraheerd en opgeslagen, waardoor een tijdreeks van lichaamsposities ontstaat. Op basis van deze gegevens worden bijkomende bewegingskenmerken berekend, zoals gewrichtshoeken. Deze kenmerken vormen de basis voor de verdere analyse van de beweging en de detectie van technische fouten in de kip-oefening.
 
@@ -87,9 +167,9 @@ Binnen de context van dit proof-of-concept vormt deze aanpak een geschikte eerst
 
 Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
 
-Om de output van het systeem te structureren en consistent te maken, word een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
+Om de output van het systeem te structureren en consistent te maken, wordt een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
 
-Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Door gebruik te maken van een vast outputformaat wordt de interpreteerbaarheid verhoogd en kan de gegenereerde feedback consistent worden opgebouwd.
+Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Om deze gegevens op een consistente manier door het taalmodel te laten interpreteren, wordt gebruikgemaakt van function calling en een vooraf gedefinieerd JSON-schema. Hierbij wordt het Large Language Model niet aangesproken met vrije tekstinput alleen, maar met een strikt gestructureerde datastructuur waarin per fouttype, bewegingsfase en relevante hoekwaarden expliciete velden zijn voorzien. Function calling laat toe het model te dwingen deze structuur correct te lezen en de output volgens een voorspelbaar formaat op te bouwen. Dit vermindert ambiguïteit in de interpretatie en verhoogt de reproduceerbaarheid van de gegenereerde feedback.
 
 \textbf{Doelstelling:} aantonen dat automatische detectie en feedbackgeneratie technisch haalbaar zijn.  
 

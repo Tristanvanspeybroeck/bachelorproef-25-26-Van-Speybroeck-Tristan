@@ -95,39 +95,90 @@ Samenvattend suggereert de literatuur dat LLM’s een veelbelovende technologie 
 
 Aangezien onderzoek aantoont dat de kwaliteit van een beweging in sterke mate bepaald wordt door een beperkt aantal kritieke overgangsmomenten \autocite{Yamasaki2010}, ligt het voor de hand om feedbacksystemen te ontwerpen die zich focussen op deze sleutelpunten in plaats van op een volledige beschrijving van de beweging.
 
-Binnen deze studie wordt gebruikgemaakt van verschillende LLM-systemen, met name Google Gemini en OpenAI GPT-modellen. Aangezien deze modellen verschillen in multimodale verwerkingsmogelijkheden, gestructureerde output en integratie, is een beknopte vergelijking relevant.
+\subsection{Selectie van Large Language Models}
+
+Binnen dit onderzoek worden verschillende Large Language Models (LLM’s) geëvalueerd op hun geschiktheid voor het genereren van technische feedback op basis van bewegingsanalyse.
+
+Naast de modellen die effectief in het proof-of-concept worden gebruikt, worden ook alternatieven in overweging genomen, zoals open-source modellen (bijvoorbeeld LLaMA) en andere commerciële systemen. Open-source modellen bieden voordelen op vlak van privacy en lokale verwerking, maar vereisen doorgaans meer configuratie en tonen in de praktijk minder consistente prestaties bij complexe taalopdrachten. Om deze reden worden ze binnen dit onderzoek niet verder meegenomen.
+
+De selectie van geschikte modellen gebeurt op basis van volgende criteria:
+\begin{itemize}
+    \item Ondersteuning van multimodale input (video, beeld, data)
+    \item Mogelijkheid tot genereren van gestructureerde output (JSON)
+    \item Consistentie en betrouwbaarheid van de gegenereerde feedback
+    \item Integratie binnen een programmeerbare pipeline (API/SDK)
+    \item Privacy en gegevensverwerking (GDPR-conformiteit)
+\end{itemize}
+
+\subsubsection{Privacy en GDPR-overwegingen}
+
+Aangezien in dit onderzoek gewerkt wordt met videobeelden van sporters, is het belangrijk rekening te houden met privacy en gegevensbescherming. Binnen de Europese context valt dergelijke data onder de GDPR-wetgeving.
+
+Bij het gebruik van externe AI-diensten moet rekening gehouden worden met:
+\begin{itemize}
+    \item Waar en hoe data verwerkt wordt (cloud vs lokaal)
+    \item Of inputdata wordt opgeslagen of gebruikt voor training
+    \item Mogelijkheid tot controle over dataverwerking
+\end{itemize}
+
+Commerciële modellen zoals Google Gemini en OpenAI GPT bieden opties waarbij data niet wordt gebruikt voor verdere training, afhankelijk van de configuratie en API-instellingen. Deze controle is essentieel binnen de context van een proof-of-concept dat met potentieel gevoelige data werkt.
+
 
 Deze vergelijking is niet bedoeld als een alomvattende benchmarkstudie, maar als een praktische onderbouwing voor de keuze van tools binnen dit onderzoek. In het bijzonder wordt nagegaan in welke mate de modellen geschikt zijn voor (1) analyse van videodata, (2) genereren van gestructureerde output en (3) integratie binnen een proof-of-concept systeem.
 
+Naast de in deze studie gebruikte modellen (Google Gemini en OpenAI GPT) worden ook alternatieve systemen opgenomen in de vergelijking, met name Anthropic Claude en het open-source model LLaMA. Deze selectie laat toe om zowel commerciële cloudgebaseerde oplossingen als privacygerichte lokale modellen te evalueren.
+
 \begin{table}[h]
     \centering
-    \begin{tabular}{p{4cm}p{6cm}p{6cm}}
+    \footnotesize
+    \setlength{\tabcolsep}{8pt}
+    \begin{tabular}{p{2.5cm}p{3.1cm}p{3.1cm}p{3.1cm}p{3.1cm}}
         \toprule
-        \textbf{Aspect} & \textbf{Google Gemini} & \textbf{OpenAI GPT-modellen} \\
+        \textbf{Aspect} & \textbf{Google Gemini} & \textbf{OpenAI GPT-4o} & \textbf{Anthropic Claude} & \textbf{Meta LLaMA} \\
         \midrule
+        
         \textbf{Multimodale mogelijkheden} 
-        & Ondersteunt video- en audiobronnen en kan volledige videobestanden analyseren, waarbij frames worden gesampled (~1 fps) voor verwerking \autocite{gemini_video}. 
-        & GPT-4o ondersteunt tekst, beeld, audio en video-input binnen één model en is geoptimaliseerd voor snelle multimodale verwerking \autocite{gpt4o}. \\
+        & Ondersteunt video-, audio- en beeldinput; volledige videoanalyse via gesamplede frames \autocite{gemini_video}
+        & Ondersteunt tekst, beeld, audio en video binnen één model \autocite{gpt4o}
+        & Ondersteunt beeldinput (foto’s, diagrammen), maar geen native videoverwerking \autocite{claude_vision}
+        & Beperkt multimodaal; recente versies ondersteunen beeldinput, maar geen video \autocite{llama_multimodal} \\
         
         \textbf{Gestructureerde output} 
-        & Ondersteunt JSON-output via JSON Schema, waarbij de output strikt voldoet aan het opgegeven formaat \autocite{gemini_json}. 
-        & Ondersteunt gestructureerde output via JSON Schema en function calling, wat betrouwbare en consistente JSON-generatie mogelijk maakt \autocite{openai_json}. \\
+        & JSON-output via schema met hoge consistentie \autocite{gemini_json}
+        & JSON Schema en function calling voor betrouwbare output \autocite{openai_json}
+        & Structured outputs via JSON-schema ondersteuning \autocite{claude_json}
+        & Geen native garantie; vereist custom prompting of parsing \autocite{llama_privacy} \\
         
         \textbf{Consistentie en betrouwbaarheid} 
-        & Levert consistente output binnen opgegeven schema’s, maar prestaties kunnen variëren afhankelijk van de taak. 
-        & GPT-4o toont hoge prestaties en betrouwbaarheid in diverse benchmarks en toepassingen \autocite{gpt4o}. \\
+        & Over het algemeen consistent, afhankelijk van taak
+        & Hoge nauwkeurigheid en consistente prestaties in benchmarks \autocite{gpt4o}
+        & Sterke focus op veilige en consistente output
+        & Variabel; afhankelijk van modelgrootte en fine-tuning \autocite{llama_privacy} \\
         
         \textbf{Integratie (SDK/API)} 
-        & Beschikbaar via Google GenAI SDK (Python, JavaScript, etc.) en integreerbaar binnen Google Cloud \autocite{gemini_sdk}. 
-        & Beschikt over brede SDK-ondersteuning (Python, JS, …) en eenvoudige API-integratie \autocite{openai_json}. \\
+        & Google GenAI SDK en Vertex AI integratie \autocite{gemini_sdk}
+        & Mature API met brede SDK-ondersteuning \autocite{openai_api}
+        & API en SDK via Anthropic en cloudplatformen \autocite{claude_sdk}
+        & Lokale deployment of self-hosted oplossingen \autocite{llama_privacy}\\
+        
+        \textbf{Privacy / GDPR} 
+        & Cloud (Google); data niet gebruikt voor training \autocite{gemini_privacy}
+        & Cloud (OpenAI); data niet gebruikt voor training, DPA beschikbaar \autocite{openai_privacy}
+        & Cloud (Anthropic); input standaard niet gebruikt voor training \autocite{claude_privacy}
+        & Lokaal (on-premise); volledige controle over data \autocite{llama_privacy} \\
+        
         \bottomrule
     \end{tabular}
-    \caption[Vergelijking Gemini vs GPT]{Vergelijking tussen Google Gemini en OpenAI GPT-modellen met betrekking tot multimodaliteit, gestructureerde output en integratie.}
+    \caption{Vergelijking van geselecteerde LLM-modellen voor gebruik in bewegingsanalyse en feedbackgeneratie}
 \end{table}
 
-Uit deze vergelijking blijkt dat Google Gemini sterke ondersteuning biedt voor multimodale analyse van videodata, wat het geschikt maakt voor exploratieve experimenten met bewegingsanalyse. OpenAI GPT-modellen daarentegen bieden meer mature ondersteuning voor gestructureerde output en API-integratie.
+Uit deze vergelijking blijkt dat Google Gemini en OpenAI GPT-4o de meest uitgebreide ondersteuning bieden voor multimodale verwerking en gestructureerde output. Gemini onderscheidt zich voornamelijk door zijn mogelijkheden voor directe analyse van videodata, wat relevant is voor toepassingen binnen bewegingsanalyse \autocite{gemini_video}. GPT-4o daarentegen biedt een meer mature en consistente ondersteuning voor gestructureerde output en integratie binnen softwaretoepassingen \autocite{openai_json}.
 
-Op basis hiervan wordt in dit onderzoek gekozen om Gemini te gebruiken in een verkennende fase voor analyse van videoinput, terwijl OpenAI GPT-modellen worden ingezet binnen het proof-of-concept voor het genereren van gestructureerde feedback.
+Anthropic Claude vormt een interessant alternatief vanwege zijn focus op betrouwbaarheid en veiligheid, evenals de recente ondersteuning voor gestructureerde output. De afwezigheid van native videoverwerking maakt het echter minder geschikt voor toepassingen waarbij videodata centraal staat \autocite{claude_vision}.
+
+Open-source modellen zoals LLaMA bieden belangrijke voordelen op het vlak van privacy, aangezien verwerking lokaal kan gebeuren zonder dat data externe servers verlaat. Dit maakt dergelijke modellen aantrekkelijk vanuit GDPR-perspectief. Tegelijk brengen ze aanzienlijke implementatiecomplexiteit met zich mee en is de betrouwbaarheid van output minder consistent zonder bijkomende optimalisatie \autocite{llama_privacy}.
+
+Op basis van deze analyse wordt in dit onderzoek gekozen om Google Gemini te gebruiken in een verkennende fase voor de analyse van videoinput, terwijl OpenAI GPT-4o wordt ingezet binnen het proof-of-concept voor het genereren van gestructureerde feedback. Deze combinatie laat toe om zowel de sterktes van multimodale analyse als betrouwbare tekstgeneratie optimaal te benutten.
 
 %Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
 %
