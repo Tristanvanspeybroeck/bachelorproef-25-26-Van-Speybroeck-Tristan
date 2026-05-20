@@ -1,0 +1,289 @@
+\chapter{Volledige documentatie van het verkennend Gemini-experiment}
+\label{app:gemini-experiment}
+
+\section{Experiment: Evaluatie van bestaande AI-systemen voor gymnastiekanalyse}
+
+\subsection*{Reflection}
+
+Een opvallende bevinding is de inconsistentie in de gegenereerde feedback bij verschillende invoermodaliteiten. Bij de analyse van de video-invoer constateert het model een late armbeweging, terwijl de analyse van de op CSV gebaseerde houdingsgegevens wijst op een vroege armbeweging. Deze discrepantie benadrukt dat de interpretatie van dezelfde beweging aanzienlijk kan variëren, afhankelijk van de manier waarop de gegevens worden weergegeven.
+
+Dit suggereert dat het model niet uitsluitend vertrouwt op objectieve biomechanische metingen, maar ook op contextuele of aangeleerde patronen die met de beweging samenhangen. Als gevolg daarvan is de output gevoelig voor de structuur en de rijkdom van de invoergegevens.
+
+Bovendien is de op CSV gebaseerde analyse inherent beperkt, aangezien deze slechts een subset van biomechanische kenmerken omvat (d.w.z. heuphoek, schouderhoek en lichaamshoek). Belangrijke aspecten zoals ellebooghoek, snelheid en krachtoverbrenging worden niet vastgelegd, wat de volledigheid van de analyse beperkt. Ondanks deze beperkingen levert het model nog steeds betrouwbare en gedetailleerde feedback op, wat kan duiden op de aanwezigheid van gehalucineerde of afgeleide conclusies.
+
+Een andere beperking is het ontbreken van een ground truth-referentie. Zonder door experts gelabelde gegevens of gevalideerde benchmarks is het niet mogelijk om de juistheid van de gegenereerde feedback objectief te verifiëren.
+
+\newpage
+\subsection{Video}
+
+\textbf{Input:} video (video\_kip\_2)
+
+\textbf{Model:} Gemini 3
+
+\textbf{Prompt:}
+
+\begin{quote}
+You are an expert gymnastics coach.
+
+Analyze the following video of a gymnast performing a kip to support
+on the uneven bars.
+
+Provide technical feedback about:
+
+1. Hip extension
+2. Shoulder angle
+3. Body alignment
+4. Timing of the movement
+5. Possible technical mistakes
+
+Try to identify the different phases of the kip if possible.
+
+Explain your reasoning.
+\end{quote}
+
+\textbf{Output:}
+
+\begin{quote}
+That was a solid effort! The gymnast successfully completes a glide kip to a front support on the low bar. While the skill is successful, there are several technical areas where refinements in timing and body tension could make the movement more efficient and aesthetic.
+
+Here is a technical breakdown of the performance:
+
+1. Phases of the Kip
+
+Glide Phase: From the jump to the maximum extension of the body away from the bar.
+
+Toe-to-Bar Phase: The rapid closing of the body (pike) to bring the ankles to the bar.
+
+Pull/Shift Phase: The movement of the hips toward the bar and the rotation of the wrists to finish in support.
+
+2. Technical Analysis
+
+Hip Extension
+
+In the Glide Phase, the gymnast achieves decent extension, but it could be more aggressive. There is a slight softness in the hips at the peak of the glide.
+
+Reasoning: To maximize the "pendulum" effect, the gymnast needs to fully open the hip angle at the front of the glide. This stores the potential energy needed for a powerful snap-back.
+
+Shoulder Angle
+
+The gymnast shows good shoulder flexibility, but the shoulder seal (closing the angle) happens slightly late.
+
+Reasoning: As she pulls her toes to the bar, she keeps her shoulders relatively stationary. Ideally, as the feet come to the bar, the gymnast should start "pushing" the bar down toward her thighs using the lats to shift the center of mass.
+
+Body Alignment
+
+Mid-Glide: The alignment is generally good, though there is a slight "arch" rather than a "hollow" position.
+
+The Finish: She finishes in a strong front support with straight arms, which is excellent. However, her legs separate slightly during the toe-to-bar phase to compensate for a lack of core compression.
+
+Timing of the Movement
+
+The timing is the most critical area for improvement here.
+
+The "Wait": She brings her toes to the bar at the correct time (the end of the glide), but the shift (the pull of the bar to the hips) is a bit slow.
+
+Reasoning: Because the shift is slightly delayed, she has to "muscle" the end of the move rather than using the momentum of the swing to carry her up.
+
+3. Possible Technical Mistakes & Corrections
+
+Mistake Identified
+
+Observation
+
+Correction
+
+Lack of Tension
+
+Soft knees and slightly separated feet during the pike.
+
+Squeeze the inner thighs and point the toes hard throughout the entire glide.
+
+Late Arm Pull
+
+The arms stay extended behind the head too long during the upward phase.
+
+Think of "zipping up a jacket" or pulling the bar down to the pockets as soon as the toes touch the bar.
+
+Muddled Glide
+
+The jump onto the bar is a bit vertical rather than outward.
+
+Focus on jumping out toward the far wall to create a longer, more powerful swing.
+
+4. Summary for the Gymnast
+
+Overall, this is a functional kip. To take it to the next level, focus on lat engagement. As soon as your toes reach that bar, don't just wait—aggressively pull the bar down your legs toward your hips while rotating your wrists over the top of the bar.
+
+Would you like me to suggest some specific conditioning drills to help strengthen the "pull-down" phase of the kip?
+\end{quote}
+
+\newpage
+\subsection{CSV File}
+
+\textbf{Input:} pose-estimation CSV (pose\_data.csv)
+
+\textbf{Model:} Gemini 3
+
+\textbf{Prompt:}
+
+\begin{quote}
+This CSV file contains pose estimation data extracted from a
+gymnastics kip movement.
+
+The data contains 3D body landmarks and calculated joint angles
+(hip angle, shoulder angle and body angle) for each video frame.
+
+Analyze the data and:
+
+1. Describe the movement pattern over time
+2. Identify possible phases of the movement
+3. Detect unusual patterns or possible technical mistakes
+4. Explain what could be improved in the technique
+
+Answer as if you were a gymnastics coach analyzing biomechanical data.
+\end{quote}
+
+\textbf{Output:}
+
+\begin{quote}
+    All right, let's break down this set of numbers. Looking at the biomechanical data from this kip, we’re seeing a classic "swing-to-extension" profile, but there are some specific hitches in the timing and joint stabilization that we need to address to make this move more efficient.
+    
+    Here is my analysis of your performance based on the data.
+    
+    1. Movement Pattern Over Time
+    
+    The data shows a high-frequency capture of a single kip attempt. We can track the relationship between the Hip Angle and Shoulder Angle to see how power is being transferred.
+    
+    The Descent: The shoulder angle opens steadily, indicating a strong cast or drop into the initial swing.
+    
+    The Compression: We see a sharp decrease in the hip angle (closing) followed immediately by a rapid opening. This is your "kip action"—the moment you bring your toes to the bar and then drive them up and away.
+    
+    The Rise: There is a synchronized closing of the shoulder angle as the hips rise toward the bar, showing the "pull" phase where the lats engage to bring the body over the wood.
+    
+    2. Identified Movement Phases
+    
+    Based on the fluctuations in your joint angles, I’ve divided your attempt into four distinct phases:
+    
+    Phase
+    
+    Description
+    
+    Key Data Indicator
+    
+    I. The Glide/Swing
+    
+    Maximum extension to build momentum.
+    
+    Shoulder angle peaks; Hip angle is neutral ( 180 ∘ ).
+    
+    II. The Fold
+    
+    Toes are brought to the bar.
+    
+    Rapid decrease in Hip Angle (<90 ∘ ).
+    
+    III. The Kick
+    
+    The explosive extension of the hips.
+    
+    Rapid increase in Hip Angle; Body angle shifts upward.
+    
+    IV. The Shift
+    
+    Moving the weight over the bar.
+    
+    Rapid decrease in Shoulder Angle (lat pull-down).
+    
+    3. Detected Technical Mistakes
+    
+    Looking closely at the coordinates and the angle deltas, a few "red flags" pop up in the biomechanics:
+    
+    Early Arm Bend: Your shoulder angle begins to close before the hip kick is fully completed. In coaching terms, you’re trying to muscle the move with your arms instead of letting the hip drive do the work.
+    
+    Muted Hip Extension: The hip angle doesn't quite reach full extension during the kick. This suggests you're "cutting the kick short," which leaves you hanging under the bar rather than rising above it.
+    
+    Asymmetry: There is a slight variance in the Z-axis (depth) between your left and right shoulder landmarks. This indicates a "twisted" pull, where one arm is working harder than the other, likely leading to a crooked finish on top of the bar.
+    
+    4. Coach’s Recommendations for Improvement
+    
+    To turn this into a "stick" landing on top of the bar, we need to focus on Timing and Aggression:
+    
+    Delay the Pull: Wait a fraction of a second longer before pulling with your lats. Let the toes lead the way. If you pull too early, you kill your vertical momentum.
+    
+    Explosive Hip "Pop": We need to see a steeper slope in your Hip Angle data during Phase III. Work on "V-ups" and "Tuck-to-Hollow" drills to increase the speed of that hip extension.
+    
+    Shoulder Mobility: Since your maximum shoulder angle is slightly restricted in the glide, work on your thoracic opening. A deeper glide creates more "elastic energy" for the return swing.
+    
+    Would you like me to plot these specific angles on a graph so you can see exactly where the "Early Arm Bend" is happening?
+\end{quote}
+
+\newpage
+\subsection{Graph}
+
+\textbf{Input:} Graph CSV (Gymnastics\_Kip\_Joint\_Angles.png)
+
+\textbf{Model:} Gemini 3
+
+\textbf{Prompt:}
+
+\begin{quote}
+You are a biomechanics expert and gymnastics coach.
+
+This graph shows hip angle, shoulder angle, and body angle over time
+during a gymnastics kip.
+
+Tasks:
+
+1. Identify the different phases of the movement
+2. Explain what happens biomechanically in each phase
+3. Detect possible technical mistakes based on the graph
+4. Explain how the movement could be improved
+
+Base your reasoning on the data trends in the graph.
+\end{quote}
+
+\textbf{Output:}
+
+\begin{quote}
+    Gemini zei
+    
+    Analyzing this graph, we can see a classic (though somewhat noisy) data representation of a glide kip on the uneven bars or high bar. The relationship between the hip and shoulder angles is the "engine" of this movement.
+    Based on the trends from frame 0 to 650, here is the biomechanical breakdown.
+    
+    \textbf{1. Phase Identification \& Biomechanics}
+    
+    \vspace{0.3cm}
+    
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \textbf{Phase} & \textbf{Frame Range (Approx)} & \textbf{Biomechanical Action} \\ \hline
+        The Glide & 0 -- 150 & The gymnast extends the body. The Hip Angle (Blue) decreases initially as they hollow, then increases. The Shoulder Angle (Orange) increases significantly as they "open" the armpits to reach maximum extension. \\ \hline
+        The Compression & 150 -- 280 & At the peak of the glide, the gymnast aggressively closes the Hip Angle (dropping toward 60$\circ$--70$\circ$) to bring their toes to the bar. This creates a compact lever for the upward swing. \\ \hline
+        The Kip/Shoot & 280 -- 350 & This is the "explosive" phase. The Hip Angle rapidly opens (Blue line shoots up) while the Shoulder Angle (Orange) drops sharply. This is the transition of angular momentum into vertical lift. \\ \hline
+        The Support/Finish & 350 -- 600 & The gymnast arrives on top of the bar. The Shoulder Angle stays low (near 0$\circ$--25$\circ$) as they press their thighs to the bar to maintain support. \\ \hline
+    \end{tabularx}
+    
+    \vspace{0.4cm}
+    
+    \textbf{2. Technical Observations}
+    
+    \textbf{The Late "Toes to Bar" (Frames 150-200):} Notice the jagged, erratic spikes in the shoulder and hip data around frame 180. This suggests a loss of tension. A clean kip should have a smooth, controlled compression. These spikes often indicate the gymnast "kicking" or "jerking" rather than using core strength to fold.
+    
+    \textbf{The Shoulder Lag:} In the "Shoot" phase (around frame 300), the shoulder angle drops after the hips have already started opening. In an ideal kip, the "shoulder pull" (closing the shoulder angle) should be simultaneous with the "hip pop." If the shoulders stay open too long, the gymnast will fall away from the bar instead of rising above it.
+    
+    \textbf{Instability in Support (Frames 400+):} The data becomes very "noisy" at the end. This typically represents a gymnast struggling to find their balance in a front support, likely "pumping" their legs or adjusting their grip to keep from falling backward.
+    
+    \textbf{3. Coaching Recommendations for Improvement}
+    
+    To optimize this movement, the gymnast should focus on timing and tension:
+    
+    - Smooth the Compression: Work on "Toes to Bar" conditioning. The transition at frame 200 should be a smooth curve, not a series of jagged spikes. This indicates better eccentric control during the glide.
+    
+    - Aggressive Shoulder Pull: The orange line (Shoulder Angle) needs to drop more decisively towards zero during the "Shoot" phase. I recommend "Straight-Arm Lat Pull-downs" to build the specific strength needed to pull the bar to the hips.
+    
+    - The "Pop" Timing: The blue line (Hips) should reach its maximum peak at the exact same moment the orange line (Shoulders) reaches its minimum. This synchronization ensures that the energy from the legs is transferred directly into the rise of the torso.
+    
+    \textbf{Expert Tip:} Watch the "Body Angle" (Green). When it dips significantly while the hips are opening, it means the gymnast is "peeking" or dropping their head back. Keep the chin tucked to maintain a hollow body shape!
+    
+    Would you like me to calculate the specific rate of change (angular velocity) for the hip opening phase to see if it meets the power requirements for a competition-level kip?
+\end{quote}

@@ -1,0 +1,169 @@
+%%=============================================================================
+%% Resultaten
+%%=============================================================================
+
+\chapter{\IfLanguageName{dutch}{Resultaten en proof-of-concept implementatie}{Results and proof-of-concept implementation}}
+\label{ch:resultaten}
+
+\section{Implementatie van markerloze pose-estimatie}
+
+De eerste stap in de ontwikkeling van het proof-of-concept bestond uit het automatisch extraheren van lichaamslandmarks uit videobeelden van een gymnast die een kip aan de barre uitvoert. In overeenstemming met de in Hoofdstuk~\ref{ch:stand-van-zaken} besproken markerloze bewegingsanalyse werd hiervoor gebruikgemaakt van het MediaPipe Pose Landmarker model, dat per frame anatomische sleutelpunten van het lichaam detecteert.
+
+In een initiële implementatiefase werd een Python-pipeline ontwikkeld die het videofragment frame per frame verwerkt en voor elk frame de gedetecteerde pose-landmarks teruggeeft. Deze landmarks werden eerst visueel geprojecteerd op het originele videobeeld om na te gaan of de gymnast tijdens de volledige beweging consistent gevolgd werd.
+
+De eerste testresultaten toonden aan dat de globale lichaamsconfiguratie van de uitvoerende gymnast in het merendeel van de frames correct werd gereconstrueerd. De belangrijkste proximale gewrichten, met name schouders, heupen en knieën, bleven voldoende stabiel detecteerbaar tijdens de zwaaifase, de heupsluiting en de uiteindelijke steunfase. Hierdoor bleek de pose-estimatie voldoende bruikbaar als basis voor verdere biomechanische analyse.
+
+Na deze eerste validatie werd de visualisatie uitgebreid met een skeletoverlay waarbij anatomisch verbonden landmarks met elkaar verbonden werden. Deze skeletweergave liet toe om de dynamiek van de lichaamspositie duidelijker te observeren en maakte het eenvoudiger om te controleren of abrupte detectiesprongen effectief overeenkwamen met veranderingen in de beweging.
+
+Een belangrijke praktische bevinding tijdens deze implementatiefase was dat de gebruikte trainingsvideo geen volledig gecontroleerde opname betrof. Op de achtergrond bevond zich bijkomend een tweede turnster die eveneens gedeeltelijk in beeld kwam. In verschillende frames detecteerde het pose-estimatiemodel hierdoor tijdelijk lichaamssegmenten van beide personen binnen dezelfde scène, wat leidde tot verstoringen in de gegenereerde landmarkdata. Deze observatie bevestigt dat markerloze pose-estimatie sterk afhankelijk blijft van de visuele zuiverheid van het inputbeeld en gevoelig is voor aanwezigheid van meerdere personen in het cameraveld, zoals ook in de literatuur wordt aangehaald bij praktijktoepassingen buiten laboratoriumomstandigheden \autocite{Ota2025Markerless}.
+
+Ondanks deze verstoringen bleek de pose-detectie over het volledige videofragment voldoende consistent om verder te gebruiken binnen de proof-of-concept pipeline. De visuele validatie bevestigde dat de kernsegmenten van de uitvoerende gymnast in voldoende mate reconstrueerbaar waren, waardoor een volgende stap mogelijk werd, namelijk het numeriek opslaan van deze pose-data en het afleiden van biomechanisch interpreteerbare gewrichtsparameters.
+
+\section{Extractie en opslag van biomechanische parameters}
+
+Na de visuele validatie van de pose-estimatie werd de pipeline uitgebreid met een numerieke extractiestap waarbij alle gedetecteerde lichaamslandmarks frame per frame automatisch werden opgeslagen in een CSV-bestand. Per videoframe werden voor elke gedetecteerde landmark de genormaliseerde $x$-, $y$- en $z$-coördinaten geregistreerd, waardoor een volledige tijdsreeks van opeenvolgende lichaamshoudingen ontstond.
+
+Deze ruwe pose-data vormde op zichzelf echter nog geen direct interpreteerbare basis voor technische bewegingsanalyse. Om de beweging biomechanisch beschrijfbaar te maken werden bijkomend drie afgeleide gewrichtsparameters geïmplementeerd die aansluiten bij de in Sectie~\ref{sec:Biomechanische-analyse} geïdentificeerde kritieke bewegingscomponenten van de kip:
+
+\begin{itemize}
+    \item heuphoek (\textit{schouder--heup--knie}),
+    \item schouderhoek (\textit{elleboog--schouder--heup}),
+    \item romphoek (\textit{schouder--heup--enkel}).
+\end{itemize}
+
+Deze hoeken werden per frame berekend via vectorgeometrie en samen met de ruwe landmarkcoördinaten toegevoegd aan dezelfde CSV-structuur. Hierdoor werd elk videoframe niet enkel gerepresenteerd als een verzameling lichaamsposities, maar ook als een set direct interpreteerbare biomechanische parameters.
+
+Om de invloed van de videokwaliteit en de visuele zuiverheid van de opname op de geëxtraheerde hoekdata verder te beoordelen, werd dezelfde analyse ook uitgevoerd op een tweede videofragment waarin beduidend minder visuele verstoring aanwezig was. In tegenstelling tot de eerste opname, waarin een tweede turnster gedeeltelijk in beeld kwam, bevatte deze tweede opname weinig tot geen storende achtergrondbeweging. Hierdoor kon nagegaan worden in welke mate de eerder vastgestelde fluctuaties in de hoekcurves samenhangen met detectieruis in de pose-estimatie.
+
+Figuur~\ref{fig:jointangles_comparison} vergelijkt het tijdsverloop van de automatisch berekende heup-, schouder- en romphoek voor beide videofragmenten. De bovenste grafiek toont de eerder geanalyseerde opname met duidelijke detectieruis. Hoewel de globale beweging nog herkenbaar blijft, komen op meerdere plaatsen abrupte pieken, scherpe dalingen en kortstondige sprongen voor die biomechanisch moeilijk te verklaren zijn. Een duidelijk voorbeeld hiervan is zichtbaar in het midden en het laatste deel van de tijdsreeks, waar verschillende hoekwaarden plots sterk veranderen over slechts enkele opeenvolgende frames.
+
+De onderste grafiek, afkomstig van de video met weinig visuele ruis, vertoont een merkbaar vloeiender verloop. De evolutie van de heuphoek, schouderhoek en romphoek is consistenter en de grote, abrupte detectiesprongen komen veel minder voor. Hierdoor zijn de bewegingspatronen duidelijker interpreteerbaar. Zo blijft de afname en daaropvolgende heropening van de heuphoek beter zichtbaar, terwijl ook de globale evolutie van de romphoek minder grillig verloopt.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.60\linewidth]{joint_angles_noisy.png}
+    
+    \includegraphics[width=0.60\linewidth]{joint_angles_low_noise.png}
+    \caption{Vergelijking van de automatisch berekende heup-, schouder- en romphoek bij een videofragment met duidelijke detectieruis (boven) en een videofragment met weinig visuele ruis (onder).}
+    \label{fig:jointangles_comparison}
+\end{figure}
+
+Deze vergelijking bevestigt dat de gekozen pose-estimatiepipeline in staat is om biomechanisch betekenisvolle hoekpatronen uit videobeelden te extraheren, maar dat de stabiliteit van deze output sterk afhankelijk blijft van de kwaliteit van de visuele input. Wanneer storende elementen in het beeld aanwezig zijn, zoals een tweede persoon of tijdelijke ambiguïteit in de gedetecteerde lichaamssegmenten, ontstaan meer abrupte schommelingen in de tijdsreeksen. Bij een visueel zuiverdere opname wordt het onderliggende bewegingsverloop duidelijker zichtbaar.
+
+Hieruit blijkt dat afzonderlijke framewaarden niet zonder meer als directe technische beoordeling kunnen worden geïnterpreteerd. Een geïsoleerde lage of hoge hoekwaarde betekent immers niet noodzakelijk dat de gymnast op dat exacte moment een fout uitvoert, maar kan eveneens veroorzaakt worden door een kort detectieprobleem of een onnauwkeurige landmarklokalisatie. Voor een betekenisvolle interpretatie moet daarom niet enkel rekening worden gehouden met absolute hoekwaarden, maar ook met het globale verloop van deze parameters over opeenvolgende frames.
+
+Deze implementatiefase leverde dus twee belangrijke resultaten op. Enerzijds kon standaard videomateriaal succesvol worden omgezet naar een gestructureerde numerieke dataset met interpreteerbare gewrichtshoeken. Anderzijds werd duidelijk dat deze ruwe biomechanische output bijkomende contextuele interpretatie vereist om te kunnen worden vertaald naar concrete technische feedback. Vanuit deze nood ontstond de volgende ontwikkelingsstap, namelijk het inzetten van een Large Language Model om deze numerieke bewegingsinformatie te analyseren en om te zetten naar gymnastisch bruikbare foutbeschrijvingen.
+
+\section{Verkennend experiment met bestaande multimodale AI-analyse}
+
+Na de extractie van videobeelden, pose-landmarks en afgeleide gewrichtshoeken werd in een volgende stap onderzocht in welke mate een bestaand generatief AI-systeem zelfstandig technische coachingfeedback kon formuleren op basis van deze data. Hiervoor werd gekozen voor Google Gemini, aangezien dit model multimodale input ondersteunt en zowel videomateriaal als grafische en numerieke representaties kan interpreteren.
+
+Het doel van dit experiment was niet om reeds een finaal feedbacksysteem te bouwen, maar om verkennend na te gaan hoe bruikbaar de analyse van een generiek multimodaal AI-model is wanneer exact dezelfde kip-uitvoering via verschillende inputvormen wordt aangeboden.
+
+Concreet werd dezelfde gymnastische uitvoering in drie afzonderlijke representaties aan Gemini aangeboden:
+
+\begin{itemize}
+    \item het originele videofragment,
+    \item het geëxporteerde CSV-bestand met pose-landmarks en berekende gewrichtshoeken,
+    \item de gegenereerde lijnengrafiek van heup-, schouder- en romphoek.
+\end{itemize}
+
+Elke input werd in een afzonderlijke sessie geanalyseerd met een gelijkaardige prompt waarin het model gevraagd werd de beweging technisch te beoordelen, bewegingsfasen te identificeren, mogelijke fouten te detecteren en coachingfeedback te formuleren. De volledige prompts en modeloutputs zijn opgenomen in bijlage ~\ref{app:gemini-experiment}.
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabular}{p{2.5cm}p{4.2cm}p{6cm}}
+        \toprule
+        \textbf{Inputvorm} & \textbf{Voornaamste Gemini-output} & \textbf{Opvallende beperking} \\
+        \midrule
+        Videoanalyse & Detecteert een laattijdige armoptrek en vertraagde shift naar steunpositie & Analyse gebaseerd op visuele interpretatie zonder expliciete meetbare parameters \\
+        CSV met pose-data & Detecteert een te vroege armactie en onvoldoende heupextensie & Conclusies gaan verder dan de drie aanwezige hoekparameters \\
+        Lijnengrafiek gewrichtshoeken & Beschrijft biomechanische fasen en timingproblemen in de synchronisatie van heup en schouder & Extra biomechanische interpretaties ondanks beperkte grafische input \\
+        \bottomrule
+    \end{tabular}
+    \caption{Samenvatting van de gegenereerde Gemini-analyses voor drie verschillende inputmodaliteiten van dezelfde kip-uitvoering}
+    \label{tab:gemini_multimodaal}
+\end{table}
+
+Een eerste opvallende vaststelling was dat Gemini in alle drie de gevallen zonder moeite technisch geloofwaardige coachingtaal produceerde. Het model gebruikte gymnastiekspecifieke termen zoals heupsluiting, timing van de optrek, schouderopening en lichaamsspanning, waardoor de output sterk leek op verbale trainerfeedback.
+
+Bij vergelijking van de drie analyses werd echter een duidelijke inconsistentie zichtbaar. Op basis van het videofragment concludeerde Gemini dat de gymnast de armoptrek te laat inzet, terwijl dezelfde uitvoering via het CSV-bestand net werd geïnterpreteerd als een te vroege armactie. Ook de grafiekanalyse introduceerde bijkomende timing- en synchronisatieproblemen die niet volledig overeenstemden met de videoanalyse. Aangezien alle drie de outputs vertrekken van exact dezelfde beweging, toont dit aan dat de technische interpretatie sterk afhankelijk blijft van de representatie van de inputdata.
+
+Daarnaast produceerde Gemini in alle gevallen zeer uitgebreide feedback waarbij meerdere technische fouten, biomechanische verklaringen en bijkomende trainingssuggesties simultaan werden besproken. Het model prioriteerde geen beperkt aantal kernfouten, maar gaf telkens een volledige technische beschrijving van de beweging. Dit sluit minder goed aan bij bevindingen uit de literatuur rond motorisch leren, waar wordt aangetoond dat gerichte feedback op een beperkt aantal sleutelcomponenten effectiever is dan het gelijktijdig corrigeren van een groot aantal aandachtspunten \autocite{Niznikowski2025}. Voor praktische coaching impliceert dit dat de gegenereerde feedback wel rijk oogt, maar pedagogisch minder efficiënt kan zijn door het risico op cognitieve overbelasting.
+
+Een bijkomende observatie was dat Gemini biomechanische conclusies formuleerde die niet rechtstreeks uit de aangeboden data konden worden afgeleid. In het CSV-bestand waren bijvoorbeeld enkel heuphoek, schouderhoek en romphoek expliciet aanwezig, terwijl het model toch bijkomende uitspraken genereerde over armtrekkracht, asymmetrie, momentumopbouw en stabilisatie. Dit suggereert dat het systeem ontbrekende informatie infererend aanvult op basis van aangeleerde bewegingspatronen in plaats van uitsluitend op strikt meetbare input.
+
+Dit verkennend experiment toont daardoor drie fundamentele beperkingen van vrije multimodale LLM-analyse: de technische interpretatie is niet stabiel over verschillende datavormen heen, de gegenereerde feedback is onvoldoende selectief geprioriteerd, en bijkomende biomechanische verklaringen zijn niet steeds controleerbaar vanuit de beschikbare meetdata.
+
+Vanuit deze vaststellingen bleek volledig vertrouwen op vrije interpretatie door een generiek multimodaal model onvoldoende controleerbaar voor technische gymnastiekfeedback. Er was nood aan een meer gestructureerde analysepipeline waarin biomechanische parameters eerst expliciet geselecteerd worden, waarna enkel de meest relevante gedetecteerde fouten in een gecontroleerde vorm aan een taalmodel worden aangeboden. Vanuit deze ontwerpbeslissing werd in de volgende implementatiefase overgeschakeld naar een rule-based JSON-structuur als tussenlaag voor foutdetectie en feedbackprioritering.
+
+\section{Technische verfijning van de pose-data-extractie}
+
+Na het verkennende experiment met Gemini werd de bestaande pose-data-extractie verder herwerkt. De eerste implementatie was voldoende om de haalbaarheid van de gekozen aanpak aan te tonen, maar tijdens het verdere gebruik werd duidelijk dat de uitvoer beter gestructureerd en technisch robuuster moest worden om als basis te dienen voor de volgende stappen binnen het proof-of-concept.
+
+De aanpassingen hadden niet als doel om het gebruikte pose-estimatiemodel te vervangen. MediaPipe Pose Landmarker bleef in deze fase behouden als methode om lichaamslandmarks uit videobeelden te extraheren. De herwerking richtte zich vooral op de manier waarop de videoframes verwerkt werden, hoe de hoekwaarden berekend werden en hoe de resultaten in CSV-vorm werden opgeslagen.
+
+Een eerste aanpassing betrof de tijdsregistratie van de frames. In de oorspronkelijke implementatie werd de timestamp na elk frame telkens met een vaste waarde van 33 milliseconden verhoogd. Dit benadert een video van ongeveer 30 frames per seconde, maar houdt geen rekening met de effectieve framerate van het ingelezen videobestand. In de herziene versie wordt de framerate eerst uit de video gelezen en wordt de timestamp per frame op basis daarvan berekend. Dit sluit beter aan bij de werking van MediaPipe in videomodus, waarbij per frame een timestamp in milliseconden wordt meegegeven.
+
+Daarnaast werd de CSV-output duidelijker gestructureerd. In de eerste versie bestond elke rij enkel uit opeenvolgende numerieke waarden, zonder kolomnamen of expliciete aanduiding van het bijhorende frame. In de herwerkte versie wordt een header toegevoegd met onder meer de frame-index, de timestamp, de $x$-, $y$- en $z$-coördinaten van elke landmark en de drie berekende hoekwaarden. Hierdoor wordt de uitvoer eenvoudiger leesbaar, beter controleerbaar en praktischer inzetbaar voor verdere verwerking in latere fasen van het systeem.
+
+Ook de manier waarop de hoeken berekend worden, werd technisch verfijnd. In de eerste implementatie werden de gedetecteerde landmarkcoördinaten eerst afgerond naar gehele pixelwaarden en vervolgens gebruikt voor zowel de visualisatie als de berekeningen. In de aangepaste versie wordt dit opgesplitst: afgeronde pixelcoördinaten worden enkel nog gebruikt om punten en skeletlijnen op het videobeeld te tekenen, terwijl de hoekberekeningen gebeuren op basis van de oorspronkelijke niet-afgeronde coördinaten. Op die manier blijft voor de numerieke verwerking meer detail behouden.
+
+Verder werd de hoekberekening zelf robuuster gemaakt. In plaats van de hoek af te leiden uit het verschil tussen twee richtingshoeken, wordt in de herziene versie gewerkt met vectoren die vertrekken vanuit het centrale gewricht. De hoek tussen beide segmenten wordt vervolgens berekend via het inproduct. Daarbij werd bijkomend een controle toegevoegd voor uitzonderlijke gevallen waarin twee punten zouden samenvallen, evenals een begrenzing van de berekende cosinuswaarde om numerieke afrondingsproblemen te vermijden. Codefragment~\ref{lst:angle_calculation_v2} toont deze aangepaste hoekberekening.
+
+\begin{listing}[H]
+    \begin{minted}{python}
+        def calculate_angle(a, b, c):
+        a = np.array(a, dtype=np.float64)
+        b = np.array(b, dtype=np.float64)
+        c = np.array(c, dtype=np.float64)
+        
+        ba = a - b
+        bc = c - b
+        
+        norm_ba = np.linalg.norm(ba)
+        norm_bc = np.linalg.norm(bc)
+        
+        if norm_ba == 0 or norm_bc == 0:
+        return np.nan
+        
+        cosine_angle = np.dot(ba, bc) / (norm_ba * norm_bc)
+        cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
+        
+        angle = np.degrees(np.arccos(cosine_angle))
+        
+        return angle
+    \end{minted}
+    \caption{Aangepaste functie voor de berekening van gewrichtshoeken op basis van vectorgeometrie}
+    \label{lst:angle_calculation_v2}
+\end{listing}
+
+Om na te gaan of deze technische herwerking het globale verloop van de geëxtraheerde hoekreeksen beïnvloedde, werden de resultaten van de oorspronkelijke code vergeleken met de resultaten van de aangepaste versie. Deze vergelijking werd uitgevoerd voor dezelfde twee videofragmenten die eerder gebruikt werden: een opname met weinig visuele ruis en een opname waarin de landmarkdetectie duidelijk sterker verstoord werd.
+
+Figuur~\ref{fig:code_comparison_low_noise} toont de hoekcurves van de opname met weinig visuele ruis vóór en na de codeherwerking. De globale vorm van de grafieken blijft in beide versies sterk gelijk. Dezelfde dalingen, stijgingen en overgangen in heuphoek, schouderhoek en romphoek blijven zichtbaar. Dit wijst erop dat de technische aanpassingen de inhoudelijke bewegingsrepresentatie niet veranderen, maar vooral zorgen voor een nettere en betrouwbaardere verwerking van dezelfde onderliggende pose-data.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.68\linewidth]{joint_angles_low_noise.png}
+    
+    \includegraphics[width=0.68\linewidth]{joint_angles_low_noise_V2.png}
+    \caption{Vergelijking van de berekende hoekcurves bij de opname met weinig visuele ruis vóór de codeherwerking (boven) en na de codeherwerking (onder).}
+    \label{fig:code_comparison_low_noise}
+\end{figure}
+
+Eenzelfde vergelijking werd gemaakt voor het videofragment met meer detectieruis. Zoals zichtbaar in Figuur~\ref{fig:code_comparison_noisy}, komen ook hier de algemene bewegingstrends in beide codeversies sterk overeen. Tegelijk blijven de abrupte pieken en scherpe dalingen grotendeels aanwezig. Dit bevestigt dat deze verstoringen voornamelijk voortkomen uit instabiele landmarkdetectie in een visueel moeilijkere opname en niet hoofdzakelijk uit de oorspronkelijke manier waarop de hoekdata werd berekend of opgeslagen.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.68\linewidth]{joint_angles_noisy.png}
+    
+    \includegraphics[width=0.68\linewidth]{joint_angles_noisy_V2.png}
+    \caption{Vergelijking van de berekende hoekcurves bij de opname met duidelijke detectieruis vóór de codeherwerking (boven) en na de codeherwerking (onder).}
+    \label{fig:code_comparison_noisy}
+\end{figure}
+
+De vergelijking tussen beide codeversies toont dus twee zaken aan. Enerzijds blijven de biomechanisch relevante patronen in de hoekcurves behouden, wat bevestigt dat de aangepaste implementatie inhoudelijk aansluit bij de eerste versie. Anderzijds zorgt de herwerking voor een duidelijker gestructureerde en technisch betrouwbaardere output, die beter geschikt is voor de verdere opbouw van de analysepipeline. Deze verfijnde CSV-structuur en robuustere hoekberekening vormden daarom de basis voor de daaropvolgende stap, waarin de bewegingsdata verder werd omgezet naar een meer gecontroleerde en gestructureerde vorm voor automatische foutdetectie en feedbackgeneratie.
+
+\section{Voorbereiding op regelgebaseerde foutdetectie}
+

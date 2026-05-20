@@ -137,45 +137,53 @@ Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereiste
 
 \textbf{Onderzoeksmethode:} conceptuele analyse en vertaling van biomechanische fouten naar kwantificeerbare bewegingskenmerken.
 
-\section{Fase 3: Exploratief experiment met bestaande AI-systemen}
+\section{Fase 3: Initiële technische implementatie van pose-estimatie en parameterextractie}
 
-Voorafgaand aan de ontwikkeling van het proof-of-concept vindt een verkennend experiment plaats uitgevoerd met bestaande Large Language Models (LLMs), met als doel hun huidige capaciteiten voor gymnastiekanalyse te evalueren.
+Na het afbakenen van de systeemvereisten wordt in een eerste ontwikkelingsstap een technische analysepipeline opgezet waarin videobeelden automatisch verwerkt worden via markerloze pose-estimatie.
 
-In dit experiment wordt eenzelfde kip-oefening aangeboden aan het model in drie verschillende representaties: (1) ruwe videobeelden, (2) pose-estimatie data in CSV-formaat, en (3) een grafische voorstelling van afgeleide gewrichtshoeken. Voor elk van deze inputvormen wordt een gelijkaardige prompt gebruikt waarbij het model wordt gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+De videobeelden worden verwerkt met behulp van een Python-gebaseerde pipeline. Hiervoor wordt gebruikgemaakt van het MediaPipe Pose Landmarker model, dat markerloze pose-estimatie uitvoert op RGB-videoframes. Het gebruikte model detecteert per frame lichaamslandmarks die de positie van gewrichten beschrijven.
 
-\textbf{Doelstelling:} inzicht verkrijgen in de mogelijkheden en beperkingen van bestaande AI-systemen voor automatische bewegingsanalyse en feedbackgeneratie.
+De gedetecteerde landmarks worden frame per frame geëxtraheerd en opgeslagen, waardoor een tijdreeks van lichaamsposities ontstaat. Op basis van deze gegevens worden bijkomende bewegingskenmerken berekend, zoals gewrichtshoeken. Deze eerste numerieke representatie maakte het mogelijk om in een volgende fase te onderzoeken hoe AI-systemen deze bewegingsinformatie interpreteren en in welke mate automatische feedbackgeneratie haalbaar is.
 
-\textbf{Deliverable:} kwalitatieve analyse van de gegenereerde feedback per inputtype.
+\textbf{Doelstelling:} standaard videobeelden omzetten naar bruikbare pose-data en interpreteerbare biomechanische parameters.  
 
-\textbf{Onderzoeksmethode:} exploratief experiment waarbij verschillende inputmodaliteiten systematisch worden vergeleken op basis van de gegenereerde output.
+\textbf{Deliverable:} werkende pose-estimatiepipeline met CSV-output en berekende gewrichtshoeken.  
 
-\section{Fase 4: Ontwikkeling van een proof-of-concept}
+\textbf{Onderzoeksmethode:} experimentele implementatie en technische validatie van de data-extractie.
 
-In deze fase wordt een proof-of-concept ontwikkeld waarin videobeelden worden verwerkt via markerloze pose-estimatie. Op basis van de geëxtraheerde keypoints worden relevante hoeken en bewegingsparameters berekend.
+\section{Fase 4: Exploratief AI-experiment en rule-based systeemontwikkeling}
 
-De videobeelden worden verwerkt met behulp van een Python-gebaseerde analysepipeline. Hiervoor wordt gebruikgemaakt van het MediaPipe Pose Landmarker model, dat markerloze pose-estimatie uitvoert op RGB-videoframes. Het gebruikte model detecteert per frame lichaamslandmarks die de positie van gewrichten beschrijven.
+Op basis van de geëxtraheerde videodata, pose-landmarks en afgeleide gewrichtshoeken wordt vervolgens onderzocht in welke mate bestaande Large Language Models bruikbaar zijn voor automatische gymnastiekanalyse en feedbackgeneratie.
 
-De gedetecteerde landmarks worden frame per frame geëxtraheerd en opgeslagen, waardoor een tijdreeks van lichaamsposities ontstaat. Op basis van deze gegevens worden bijkomende bewegingskenmerken berekend, zoals gewrichtshoeken. Deze kenmerken vormen de basis voor de verdere analyse van de beweging en de detectie van technische fouten in de kip-oefening.
+Hiervoor wordt een verkennend experiment uitgevoerd waarbij eenzelfde kip-oefening in drie verschillende representaties aan het model wordt aangeboden:
 
-De foutdetectie gebeurt via een rule-based benadering, waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is. Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren.
+\begin{enumerate}
+    \item ruwe videobeelden
+    \item pose-estimatie data in CSV-formaat
+    \item een grafische voorstelling van afgeleide gewrichtshoeken
+\end{enumerate}
 
-Hoewel deze regelgebaseerde aanpak voornamelijk focust op drempelwaarden van gewrichtshoeken, sluit dit gedeeltelijk aan bij biomechanische inzichten uit de literatuur. 
+Voor elk van deze inputvormen wordt een gelijkaardige prompt gebruikt waarbij het model wordt gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+
+De bevindingen uit dit exploratief experiment vormen de basis voor de verdere ontwikkeling van het proof-of-concept. Omdat vrije multimodale interpretatie onvoldoende controleerbaar blijkt, wordt gekozen voor een rule-based benadering waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is.
+
+Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren.
+
+Hoewel deze regelgebaseerde aanpak voornamelijk focust op drempelwaarden van gewrichtshoeken, sluit dit gedeeltelijk aan bij biomechanische inzichten uit de literatuur.
 
 Meer geavanceerde modellen, zoals beschreven door \textcite{Yamasaki2010}, suggereren dat bewegingen zoals de kip eerder bepaald worden door kritieke overgangsmomenten (via-points). Binnen dit proof-of-concept wordt echter gekozen voor een vereenvoudigde implementatie, waarbij deze dynamische aspecten impliciet benaderd worden via tijdsafhankelijke veranderingen in gewrichtshoeken.
-
-Binnen de context van dit proof-of-concept vormt deze aanpak een geschikte eerste stap om de technische haalbaarheid van automatische foutdetectie te onderzoeken.
 
 Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
 
 Om de output van het systeem te structureren en consistent te maken, wordt een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
 
-Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Om deze gegevens op een consistente manier door het taalmodel te laten interpreteren, wordt gebruikgemaakt van function calling en een vooraf gedefinieerd JSON-schema. Hierbij wordt het Large Language Model niet aangesproken met vrije tekstinput alleen, maar met een strikt gestructureerde datastructuur waarin per fouttype, bewegingsfase en relevante hoekwaarden expliciete velden zijn voorzien. Function calling laat toe het model te dwingen deze structuur correct te lezen en de output volgens een voorspelbaar formaat op te bouwen. Dit vermindert ambiguïteit in de interpretatie en verhoogt de reproduceerbaarheid van de gegenereerde feedback.
+Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Om deze gegevens op een consistente manier door het taalmodel te laten interpreteren, wordt gebruikgemaakt van function calling en een vooraf gedefinieerd JSON-schema.
 
-\textbf{Doelstelling:} aantonen dat automatische detectie en feedbackgeneratie technisch haalbaar zijn.  
+\textbf{Doelstelling:} inzicht verkrijgen in de beperkingen van vrije AI-analyse en op basis daarvan een gecontroleerde feedbackpipeline ontwikkelen.  
 
-\textbf{Deliverable:}  een proof-of-concept systeem dat videobeelden analyseert met behulp van pose-estimatie, bewegingskenmerken berekent en op basis daarvan automatische foutdetectie en feedbackgeneratie uitvoert.  
+\textbf{Deliverable:} een proof-of-concept systeem dat biomechanische parameters structureert, technische fouten detecteert en automatische feedback genereert.  
 
-\textbf{Onderzoeksmethode:} experimentele implementatie en iteratieve ontwikkeling.
+\textbf{Onderzoeksmethode:} exploratief experiment gecombineerd met iteratieve systeemontwikkeling.
 
 \section{Fase 5: Evaluatie}
 
