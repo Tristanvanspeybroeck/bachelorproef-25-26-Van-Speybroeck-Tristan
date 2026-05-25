@@ -1,169 +1,770 @@
-%%=============================================================================
-%% Resultaten
-%%=============================================================================
-
-\chapter{\IfLanguageName{dutch}{Resultaten en proof-of-concept implementatie}{Results and proof-of-concept implementation}}
-\label{ch:resultaten}
-
-\section{Implementatie van markerloze pose-estimatie}
-
-De eerste stap in de ontwikkeling van het proof-of-concept bestond uit het automatisch extraheren van lichaamslandmarks uit videobeelden van een gymnast die een kip aan de barre uitvoert. In overeenstemming met de in Hoofdstuk~\ref{ch:stand-van-zaken} besproken markerloze bewegingsanalyse werd hiervoor gebruikgemaakt van het MediaPipe Pose Landmarker model, dat per frame anatomische sleutelpunten van het lichaam detecteert.
-
-In een initiële implementatiefase werd een Python-pipeline ontwikkeld die het videofragment frame per frame verwerkt en voor elk frame de gedetecteerde pose-landmarks teruggeeft. Deze landmarks werden eerst visueel geprojecteerd op het originele videobeeld om na te gaan of de gymnast tijdens de volledige beweging consistent gevolgd werd.
-
-De eerste testresultaten toonden aan dat de globale lichaamsconfiguratie van de uitvoerende gymnast in het merendeel van de frames correct werd gereconstrueerd. De belangrijkste proximale gewrichten, met name schouders, heupen en knieën, bleven voldoende stabiel detecteerbaar tijdens de zwaaifase, de heupsluiting en de uiteindelijke steunfase. Hierdoor bleek de pose-estimatie voldoende bruikbaar als basis voor verdere biomechanische analyse.
-
-Na deze eerste validatie werd de visualisatie uitgebreid met een skeletoverlay waarbij anatomisch verbonden landmarks met elkaar verbonden werden. Deze skeletweergave liet toe om de dynamiek van de lichaamspositie duidelijker te observeren en maakte het eenvoudiger om te controleren of abrupte detectiesprongen effectief overeenkwamen met veranderingen in de beweging.
-
-Een belangrijke praktische bevinding tijdens deze implementatiefase was dat de gebruikte trainingsvideo geen volledig gecontroleerde opname betrof. Op de achtergrond bevond zich bijkomend een tweede turnster die eveneens gedeeltelijk in beeld kwam. In verschillende frames detecteerde het pose-estimatiemodel hierdoor tijdelijk lichaamssegmenten van beide personen binnen dezelfde scène, wat leidde tot verstoringen in de gegenereerde landmarkdata. Deze observatie bevestigt dat markerloze pose-estimatie sterk afhankelijk blijft van de visuele zuiverheid van het inputbeeld en gevoelig is voor aanwezigheid van meerdere personen in het cameraveld, zoals ook in de literatuur wordt aangehaald bij praktijktoepassingen buiten laboratoriumomstandigheden \autocite{Ota2025Markerless}.
-
-Ondanks deze verstoringen bleek de pose-detectie over het volledige videofragment voldoende consistent om verder te gebruiken binnen de proof-of-concept pipeline. De visuele validatie bevestigde dat de kernsegmenten van de uitvoerende gymnast in voldoende mate reconstrueerbaar waren, waardoor een volgende stap mogelijk werd, namelijk het numeriek opslaan van deze pose-data en het afleiden van biomechanisch interpreteerbare gewrichtsparameters.
-
-\section{Extractie en opslag van biomechanische parameters}
-
-Na de visuele validatie van de pose-estimatie werd de pipeline uitgebreid met een numerieke extractiestap waarbij alle gedetecteerde lichaamslandmarks frame per frame automatisch werden opgeslagen in een CSV-bestand. Per videoframe werden voor elke gedetecteerde landmark de genormaliseerde $x$-, $y$- en $z$-coördinaten geregistreerd, waardoor een volledige tijdsreeks van opeenvolgende lichaamshoudingen ontstond.
-
-Deze ruwe pose-data vormde op zichzelf echter nog geen direct interpreteerbare basis voor technische bewegingsanalyse. Om de beweging biomechanisch beschrijfbaar te maken werden bijkomend drie afgeleide gewrichtsparameters geïmplementeerd die aansluiten bij de in Sectie~\ref{sec:Biomechanische-analyse} geïdentificeerde kritieke bewegingscomponenten van de kip:
-
-\begin{itemize}
-    \item heuphoek (\textit{schouder--heup--knie}),
-    \item schouderhoek (\textit{elleboog--schouder--heup}),
-    \item romphoek (\textit{schouder--heup--enkel}).
-\end{itemize}
-
-Deze hoeken werden per frame berekend via vectorgeometrie en samen met de ruwe landmarkcoördinaten toegevoegd aan dezelfde CSV-structuur. Hierdoor werd elk videoframe niet enkel gerepresenteerd als een verzameling lichaamsposities, maar ook als een set direct interpreteerbare biomechanische parameters.
-
-Om de invloed van de videokwaliteit en de visuele zuiverheid van de opname op de geëxtraheerde hoekdata verder te beoordelen, werd dezelfde analyse ook uitgevoerd op een tweede videofragment waarin beduidend minder visuele verstoring aanwezig was. In tegenstelling tot de eerste opname, waarin een tweede turnster gedeeltelijk in beeld kwam, bevatte deze tweede opname weinig tot geen storende achtergrondbeweging. Hierdoor kon nagegaan worden in welke mate de eerder vastgestelde fluctuaties in de hoekcurves samenhangen met detectieruis in de pose-estimatie.
-
-Figuur~\ref{fig:jointangles_comparison} vergelijkt het tijdsverloop van de automatisch berekende heup-, schouder- en romphoek voor beide videofragmenten. De bovenste grafiek toont de eerder geanalyseerde opname met duidelijke detectieruis. Hoewel de globale beweging nog herkenbaar blijft, komen op meerdere plaatsen abrupte pieken, scherpe dalingen en kortstondige sprongen voor die biomechanisch moeilijk te verklaren zijn. Een duidelijk voorbeeld hiervan is zichtbaar in het midden en het laatste deel van de tijdsreeks, waar verschillende hoekwaarden plots sterk veranderen over slechts enkele opeenvolgende frames.
-
-De onderste grafiek, afkomstig van de video met weinig visuele ruis, vertoont een merkbaar vloeiender verloop. De evolutie van de heuphoek, schouderhoek en romphoek is consistenter en de grote, abrupte detectiesprongen komen veel minder voor. Hierdoor zijn de bewegingspatronen duidelijker interpreteerbaar. Zo blijft de afname en daaropvolgende heropening van de heuphoek beter zichtbaar, terwijl ook de globale evolutie van de romphoek minder grillig verloopt.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.60\linewidth]{joint_angles_noisy.png}
+    %%=============================================================================
+    %% Resultaten
+    %%=============================================================================
     
-    \includegraphics[width=0.60\linewidth]{joint_angles_low_noise.png}
-    \caption{Vergelijking van de automatisch berekende heup-, schouder- en romphoek bij een videofragment met duidelijke detectieruis (boven) en een videofragment met weinig visuele ruis (onder).}
-    \label{fig:jointangles_comparison}
-\end{figure}
-
-Deze vergelijking bevestigt dat de gekozen pose-estimatiepipeline in staat is om biomechanisch betekenisvolle hoekpatronen uit videobeelden te extraheren, maar dat de stabiliteit van deze output sterk afhankelijk blijft van de kwaliteit van de visuele input. Wanneer storende elementen in het beeld aanwezig zijn, zoals een tweede persoon of tijdelijke ambiguïteit in de gedetecteerde lichaamssegmenten, ontstaan meer abrupte schommelingen in de tijdsreeksen. Bij een visueel zuiverdere opname wordt het onderliggende bewegingsverloop duidelijker zichtbaar.
-
-Hieruit blijkt dat afzonderlijke framewaarden niet zonder meer als directe technische beoordeling kunnen worden geïnterpreteerd. Een geïsoleerde lage of hoge hoekwaarde betekent immers niet noodzakelijk dat de gymnast op dat exacte moment een fout uitvoert, maar kan eveneens veroorzaakt worden door een kort detectieprobleem of een onnauwkeurige landmarklokalisatie. Voor een betekenisvolle interpretatie moet daarom niet enkel rekening worden gehouden met absolute hoekwaarden, maar ook met het globale verloop van deze parameters over opeenvolgende frames.
-
-Deze implementatiefase leverde dus twee belangrijke resultaten op. Enerzijds kon standaard videomateriaal succesvol worden omgezet naar een gestructureerde numerieke dataset met interpreteerbare gewrichtshoeken. Anderzijds werd duidelijk dat deze ruwe biomechanische output bijkomende contextuele interpretatie vereist om te kunnen worden vertaald naar concrete technische feedback. Vanuit deze nood ontstond de volgende ontwikkelingsstap, namelijk het inzetten van een Large Language Model om deze numerieke bewegingsinformatie te analyseren en om te zetten naar gymnastisch bruikbare foutbeschrijvingen.
-
-\section{Verkennend experiment met bestaande multimodale AI-analyse}
-
-Na de extractie van videobeelden, pose-landmarks en afgeleide gewrichtshoeken werd in een volgende stap onderzocht in welke mate een bestaand generatief AI-systeem zelfstandig technische coachingfeedback kon formuleren op basis van deze data. Hiervoor werd gekozen voor Google Gemini, aangezien dit model multimodale input ondersteunt en zowel videomateriaal als grafische en numerieke representaties kan interpreteren.
-
-Het doel van dit experiment was niet om reeds een finaal feedbacksysteem te bouwen, maar om verkennend na te gaan hoe bruikbaar de analyse van een generiek multimodaal AI-model is wanneer exact dezelfde kip-uitvoering via verschillende inputvormen wordt aangeboden.
-
-Concreet werd dezelfde gymnastische uitvoering in drie afzonderlijke representaties aan Gemini aangeboden:
-
-\begin{itemize}
-    \item het originele videofragment,
-    \item het geëxporteerde CSV-bestand met pose-landmarks en berekende gewrichtshoeken,
-    \item de gegenereerde lijnengrafiek van heup-, schouder- en romphoek.
-\end{itemize}
-
-Elke input werd in een afzonderlijke sessie geanalyseerd met een gelijkaardige prompt waarin het model gevraagd werd de beweging technisch te beoordelen, bewegingsfasen te identificeren, mogelijke fouten te detecteren en coachingfeedback te formuleren. De volledige prompts en modeloutputs zijn opgenomen in bijlage ~\ref{app:gemini-experiment}.
-
-\begin{table}[H]
-    \centering
-    \footnotesize
-    \begin{tabular}{p{2.5cm}p{4.2cm}p{6cm}}
-        \toprule
-        \textbf{Inputvorm} & \textbf{Voornaamste Gemini-output} & \textbf{Opvallende beperking} \\
-        \midrule
-        Videoanalyse & Detecteert een laattijdige armoptrek en vertraagde shift naar steunpositie & Analyse gebaseerd op visuele interpretatie zonder expliciete meetbare parameters \\
-        CSV met pose-data & Detecteert een te vroege armactie en onvoldoende heupextensie & Conclusies gaan verder dan de drie aanwezige hoekparameters \\
-        Lijnengrafiek gewrichtshoeken & Beschrijft biomechanische fasen en timingproblemen in de synchronisatie van heup en schouder & Extra biomechanische interpretaties ondanks beperkte grafische input \\
-        \bottomrule
-    \end{tabular}
-    \caption{Samenvatting van de gegenereerde Gemini-analyses voor drie verschillende inputmodaliteiten van dezelfde kip-uitvoering}
-    \label{tab:gemini_multimodaal}
-\end{table}
-
-Een eerste opvallende vaststelling was dat Gemini in alle drie de gevallen zonder moeite technisch geloofwaardige coachingtaal produceerde. Het model gebruikte gymnastiekspecifieke termen zoals heupsluiting, timing van de optrek, schouderopening en lichaamsspanning, waardoor de output sterk leek op verbale trainerfeedback.
-
-Bij vergelijking van de drie analyses werd echter een duidelijke inconsistentie zichtbaar. Op basis van het videofragment concludeerde Gemini dat de gymnast de armoptrek te laat inzet, terwijl dezelfde uitvoering via het CSV-bestand net werd geïnterpreteerd als een te vroege armactie. Ook de grafiekanalyse introduceerde bijkomende timing- en synchronisatieproblemen die niet volledig overeenstemden met de videoanalyse. Aangezien alle drie de outputs vertrekken van exact dezelfde beweging, toont dit aan dat de technische interpretatie sterk afhankelijk blijft van de representatie van de inputdata.
-
-Daarnaast produceerde Gemini in alle gevallen zeer uitgebreide feedback waarbij meerdere technische fouten, biomechanische verklaringen en bijkomende trainingssuggesties simultaan werden besproken. Het model prioriteerde geen beperkt aantal kernfouten, maar gaf telkens een volledige technische beschrijving van de beweging. Dit sluit minder goed aan bij bevindingen uit de literatuur rond motorisch leren, waar wordt aangetoond dat gerichte feedback op een beperkt aantal sleutelcomponenten effectiever is dan het gelijktijdig corrigeren van een groot aantal aandachtspunten \autocite{Niznikowski2025}. Voor praktische coaching impliceert dit dat de gegenereerde feedback wel rijk oogt, maar pedagogisch minder efficiënt kan zijn door het risico op cognitieve overbelasting.
-
-Een bijkomende observatie was dat Gemini biomechanische conclusies formuleerde die niet rechtstreeks uit de aangeboden data konden worden afgeleid. In het CSV-bestand waren bijvoorbeeld enkel heuphoek, schouderhoek en romphoek expliciet aanwezig, terwijl het model toch bijkomende uitspraken genereerde over armtrekkracht, asymmetrie, momentumopbouw en stabilisatie. Dit suggereert dat het systeem ontbrekende informatie infererend aanvult op basis van aangeleerde bewegingspatronen in plaats van uitsluitend op strikt meetbare input.
-
-Dit verkennend experiment toont daardoor drie fundamentele beperkingen van vrije multimodale LLM-analyse: de technische interpretatie is niet stabiel over verschillende datavormen heen, de gegenereerde feedback is onvoldoende selectief geprioriteerd, en bijkomende biomechanische verklaringen zijn niet steeds controleerbaar vanuit de beschikbare meetdata.
-
-Vanuit deze vaststellingen bleek volledig vertrouwen op vrije interpretatie door een generiek multimodaal model onvoldoende controleerbaar voor technische gymnastiekfeedback. Er was nood aan een meer gestructureerde analysepipeline waarin biomechanische parameters eerst expliciet geselecteerd worden, waarna enkel de meest relevante gedetecteerde fouten in een gecontroleerde vorm aan een taalmodel worden aangeboden. Vanuit deze ontwerpbeslissing werd in de volgende implementatiefase overgeschakeld naar een rule-based JSON-structuur als tussenlaag voor foutdetectie en feedbackprioritering.
-
-\section{Technische verfijning van de pose-data-extractie}
-
-Na het verkennende experiment met Gemini werd de bestaande pose-data-extractie verder herwerkt. De eerste implementatie was voldoende om de haalbaarheid van de gekozen aanpak aan te tonen, maar tijdens het verdere gebruik werd duidelijk dat de uitvoer beter gestructureerd en technisch robuuster moest worden om als basis te dienen voor de volgende stappen binnen het proof-of-concept.
-
-De aanpassingen hadden niet als doel om het gebruikte pose-estimatiemodel te vervangen. MediaPipe Pose Landmarker bleef in deze fase behouden als methode om lichaamslandmarks uit videobeelden te extraheren. De herwerking richtte zich vooral op de manier waarop de videoframes verwerkt werden, hoe de hoekwaarden berekend werden en hoe de resultaten in CSV-vorm werden opgeslagen.
-
-Een eerste aanpassing betrof de tijdsregistratie van de frames. In de oorspronkelijke implementatie werd de timestamp na elk frame telkens met een vaste waarde van 33 milliseconden verhoogd. Dit benadert een video van ongeveer 30 frames per seconde, maar houdt geen rekening met de effectieve framerate van het ingelezen videobestand. In de herziene versie wordt de framerate eerst uit de video gelezen en wordt de timestamp per frame op basis daarvan berekend. Dit sluit beter aan bij de werking van MediaPipe in videomodus, waarbij per frame een timestamp in milliseconden wordt meegegeven.
-
-Daarnaast werd de CSV-output duidelijker gestructureerd. In de eerste versie bestond elke rij enkel uit opeenvolgende numerieke waarden, zonder kolomnamen of expliciete aanduiding van het bijhorende frame. In de herwerkte versie wordt een header toegevoegd met onder meer de frame-index, de timestamp, de $x$-, $y$- en $z$-coördinaten van elke landmark en de drie berekende hoekwaarden. Hierdoor wordt de uitvoer eenvoudiger leesbaar, beter controleerbaar en praktischer inzetbaar voor verdere verwerking in latere fasen van het systeem.
-
-Ook de manier waarop de hoeken berekend worden, werd technisch verfijnd. In de eerste implementatie werden de gedetecteerde landmarkcoördinaten eerst afgerond naar gehele pixelwaarden en vervolgens gebruikt voor zowel de visualisatie als de berekeningen. In de aangepaste versie wordt dit opgesplitst: afgeronde pixelcoördinaten worden enkel nog gebruikt om punten en skeletlijnen op het videobeeld te tekenen, terwijl de hoekberekeningen gebeuren op basis van de oorspronkelijke niet-afgeronde coördinaten. Op die manier blijft voor de numerieke verwerking meer detail behouden.
-
-Verder werd de hoekberekening zelf robuuster gemaakt. In plaats van de hoek af te leiden uit het verschil tussen twee richtingshoeken, wordt in de herziene versie gewerkt met vectoren die vertrekken vanuit het centrale gewricht. De hoek tussen beide segmenten wordt vervolgens berekend via het inproduct. Daarbij werd bijkomend een controle toegevoegd voor uitzonderlijke gevallen waarin twee punten zouden samenvallen, evenals een begrenzing van de berekende cosinuswaarde om numerieke afrondingsproblemen te vermijden. Codefragment~\ref{lst:angle_calculation_v2} toont deze aangepaste hoekberekening.
-
-\begin{listing}[H]
-    \begin{minted}{python}
-        def calculate_angle(a, b, c):
-        a = np.array(a, dtype=np.float64)
-        b = np.array(b, dtype=np.float64)
-        c = np.array(c, dtype=np.float64)
-        
-        ba = a - b
-        bc = c - b
-        
-        norm_ba = np.linalg.norm(ba)
-        norm_bc = np.linalg.norm(bc)
-        
-        if norm_ba == 0 or norm_bc == 0:
-        return np.nan
-        
-        cosine_angle = np.dot(ba, bc) / (norm_ba * norm_bc)
-        cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
-        
-        angle = np.degrees(np.arccos(cosine_angle))
-        
-        return angle
-    \end{minted}
-    \caption{Aangepaste functie voor de berekening van gewrichtshoeken op basis van vectorgeometrie}
-    \label{lst:angle_calculation_v2}
-\end{listing}
-
-Om na te gaan of deze technische herwerking het globale verloop van de geëxtraheerde hoekreeksen beïnvloedde, werden de resultaten van de oorspronkelijke code vergeleken met de resultaten van de aangepaste versie. Deze vergelijking werd uitgevoerd voor dezelfde twee videofragmenten die eerder gebruikt werden: een opname met weinig visuele ruis en een opname waarin de landmarkdetectie duidelijk sterker verstoord werd.
-
-Figuur~\ref{fig:code_comparison_low_noise} toont de hoekcurves van de opname met weinig visuele ruis vóór en na de codeherwerking. De globale vorm van de grafieken blijft in beide versies sterk gelijk. Dezelfde dalingen, stijgingen en overgangen in heuphoek, schouderhoek en romphoek blijven zichtbaar. Dit wijst erop dat de technische aanpassingen de inhoudelijke bewegingsrepresentatie niet veranderen, maar vooral zorgen voor een nettere en betrouwbaardere verwerking van dezelfde onderliggende pose-data.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.68\linewidth]{joint_angles_low_noise.png}
+    \chapter{\IfLanguageName{dutch}{Resultaten en proof-of-concept implementatie}{Results and proof-of-concept implementation}}
+    \label{ch:resultaten}
     
-    \includegraphics[width=0.68\linewidth]{joint_angles_low_noise_V2.png}
-    \caption{Vergelijking van de berekende hoekcurves bij de opname met weinig visuele ruis vóór de codeherwerking (boven) en na de codeherwerking (onder).}
-    \label{fig:code_comparison_low_noise}
-\end{figure}
-
-Eenzelfde vergelijking werd gemaakt voor het videofragment met meer detectieruis. Zoals zichtbaar in Figuur~\ref{fig:code_comparison_noisy}, komen ook hier de algemene bewegingstrends in beide codeversies sterk overeen. Tegelijk blijven de abrupte pieken en scherpe dalingen grotendeels aanwezig. Dit bevestigt dat deze verstoringen voornamelijk voortkomen uit instabiele landmarkdetectie in een visueel moeilijkere opname en niet hoofdzakelijk uit de oorspronkelijke manier waarop de hoekdata werd berekend of opgeslagen.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.68\linewidth]{joint_angles_noisy.png}
+    \section{Implementatie van markerloze pose-estimatie}
     
-    \includegraphics[width=0.68\linewidth]{joint_angles_noisy_V2.png}
-    \caption{Vergelijking van de berekende hoekcurves bij de opname met duidelijke detectieruis vóór de codeherwerking (boven) en na de codeherwerking (onder).}
-    \label{fig:code_comparison_noisy}
-\end{figure}
-
-De vergelijking tussen beide codeversies toont dus twee zaken aan. Enerzijds blijven de biomechanisch relevante patronen in de hoekcurves behouden, wat bevestigt dat de aangepaste implementatie inhoudelijk aansluit bij de eerste versie. Anderzijds zorgt de herwerking voor een duidelijker gestructureerde en technisch betrouwbaardere output, die beter geschikt is voor de verdere opbouw van de analysepipeline. Deze verfijnde CSV-structuur en robuustere hoekberekening vormden daarom de basis voor de daaropvolgende stap, waarin de bewegingsdata verder werd omgezet naar een meer gecontroleerde en gestructureerde vorm voor automatische foutdetectie en feedbackgeneratie.
-
-\section{Voorbereiding op regelgebaseerde foutdetectie}
-
+    De eerste stap in de ontwikkeling van het proof-of-concept bestond uit het automatisch extraheren van lichaamslandmarks uit videobeelden van een gymnast die een kip aan de barre uitvoert. In overeenstemming met de in Hoofdstuk~\ref{ch:stand-van-zaken} besproken markerloze bewegingsanalyse werd hiervoor gebruikgemaakt van het MediaPipe Pose Landmarker model, dat per frame anatomische sleutelpunten van het lichaam detecteert.
+    
+    In een initiële implementatiefase werd een Python-pipeline ontwikkeld die het videofragment frame per frame verwerkt en voor elk frame de gedetecteerde pose-landmarks teruggeeft. Deze landmarks werden eerst visueel geprojecteerd op het originele videobeeld om na te gaan of de gymnast tijdens de volledige beweging consistent gevolgd werd.
+    
+    De eerste testresultaten toonden aan dat de globale lichaamsconfiguratie van de uitvoerende gymnast in het merendeel van de frames correct werd gereconstrueerd. De belangrijkste proximale gewrichten, met name schouders, heupen en knieën, bleven voldoende stabiel detecteerbaar tijdens de zwaaifase, de heupsluiting en de uiteindelijke steunfase. Hierdoor bleek de pose-estimatie voldoende bruikbaar als basis voor verdere biomechanische analyse.
+    
+    Na deze eerste validatie werd de visualisatie uitgebreid met een skeletoverlay waarbij anatomisch verbonden landmarks met elkaar verbonden werden. Deze skeletweergave liet toe om de dynamiek van de lichaamspositie duidelijker te observeren en maakte het eenvoudiger om te controleren of abrupte detectiesprongen effectief overeenkwamen met veranderingen in de beweging.
+    
+    Een belangrijke praktische bevinding tijdens deze implementatiefase was dat de gebruikte trainingsvideo geen volledig gecontroleerde opname betrof. Op de achtergrond bevond zich bijkomend een tweede turnster die eveneens gedeeltelijk in beeld kwam. In verschillende frames detecteerde het pose-estimatiemodel hierdoor tijdelijk lichaamssegmenten van beide personen binnen dezelfde scène, wat leidde tot verstoringen in de gegenereerde landmarkdata. Deze observatie bevestigt dat markerloze pose-estimatie sterk afhankelijk blijft van de visuele zuiverheid van het inputbeeld en gevoelig is voor aanwezigheid van meerdere personen in het cameraveld, zoals ook in de literatuur wordt aangehaald bij praktijktoepassingen buiten laboratoriumomstandigheden \autocite{Ota2025Markerless}.
+    
+    Ondanks deze verstoringen bleek de pose-detectie over het volledige videofragment voldoende consistent om verder te gebruiken binnen de proof-of-concept pipeline. De visuele validatie bevestigde dat de kernsegmenten van de uitvoerende gymnast in voldoende mate reconstrueerbaar waren, waardoor een volgende stap mogelijk werd, namelijk het numeriek opslaan van deze pose-data en het afleiden van biomechanisch interpreteerbare gewrichtsparameters.
+    
+    \section{Extractie en opslag van biomechanische parameters}
+    
+    Na de visuele validatie van de pose-estimatie werd de pipeline uitgebreid met een numerieke extractiestap waarbij alle gedetecteerde lichaamslandmarks frame per frame automatisch werden opgeslagen in een CSV-bestand. Per videoframe werden voor elke gedetecteerde landmark de genormaliseerde $x$-, $y$- en $z$-coördinaten geregistreerd, waardoor een volledige tijdsreeks van opeenvolgende lichaamshoudingen ontstond.
+    
+    Deze ruwe pose-data vormde op zichzelf echter nog geen direct interpreteerbare basis voor technische bewegingsanalyse. Om de beweging biomechanisch beschrijfbaar te maken werden bijkomend drie afgeleide gewrichtsparameters geïmplementeerd die aansluiten bij de in Sectie~\ref{sec:Biomechanische-analyse} geïdentificeerde kritieke bewegingscomponenten van de kip:
+    
+    \begin{itemize}
+        \item heuphoek (\textit{schouder--heup--knie}),
+        \item schouderhoek (\textit{elleboog--schouder--heup}),
+        \item romphoek (\textit{schouder--heup--enkel}).
+    \end{itemize}
+    
+    Deze hoeken werden per frame berekend via vectorgeometrie en samen met de ruwe landmarkcoördinaten toegevoegd aan dezelfde CSV-structuur. Hierdoor werd elk videoframe niet enkel gerepresenteerd als een verzameling lichaamsposities, maar ook als een set direct interpreteerbare biomechanische parameters.
+    
+    Om de invloed van de videokwaliteit en de visuele zuiverheid van de opname op de geëxtraheerde hoekdata verder te beoordelen, werd dezelfde analyse ook uitgevoerd op een tweede videofragment waarin beduidend minder visuele verstoring aanwezig was. In tegenstelling tot de eerste opname, waarin een tweede turnster gedeeltelijk in beeld kwam, bevatte deze tweede opname weinig tot geen storende achtergrondbeweging. Hierdoor kon nagegaan worden in welke mate de eerder vastgestelde fluctuaties in de hoekcurves samenhangen met detectieruis in de pose-estimatie.
+    
+    Figuur~\ref{fig:jointangles_comparison} vergelijkt het tijdsverloop van de automatisch berekende heup-, schouder- en romphoek voor beide videofragmenten. De bovenste grafiek toont de eerder geanalyseerde opname met duidelijke detectieruis. Hoewel de globale beweging nog herkenbaar blijft, komen op meerdere plaatsen abrupte pieken, scherpe dalingen en kortstondige sprongen voor die biomechanisch moeilijk te verklaren zijn. Een duidelijk voorbeeld hiervan is zichtbaar in het midden en het laatste deel van de tijdsreeks, waar verschillende hoekwaarden plots sterk veranderen over slechts enkele opeenvolgende frames.
+    
+    De onderste grafiek, afkomstig van de video met weinig visuele ruis, vertoont een merkbaar vloeiender verloop. De evolutie van de heuphoek, schouderhoek en romphoek is consistenter en de grote, abrupte detectiesprongen komen veel minder voor. Hierdoor zijn de bewegingspatronen duidelijker interpreteerbaar. Zo blijft de afname en daaropvolgende heropening van de heuphoek beter zichtbaar, terwijl ook de globale evolutie van de romphoek minder grillig verloopt.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.60\linewidth]{joint_angles_noisy.png}
+        
+        \includegraphics[width=0.60\linewidth]{joint_angles_low_noise.png}
+        \caption{Vergelijking van de automatisch berekende heup-, schouder- en romphoek bij een videofragment met duidelijke detectieruis (boven) en een videofragment met weinig visuele ruis (onder). (videos: \textit{video\_kip\_2} en \textit{Good\_kip5})}
+        \label{fig:jointangles_comparison}
+    \end{figure}
+    
+    Deze vergelijking bevestigt dat de gekozen pose-estimatiepipeline in staat is om biomechanisch betekenisvolle hoekpatronen uit videobeelden te extraheren, maar dat de stabiliteit van deze output sterk afhankelijk blijft van de kwaliteit van de visuele input. Wanneer storende elementen in het beeld aanwezig zijn, zoals een tweede persoon of tijdelijke ambiguïteit in de gedetecteerde lichaamssegmenten, ontstaan meer abrupte schommelingen in de tijdsreeksen. Bij een visueel zuiverdere opname wordt het onderliggende bewegingsverloop duidelijker zichtbaar.
+    
+    Hieruit blijkt dat afzonderlijke framewaarden niet zonder meer als directe technische beoordeling kunnen worden geïnterpreteerd. Een geïsoleerde lage of hoge hoekwaarde betekent immers niet noodzakelijk dat de gymnast op dat exacte moment een fout uitvoert, maar kan eveneens veroorzaakt worden door een kort detectieprobleem of een onnauwkeurige landmarklokalisatie. Voor een betekenisvolle interpretatie moet daarom niet enkel rekening worden gehouden met absolute hoekwaarden, maar ook met het globale verloop van deze parameters over opeenvolgende frames.
+    
+    Deze implementatiefase leverde dus twee belangrijke resultaten op. Enerzijds kon standaard videomateriaal succesvol worden omgezet naar een gestructureerde numerieke dataset met interpreteerbare gewrichtshoeken. Anderzijds werd duidelijk dat deze ruwe biomechanische output bijkomende contextuele interpretatie vereist om te kunnen worden vertaald naar concrete technische feedback. Vanuit deze nood ontstond de volgende ontwikkelingsstap, namelijk het inzetten van een Large Language Model om deze numerieke bewegingsinformatie te analyseren en om te zetten naar gymnastisch bruikbare foutbeschrijvingen.
+    
+    \section{Verkennend experiment met bestaande multimodale AI-analyse}
+    
+    Na de extractie van videobeelden, pose-landmarks en afgeleide gewrichtshoeken werd in een volgende stap onderzocht in welke mate een bestaand generatief AI-systeem zelfstandig technische coachingfeedback kon formuleren op basis van deze data. Hiervoor werd gekozen voor Google Gemini, aangezien dit model multimodale input ondersteunt en zowel videomateriaal als grafische en numerieke representaties kan interpreteren.
+    
+    Het doel van dit experiment was niet om reeds een finaal feedbacksysteem te bouwen, maar om verkennend na te gaan hoe bruikbaar de analyse van een generiek multimodaal AI-model is wanneer exact dezelfde kip-uitvoering via verschillende inputvormen wordt aangeboden.
+    
+    Concreet werd dezelfde gymnastische uitvoering in drie afzonderlijke representaties aan Gemini aangeboden:
+    
+    \begin{itemize}
+        \item het originele videofragment,
+        \item het geëxporteerde CSV-bestand met pose-landmarks en berekende gewrichtshoeken,
+        \item de gegenereerde lijnengrafiek van heup-, schouder- en romphoek.
+    \end{itemize}
+    
+    Elke input werd in een afzonderlijke sessie geanalyseerd met een gelijkaardige prompt waarin het model gevraagd werd de beweging technisch te beoordelen, bewegingsfasen te identificeren, mogelijke fouten te detecteren en coachingfeedback te formuleren. De volledige prompts en modeloutputs zijn opgenomen in bijlage ~\ref{app:gemini-experiment}.
+    
+    \begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabular}{p{2.5cm}p{4.2cm}p{6cm}}
+            \toprule
+            \textbf{Inputvorm} & \textbf{Voornaamste Gemini-output} & \textbf{Opvallende beperking} \\
+            \midrule
+            Videoanalyse & Detecteert een laattijdige armoptrek en vertraagde shift naar steunpositie & Analyse gebaseerd op visuele interpretatie zonder expliciete meetbare parameters \\
+            CSV met pose-data & Detecteert een te vroege armactie en onvoldoende heupextensie & Conclusies gaan verder dan de drie aanwezige hoekparameters \\
+            Lijnengrafiek gewrichtshoeken & Beschrijft biomechanische fasen en timingproblemen in de synchronisatie van heup en schouder & Extra biomechanische interpretaties ondanks beperkte grafische input \\
+            \bottomrule
+        \end{tabular}
+        \caption{Samenvatting van de gegenereerde Gemini-analyses voor drie verschillende inputmodaliteiten van dezelfde kip-uitvoering}
+        \label{tab:gemini_multimodaal}
+    \end{table}
+    
+    Een eerste opvallende vaststelling was dat Gemini in alle drie de gevallen zonder moeite technisch geloofwaardige coachingtaal produceerde. Het model gebruikte gymnastiekspecifieke termen zoals heupsluiting, timing van de optrek, schouderopening en lichaamsspanning, waardoor de output sterk leek op verbale trainerfeedback.
+    
+    Bij vergelijking van de drie analyses werd echter een duidelijke inconsistentie zichtbaar. Op basis van het videofragment concludeerde Gemini dat de gymnast de armoptrek te laat inzet, terwijl dezelfde uitvoering via het CSV-bestand net werd geïnterpreteerd als een te vroege armactie. Ook de grafiekanalyse introduceerde bijkomende timing- en synchronisatieproblemen die niet volledig overeenstemden met de videoanalyse. Aangezien alle drie de outputs vertrekken van exact dezelfde beweging, toont dit aan dat de technische interpretatie sterk afhankelijk blijft van de representatie van de inputdata.
+    
+    Daarnaast produceerde Gemini in alle gevallen zeer uitgebreide feedback waarbij meerdere technische fouten, biomechanische verklaringen en bijkomende trainingssuggesties simultaan werden besproken. Het model prioriteerde geen beperkt aantal kernfouten, maar gaf telkens een volledige technische beschrijving van de beweging. Dit sluit minder goed aan bij bevindingen uit de literatuur rond motorisch leren, waar wordt aangetoond dat gerichte feedback op een beperkt aantal sleutelcomponenten effectiever is dan het gelijktijdig corrigeren van een groot aantal aandachtspunten \autocite{Niznikowski2025}. Voor praktische coaching impliceert dit dat de gegenereerde feedback wel rijk oogt, maar pedagogisch minder efficiënt kan zijn door het risico op cognitieve overbelasting.
+    
+    Een bijkomende observatie was dat Gemini biomechanische conclusies formuleerde die niet rechtstreeks uit de aangeboden data konden worden afgeleid. In het CSV-bestand waren bijvoorbeeld enkel heuphoek, schouderhoek en romphoek expliciet aanwezig, terwijl het model toch bijkomende uitspraken genereerde over armtrekkracht, asymmetrie, momentumopbouw en stabilisatie. Dit suggereert dat het systeem ontbrekende informatie infererend aanvult op basis van aangeleerde bewegingspatronen in plaats van uitsluitend op strikt meetbare input.
+    
+    Dit verkennend experiment toont daardoor drie fundamentele beperkingen van vrije multimodale LLM-analyse: de technische interpretatie is niet stabiel over verschillende datavormen heen, de gegenereerde feedback is onvoldoende selectief geprioriteerd, en bijkomende biomechanische verklaringen zijn niet steeds controleerbaar vanuit de beschikbare meetdata.
+    
+    Vanuit deze vaststellingen werd in de volgende implementatiefase gewerkt aan een meer gecontroleerde analysepipeline. Daarbij werd eerst de bestaande pose-data-extractie technisch verfijnd, waarna de bewegingsanalyse stapsgewijs werd voorbereid op regelgebaseerde foutdetectie en latere feedbackgeneratie.
+    
+    \section{Technische verfijning van de pose-data-extractie}
+    
+    Na het verkennende experiment met Gemini werd de bestaande pose-data-extractie verder herwerkt. De eerste implementatie was voldoende om de haalbaarheid van de gekozen aanpak aan te tonen, maar tijdens het verdere gebruik werd duidelijk dat de uitvoer beter gestructureerd en technisch robuuster moest worden om als basis te dienen voor de volgende stappen binnen het proof-of-concept.
+    
+    De aanpassingen hadden niet als doel om het gebruikte pose-estimatiemodel te vervangen. MediaPipe Pose Landmarker bleef in deze fase behouden als methode om lichaamslandmarks uit videobeelden te extraheren. De herwerking richtte zich vooral op de manier waarop de videoframes verwerkt werden, hoe de hoekwaarden berekend werden en hoe de resultaten in CSV-vorm werden opgeslagen.
+    
+    Een eerste aanpassing betrof de tijdsregistratie van de frames. In de oorspronkelijke implementatie werd de timestamp na elk frame telkens met een vaste waarde van 33 milliseconden verhoogd. Dit benadert een video van ongeveer 30 frames per seconde, maar houdt geen rekening met de effectieve framerate van het ingelezen videobestand. In de herziene versie wordt de framerate eerst uit de video gelezen en wordt de timestamp per frame op basis daarvan berekend. Dit sluit beter aan bij de werking van MediaPipe in videomodus, waarbij per frame een timestamp in milliseconden wordt meegegeven.
+    
+    Daarnaast werd de CSV-output duidelijker gestructureerd. In de eerste versie bestond elke rij enkel uit opeenvolgende numerieke waarden, zonder kolomnamen of expliciete aanduiding van het bijhorende frame. In de herwerkte versie wordt een header toegevoegd met onder meer de frame-index, de timestamp, de $x$-, $y$- en $z$-coördinaten van elke landmark en de drie berekende hoekwaarden. Hierdoor wordt de uitvoer eenvoudiger leesbaar, beter controleerbaar en praktischer inzetbaar voor verdere verwerking in latere fasen van het systeem.
+    
+    Ook de manier waarop de hoeken berekend worden, werd technisch verfijnd. In de eerste implementatie werden de gedetecteerde landmarkcoördinaten eerst afgerond naar gehele pixelwaarden en vervolgens gebruikt voor zowel de visualisatie als de berekeningen. In de aangepaste versie wordt dit opgesplitst: afgeronde pixelcoördinaten worden enkel nog gebruikt om punten en skeletlijnen op het videobeeld te tekenen, terwijl de hoekberekeningen gebeuren op basis van de oorspronkelijke niet-afgeronde coördinaten. Op die manier blijft voor de numerieke verwerking meer detail behouden.
+    
+    Verder werd de hoekberekening zelf robuuster gemaakt. In plaats van de hoek af te leiden uit het verschil tussen twee richtingshoeken, wordt in de herziene versie gewerkt met vectoren die vertrekken vanuit het centrale gewricht. De hoek tussen beide segmenten wordt vervolgens berekend via het inproduct. Daarbij werd bijkomend een controle toegevoegd voor uitzonderlijke gevallen waarin twee punten zouden samenvallen, evenals een begrenzing van de berekende cosinuswaarde om numerieke afrondingsproblemen te vermijden. Codefragment~\ref{lst:angle_calculation_v2} toont deze aangepaste hoekberekening.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            def calculate_angle(a, b, c):
+                a = np.array(a, dtype=np.float64)
+                b = np.array(b, dtype=np.float64)
+                c = np.array(c, dtype=np.float64)
+            
+                ba = a - b
+                bc = c - b
+            
+                norm_ba = np.linalg.norm(ba)
+                norm_bc = np.linalg.norm(bc)
+            
+                if norm_ba == 0 or norm_bc == 0:
+                    return np.nan
+            
+                cosine_angle = np.dot(ba, bc) / (norm_ba * norm_bc)
+                cosine_angle = np.clip(cosine_angle, -1.0, 1.0)
+            
+                angle = np.degrees(np.arccos(cosine_angle))
+            
+                return angle
+        \end{minted}
+        \caption{Aangepaste functie voor de berekening van gewrichtshoeken op basis van vectorgeometrie uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/pose-detection_skelet.py}{\texttt{pose-detection\_skelet.py}}}
+        \label{lst:angle_calculation_v2}
+    \end{listing}
+    
+    Om na te gaan of deze technische herwerking het globale verloop van de geëxtraheerde hoekreeksen beïnvloedde, werden de resultaten van de oorspronkelijke code vergeleken met de resultaten van de aangepaste versie. Deze vergelijking werd uitgevoerd voor dezelfde twee videofragmenten die eerder gebruikt werden: een opname met weinig visuele ruis en een opname waarin de landmarkdetectie duidelijk sterker verstoord werd.
+    
+    Figuur~\ref{fig:code_comparison_low_noise} toont de hoekcurves van de opname met weinig visuele ruis vóór en na de codeherwerking. De globale vorm van de grafieken blijft in beide versies sterk gelijk. Dezelfde dalingen, stijgingen en overgangen in heuphoek, schouderhoek en romphoek blijven zichtbaar. Dit wijst erop dat de technische aanpassingen de inhoudelijke bewegingsrepresentatie niet veranderen, maar vooral zorgen voor een nettere en betrouwbaardere verwerking van dezelfde onderliggende pose-data.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.68\linewidth]{joint_angles_low_noise.png}
+        
+        \includegraphics[width=0.68\linewidth]{joint_angles_low_noise_V2.png}
+        \caption{Vergelijking van de berekende hoekcurves bij de opname met weinig visuele ruis vóór de codeherwerking (boven) en na de codeherwerking (onder). (video: \textit{Good\_kip5})}
+        \label{fig:code_comparison_low_noise}
+    \end{figure}
+    
+    Eenzelfde vergelijking werd gemaakt voor het videofragment met meer detectieruis. Zoals zichtbaar in Figuur~\ref{fig:code_comparison_noisy}, komen ook hier de algemene bewegingstrends in beide codeversies sterk overeen. Tegelijk blijven de abrupte pieken en scherpe dalingen grotendeels aanwezig. Dit bevestigt dat deze verstoringen voornamelijk voortkomen uit instabiele landmarkdetectie in een visueel moeilijkere opname en niet hoofdzakelijk uit de oorspronkelijke manier waarop de hoekdata werd berekend of opgeslagen.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.68\linewidth]{joint_angles_noisy.png}
+        
+        \includegraphics[width=0.68\linewidth]{joint_angles_noisy_V2.png}
+        \caption{Vergelijking van de berekende hoekcurves bij de opname met duidelijke detectieruis vóór de codeherwerking (boven) en na de codeherwerking (onder). (video: \textit{video\_kip\_2})}
+        \label{fig:code_comparison_noisy}
+    \end{figure}
+    
+    De vergelijking tussen beide codeversies toont dus twee zaken aan. Enerzijds blijven de biomechanisch relevante patronen in de hoekcurves behouden, wat bevestigt dat de aangepaste implementatie inhoudelijk aansluit bij de eerste versie. Anderzijds zorgt de herwerking voor een duidelijker gestructureerde en technisch betrouwbaardere output, die beter geschikt is voor de verdere opbouw van de analysepipeline. Deze verfijnde CSV-structuur en robuustere hoekberekening vormden daarom de basis voor de daaropvolgende stap, waarin de bewegingsdata verder werd omgezet naar een meer gecontroleerde en gestructureerde vorm voor automatische foutdetectie en feedbackgeneratie.
+    
+    \section{Voorbereiding op regelgebaseerde foutdetectie}
+    
+    Na de technische verfijning van de pose-data-extractie werd de volgende stap gezet richting een meer gecontroleerde analyse van de kipbeweging. Uit het verkennende Gemini-experiment was gebleken dat vrije multimodale interpretatie wel technisch geloofwaardige feedback opleverde, maar onvoldoende stabiel en controleerbaar was om rechtstreeks als basis voor het proof-of-concept te gebruiken. Daarom werd gekozen om de verdere analyse regelgebaseerd op te bouwen, vertrekkend vanuit expliciet berekende biomechanische parameters en herkenbare momenten in de beweging.
+    
+    Vooraleer de beweging automatisch in fasen kon worden opgedeeld en later technische fouten konden worden beoordeeld, moest de beschikbare hoekinformatie eerst worden afgestemd op de fouttypes die in deze bachelorproef centraal staan. Eén van die fouttypes is het buigen van de armen tijdens de trekfase. Om dit later kwantitatief te kunnen analyseren, werd de bestaande set gewrichtshoeken uitgebreid met een vierde parameter, de ellebooghoek.
+    
+    \subsection{Uitbreiding van de biomechanische parameters met de ellebooghoek}
+    
+    In de eerdere implementatie werden drie hoekparameters berekend, de heuphoek, schouderhoek en romphoek. Deze parameters waren vooral bruikbaar om globale veranderingen in lichaamspositie, heupsluiting en schouderbeweging zichtbaar te maken. Voor de latere detectie van gebogen armen volstonden deze drie hoeken echter niet. Daarom werd bijkomend de ellebooghoek opgenomen, berekend als de hoek \textit{schouder--elleboog--pols}.
+    
+    Voor deze berekening werden de reeds beschikbare landmarks van de rechterschouder, rechterelleboog en rechterpols gebruikt. De berekende ellebooghoek werd vervolgens mee opgenomen in de CSV-output en ook op het geannoteerde videobeeld weergegeven, naast de reeds bestaande hoekwaarden. Codefragment~\ref{lst:elbow_angle_addition} toont hoe deze extra hoek aan de bestaande verwerking werd toegevoegd.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            right_shoulder = calc_points[12]
+            right_elbow = calc_points[14]
+            right_wrist = calc_points[16]
+            
+            elbow_angle = calculate_angle(
+                right_shoulder,
+                right_elbow,
+                right_wrist
+            )
+            
+            row.extend([
+                hip_angle,
+                shoulder_angle,
+                body_angle,
+                elbow_angle
+            ])
+        \end{minted}
+        \caption{Toevoeging van de ellebooghoek aan de hoekberekening en CSV-output uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/pose-detection_skelet.py}{\texttt{pose-detection\_skelet.py}}}
+        \label{lst:elbow_angle_addition}
+    \end{listing}
+    
+    De uitbreiding met de ellebooghoek is inhoudelijk belangrijk omdat deze parameter later rechtstreeks gebruikt kan worden om na te gaan in welke mate de armen tijdens de trekfase gestrekt blijven. Een hoge ellebooghoek wijst op een meer gestrekte armpositie, terwijl een duidelijke daling kan wijzen op het buigen van de arm. In deze fase werd de ellebooghoek nog niet gebruikt voor automatische foutdetectie, maar wel toegevoegd als noodzakelijke voorbereidende parameter voor de verdere regelgebaseerde analyse.
+    
+    Figuur~\ref{fig:elbow_angle_comparison_clean} toont de grafiek van de propere video \textit{Good\_kip5} vóór en na het toevoegen van de ellebooghoek. De oorspronkelijke drie hoekcurves blijven behouden, terwijl de nieuwe ellebooghoek als vierde curve wordt toegevoegd. In deze opname blijft de ellebooghoek gedurende het grootste deel van de kip hoog, waarna op het einde van het fragment een duidelijkere daling zichtbaar wordt. Deze daling treedt pas op wanneer de turnster na de kip verder over de barre rolt en behoort dus niet meer tot de kernuitvoering die later geanalyseerd wordt. Dit bevestigde dat de ellebooghoek op een betekenisvolle manier uit de pose-data kon worden afgeleid.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.68\linewidth]{joint_angles_clean_v2.png}
+        
+        \includegraphics[width=0.68\linewidth]{joint_angles_clean_v2_with_elbow.png}
+        \caption{Vergelijking van de hoekcurves voor de propere video vóór het toevoegen van de ellebooghoek (boven) en na het toevoegen van de ellebooghoek (onder). (video: \textit{Good\_kip5})}
+        \label{fig:elbow_angle_comparison_clean}
+    \end{figure}
+    
+    Een gelijkaardige uitbreiding werd uitgevoerd voor de eerdere opname met meer detectieruis. Ook daar werd de ellebooghoek correct mee berekend en weergegeven, al vertoont de curve duidelijk meer schommelingen door de reeds vastgestelde instabiliteit in de landmarkdetectie. De vergelijking bevestigt dus opnieuw dat de kwaliteit van de videoinput een sterke invloed heeft op de interpreteerbaarheid van de afgeleide hoekparameters, terwijl de technische uitbreiding zelf op beide videotypes toepasbaar blijft.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.68\linewidth]{joint_angles_noisy_V2.png}
+        
+        \includegraphics[width=0.68\linewidth]{joint_angles_noisy_v2_with_elbow.png}
+        \caption{Vergelijking van de hoekcurves voor de ruisvollere video vóór het toevoegen van de ellebooghoek (boven) en na het toevoegen van de ellebooghoek (onder). (video: \textit{video\_kip\_2})}
+        \label{fig:elbow_angle_comparison_noisy}
+    \end{figure}
+    
+    Met deze uitbreiding beschikte de analysepipeline over vier gewrichtshoeken die rechtstreeks aansluiten bij de latere regelgebaseerde foutdetectie: heuphoek, schouderhoek, romphoek en ellebooghoek. Daarmee werd een eerste noodzakelijke stap gezet om de beweging niet enkel globaal te visualiseren, maar ook gerichter te analyseren in functie van de vooraf gedefinieerde technische fouttypes.
+    
+    \subsection{Afbakening van het relevante analysevenster}
+    
+    Voor de verdere regelgebaseerde analyse werd gewerkt met de opname \textit{Good\_kip5}, aangezien deze video beduidend minder detectieruis bevatte dan de eerder besproken opname met een tweede turnster in beeld. Hierdoor was deze uitvoering geschikter om de eerste fase-indeling en latere foutdetectie op een controleerbare manier uit te werken.
+    
+    De volledige video bevatte echter meer dan enkel de kernuitvoering van de kip. Bij visuele inspectie van de geannoteerde video, waarbij ook het actuele framenummer in beeld werd weergegeven, werd vastgesteld dat de relevante kipbeweging start rond frame 80. Vóór dit moment bevindt de turnster zich nog in de voorbereidende inzet richting de barre. Vanaf frame 171 rolt de turnster verder over de barre, wat niet langer behoort tot de eigenlijke kipbeweging die binnen dit onderzoek geanalyseerd wordt.
+    
+    Om de verdere verwerking te beperken tot het technisch relevante fragment, werd daarom een analysevenster gedefinieerd van frame 80 tot en met frame 170. Binnen dit bereik wordt uitsluitend de uitvoering van de kip zelf beschouwd, vanaf de start van de relevante zwaaibeweging tot net vóór de bijkomende doorrol na het bereiken van de steunpositie.
+    
+    Codefragment~\ref{lst:analysis_window_selection} toont hoe dit analysevenster uit de CSV-data werd geselecteerd.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            START_FRAME = 80
+            END_FRAME = 170
+            
+            analysis_data = data[
+                (data["frame_index"] >= START_FRAME) &
+                (data["frame_index"] <= END_FRAME)
+            ].copy()
+        \end{minted}
+        \caption{Selectie van het relevante analysevenster binnen de CSV-data uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
+        \label{lst:analysis_window_selection}
+    \end{listing}
+    
+    Het geselecteerde bereik omvat theoretisch 91 videoframes. In de CSV-data bleken binnen dit analysevenster 86 meetrijen beschikbaar te zijn. Dit verschil komt doordat MediaPipe niet voor elk videoframe een bruikbare pose-output opsloeg. De verdere analyse werd daardoor uitgevoerd op de beschikbare geldige meetrijen binnen het gekozen framebereik, in plaats van op exact één datarij per videoframe.
+    
+    Figuur~\ref{fig:analysis_window_goodkip5} toont het verloop van de vier berekende gewrichtshoeken binnen dit geselecteerde analysevenster. Door enkel het relevante deel van de beweging te tonen, worden de veranderingen in heuphoek, schouderhoek, romphoek en ellebooghoek duidelijker zichtbaar dan in de oorspronkelijke grafiek over de volledige video. Deze afbakening vormt daarmee een noodzakelijke voorbereidende stap voor het automatisch detecteren van kritieke momenten en het opdelen van de beweging in afzonderlijke fasen.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{good_kip5_analysis_window.png}
+        \caption{Verloop van de vier berekende gewrichtshoeken binnen het geselecteerde analysevenster van frame 80 tot en met frame 170. (video: \textit{Good\_kip5})}
+        \label{fig:analysis_window_goodkip5}
+    \end{figure}
+    
+    \subsection{Automatische detectie van kritieke ankerpunten}
+    
+    Na het afbakenen van het relevante analysevenster werd onderzocht of enkele kritieke momenten binnen de kipbeweging automatisch uit de hoekdata konden worden afgeleid. Deze ankerpunten zijn nodig om de beweging nadien op een reproduceerbare manier in fasen te kunnen opdelen. In deze stap werd nog geen technische foutdetectie uitgevoerd. Het doel was eerst om herkenbare overgangsmomenten in de beweging automatisch te lokaliseren.
+    
+    Een eerste belangrijk ankerpunt is het moment van maximale heupsluiting. Dit moment is biomechanisch relevant omdat de gymnast tijdens de kip de benen en romp dicht naar de barre brengt om het lichaam efficiënt richting steunpositie te verplaatsen. Binnen de hoekdata werd dit moment benaderd door het frame te zoeken waarop de heuphoek minimaal is. Ter controle werd ook het frame bepaald waarop de romphoek minimaal is.
+    
+    Codefragment~\ref{lst:hip_closure_detection} toont hoe deze minimale hoekwaarden uit het geselecteerde analysevenster werden bepaald.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            hip_closure_index = analysis_data["hip_angle"].idxmin()
+            hip_closure_frame = int(
+                analysis_data.loc[hip_closure_index, "frame_index"]
+            )
+            hip_closure_angle = analysis_data.loc[
+                hip_closure_index,
+                "hip_angle"
+            ]
+            
+            body_closure_index = analysis_data["body_angle"].idxmin()
+            body_closure_frame = int(
+                analysis_data.loc[body_closure_index, "frame_index"]
+            )
+            body_closure_angle = analysis_data.loc[
+                body_closure_index,
+                "body_angle"
+            ]
+        \end{minted}
+        \caption{Automatische detectie van het moment van maximale heup- en rompsluiting uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
+        \label{lst:hip_closure_detection}
+    \end{listing}
+    
+    Binnen het geselecteerde analysevenster werd de minimale heuphoek gevonden op frame 125, met een waarde van 65,52°. De minimale romphoek werd vrijwel gelijktijdig gevonden op frame 124, met een waarde van 65,63°. De nabijheid van deze twee frames bevestigt dat beide parameters hetzelfde globale sluitingsmoment in de beweging beschrijven. Bij visuele controle van de video bleek frame 125 overeen te komen met het moment waarop het scheenbeen van de turnster dicht tegen de barre komt, zoals weergegeven in Figuur~\ref{fig:frame125_hip_closure}. Dit ondersteunt de interpretatie dat de minimale heuphoek in deze opname een bruikbaar automatisch ankerpunt vormt voor de heupsluitingsfase.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.45\linewidth]{good_kip5_frame125_hip_closure.png}
+        \caption{Visuele controle van frame 125, het automatisch gedetecteerde moment van maximale heupsluiting. (video: Good\_kip5)}
+        \label{fig:frame125_hip_closure}
+    \end{figure}
+    
+    Naast de maximale heupsluiting werd ook het begin van de steunfase automatisch benaderd. Na de heupsluiting opent het lichaam opnieuw en komt de gymnast richting steunpositie boven de barre. Om dit moment te detecteren werd een eenvoudige regel opgesteld. De steunfase begint wanneer zowel de heuphoek als de romphoek minstens 160° bedragen gedurende meerdere opeenvolgende meetrijen. Door drie opeenvolgende meetrijen te eisen, wordt vermeden dat één toevallige piek of kort ruisframe foutief als begin van de steunfase wordt geïnterpreteerd.
+    
+    In deze opname werd het begin van de steunfase automatisch gevonden op frame 145. Dit ligt zeer dicht bij de eerdere visuele inschatting, waarbij de eerste duidelijke steunpositie rond frame 144 werd waargenomen. Hierdoor bleek deze eenvoudige drempelregel voldoende bruikbaar om het begin van de steunfase in deze uitvoering te lokaliseren.
+    
+    Ten slotte werd ook het begin van de trekfase onderzocht. Hiervoor werd gekeken naar een gelijktijdige daling van de schouderhoek en heuphoek vóór het moment van maximale heupsluiting. De redenering hierbij is dat de overgang van de zwaaibeweging naar de actieve trek- en sluitbeweging gepaard gaat met een duidelijke verandering in beide hoeken. Om te vermijden dat een kleine frame-tot-frame-schommeling als startpunt wordt gezien, werd niet naar één enkel verschil gekeken, maar naar een daling over meerdere meetrijen.
+    
+    De gebruikte regel vergelijkt de huidige hoekwaarden met de waarden drie meetrijen eerder. Wanneer zowel de schouderhoek als de heuphoek over die periode minstens 10° dalen en dit gedurende twee opeenvolgende meetrijen optreedt, wordt dit beschouwd als het begin van de trekfase. Op basis van deze regel werd de start van de trekfase automatisch gevonden op frame 117.
+    
+    Figuur~\ref{fig:anchor_points_goodkip5} toont de vier hoekcurves binnen het analysevenster, aangevuld met verticale markeringen voor de automatisch gevonden ankerpunten. Hieruit blijkt dat de gedetecteerde momenten logisch samenvallen met duidelijke veranderingen in het verloop van de hoekcurves. De start van de trekfase bevindt zich kort vóór de maximale heupsluiting, terwijl het begin van de steunfase volgt nadat heuphoek en romphoek opnieuw sterk toenemen.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{good_kip5_anchor_points.png}
+        \caption{Automatisch gedetecteerde ankerpunten binnen de hoekcurves van de kipbeweging. (video: Good\_kip5)}
+        \label{fig:anchor_points_goodkip5}
+    \end{figure}
+    
+    \subsection{Regelgebaseerde afbakening van de bewegingsfasen}
+    
+    Op basis van de automatisch gevonden ankerpunten werd de kipbeweging vervolgens operationeel opgedeeld in afzonderlijke bewegingsfasen. Deze fase-indeling is nodig omdat de latere foutdetectie niet op de volledige beweging tegelijk kan worden toegepast. Elke technische fout is namelijk gekoppeld aan een specifiek deel van de uitvoering. Zo is de ellebooghoek vooral relevant tijdens de trekfase, terwijl de heuphoek vooral van belang is rond de heupsluitingsfase en de daaropvolgende opening.
+    
+    Voor deze eerste regelgebaseerde afbakening werd vertrokken vanuit de eerder gedetecteerde start van de trekfase, het moment van maximale heupsluiting en de start van de steunfase. De maximale heupsluiting op frame 125 werd gebruikt als centraal ankerpunt. Rond dit frame werd een klein venster van drie frames vóór en drie frames na het sluitingsmoment genomen, zodat de heupsluitingsfase niet beperkt bleef tot één enkel frame, maar als kort bewegingsfragment kon worden geanalyseerd.
+    
+    Op basis hiervan werden vier bewegingsfasen afgebakend. De zwaaifase loopt van het begin van het analysevenster tot net vóór de automatisch gedetecteerde start van de trekfase. De trekfase start op frame 117 en loopt tot net vóór het venster rond de maximale heupsluiting. De heupsluitingsfase wordt afgebakend rond frame 125, terwijl de steunfase start op frame 145 en loopt tot het einde van het analysevenster.
+    
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{Bewegingsfase} & \textbf{Startframe} & \textbf{Eindframe} \\
+            \midrule
+            Zwaaifase & 80 & 116 \\
+            Trekfase & 117 & 121 \\
+            Heupsluitingsfase & 122 & 128 \\
+            Steunfase & 145 & 170 \\
+            \bottomrule
+        \end{tabular}
+        \caption{Automatisch afgebakende bewegingsfasen binnen het geselecteerde analysevenster}
+        \label{tab:movement_phases}
+    \end{table}
+    
+    Binnen deze fasegrenzen werd de beschikbare data vervolgens per fase afzonderlijk geselecteerd. Daarbij moet opnieuw rekening gehouden worden met het feit dat niet elk videoframe een geldige meetrij opleverde. De zwaaifase bevatte 37 beschikbare meetrijen, de trekfase 4 meetrijen, de heupsluitingsfase 5 meetrijen en de steunfase 26 meetrijen. Deze aantallen tonen aan dat de fase-indeling niet enkel op theoretische framenummers gebaseerd is, maar in de verdere verwerking werkt met de effectief beschikbare pose-data.
+    
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{lc}
+            \toprule
+            \textbf{Bewegingsfase} & \textbf{Aantal beschikbare meetrijen} \\
+            \midrule
+            Zwaaifase & 37 \\
+            Trekfase & 4 \\
+            Heupsluitingsfase & 5 \\
+            Steunfase & 26 \\
+            \bottomrule
+        \end{tabular}
+        \caption{Aantal beschikbare meetrijen per automatisch afgebakende bewegingsfase}
+        \label{tab:movement_phase_rows}
+    \end{table}
+    
+    Naast deze vier formele bewegingsfasen werd ook een bijkomend intern analysevenster voorzien tussen het einde van de heupsluitingsfase en het begin van de steunfase. Dit overgangsvenster loopt van frame 129 tot en met frame 144 en bevat 14 beschikbare meetrijen. Het wordt niet als afzonderlijke vijfde fase in de bewegingsbeschrijving opgenomen, maar dient als technisch venster voor de latere analyse van een mogelijke te vroege heupopening. Op die manier blijft de globale fase-indeling beperkt tot de vier eerder beschreven fasen, terwijl de code toch voldoende informatie bewaart om deze specifieke fout later te kunnen beoordelen.
+    
+    Figuur~\ref{fig:phase_detection_goodkip5} toont de uiteindelijke fase-indeling op de hoekgrafiek. De gekleurde zones geven de verschillende fasen weer, terwijl de verticale markeringen de automatisch gevonden ankerpunten aanduiden. De visualisatie laat zien dat de afgebakende fasen logisch samenvallen met het verloop van de hoekcurves. De trekfase bevindt zich vlak voor de sterke sluiting van de heuphoek, de heupsluitingsfase valt samen met het minimum van de heup- en romphoek, en de steunfase start nadat beide hoeken opnieuw sterk zijn toegenomen.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{good_kip5_phase_detection.png}
+        \caption{Regelgebaseerde fase-indeling van de kipbeweging op basis van automatisch gedetecteerde ankerpunten. (video: \textit{Good\_kip5})}
+        \label{fig:phase_detection_goodkip5}
+    \end{figure}
+    
+    Deze fase-indeling vormt een belangrijke tussenstap binnen het proof-of-concept. De beweging wordt hiermee niet langer enkel als één volledige tijdsreeks beschouwd, maar als een reeks betekenisvolle bewegingsfragmenten. Daardoor kan de latere foutdetectie gerichter worden uitgevoerd per fase. De ellebooghoek kan beoordeeld worden tijdens de trekfase, de heuphoek tijdens de heupsluitingsfase, de snelheid of timing van de heupopening in het overgangsvenster en de lichaamshouding tijdens de steunfase. De effectieve implementatie van deze foutregels vormt de volgende ontwikkelstap van het systeem.
+    
+    \section{Iteratieve verfijning van de regelgebaseerde analyse}
+    
+    De fase-indeling op basis van de propere uitvoering \textit{Good\_kip5} vormde een eerste bruikbare basis voor de verdere foutdetectie. Bij toepassing van dezelfde analyse op bijkomende pogingen werd echter duidelijk dat de regels niet zonder verfijning op elke video even stabiel werkten. Vooral korte ruispieken in de hoekcurves konden een invloed hebben op de automatisch gevonden ankerpunten en daardoor ook op de daaropvolgende fase-indeling.
+    
+    Daarom werd de regelgebaseerde analyse iteratief aangepast. Deze aanpassingen hadden niet als doel om het onderliggende pose-estimatiemodel te vervangen, maar om de bestaande output robuuster te interpreteren. De belangrijkste verfijningen hadden betrekking op de detectie van kernmomenten, de afbakening van de bewegingsfasen en de regels waarmee technische fouten worden vastgesteld.
+    
+    \subsection{Verfijning van de ankerpuntdetectie met smoothing}
+    
+    In de eerste versie van de analyse werden kernmomenten, zoals de maximale heupsluiting, rechtstreeks bepaald op basis van de ruwe hoekwaarden. Dit werkte voldoende goed voor de propere uitvoering, maar bleek gevoeliger bij pogingen waarin de hoekcurves korte uitschieters vertoonden. Bij één van de foutieve pogingen zorgde een korte ruispiek ervoor dat een minder representatief frame als maximale heupsluiting werd gekozen.
+    
+    Om dit te beperken werd een eenvoudige smoothingstap toegevoegd. Voor de heuphoek en romphoek werd een rolling median met een venster van vijf meetrijen berekend. Deze gefilterde reeksen worden gebruikt om de belangrijkste ankerpunten, zoals minimale heuphoek en minimale romphoek, stabieler te bepalen. De oorspronkelijke ruwe hoekwaarden blijven wel behouden voor de verdere analyse, visualisatie en rapportering.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            SMOOTHING_WINDOW = 5
+            
+            analysis_data["hip_angle_smooth"] = (
+                analysis_data["hip_angle"]
+                .rolling(
+                    window=SMOOTHING_WINDOW,
+                    center=True,
+                    min_periods=1
+                )
+                .median()
+            )
+            
+            analysis_data["body_angle_smooth"] = (
+                analysis_data["body_angle"]
+                .rolling(
+                    window=SMOOTHING_WINDOW,
+                    center=True,
+                    min_periods=1
+                )
+                .median()
+            )
+        \end{minted}
+\caption{Toepassing van een rolling median op de heuphoek en romphoek voor stabielere ankerpuntdetectie uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
+        \label{lst:smoothing_anchor_points}
+    \end{listing}
+    
+    Figuur~\ref{fig:badkip2_smoothing} toont het effect van deze aanpassing voor een foutieve poging. De ruwe hoekcurves blijven zichtbaar, maar de gefilterde heuphoek maakt het mogelijk om de maximale heupsluiting minder afhankelijk te maken van één afzonderlijke uitschieter. Hierdoor wordt het centrale ankerpunt voor de heupsluitingsfase stabieler gekozen en wordt de daaropvolgende fase-indeling consistenter.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{Bad_kip2_analyze_with_smoothing_hip_angle.png}
+        \caption{Gebruik van een gefilterde heuphoek om het moment van maximale heupsluiting stabieler te bepalen bij een foutieve poging. (video: Bad\_kip2)}
+        \label{fig:badkip2_smoothing}
+    \end{figure}
+    
+    Deze smoothingstap lost de detectieruis niet volledig op, maar vermindert de invloed van korte, geïsoleerde meetafwijkingen op de keuze van de ankerpunten. Dit is belangrijk omdat de verdere foutdetectie vertrekt vanuit de automatisch afgebakende fasen. Wanneer het ankerpunt voor de heupsluiting verschuift door één ruispiek, verschuiven ook de trekfase, heupsluitingsfase en overgang naar steunfase. Door de ankerpuntdetectie licht te filteren, wordt de analysepipeline robuuster zonder de ruwe bewegingsdata volledig te vervangen.
+    
+    \subsection{Verfijning van de foutregels}
+    
+    Naast de detectie van ankerpunten werden ook de foutregels zelf iteratief verfijnd. De eerste versie van de regelgebaseerde analyse was voldoende om de verschillende fouttypes technisch te implementeren, maar uit de testen op meerdere pogingen bleek dat sommige regels te gevoelig waren of biomechanisch te eenvoudig geformuleerd waren. Daarom werden de regels aangepast op basis van de combinatie van meetwaarden, grafische controle en visuele inspectie van de videobeelden.
+    
+    Een eerste belangrijke verfijning had betrekking op de detectie van \textit{Early hip opening}. In een eerdere versie werd een snelle toename van de heuphoek na de heupsluiting op zichzelf als mogelijke fout geïnterpreteerd. Bij nadere controle bleek deze redenering te sterk vereenvoudigd. Tijdens een correcte kip moet de heup na de heupsluiting namelijk opnieuw openen om richting steunpositie te komen. Een snelle heupopening is dus niet automatisch foutief.
+    
+    Daarom werd de regel aangepast. In de finale versie wordt \textit{Early hip opening} pas gedetecteerd wanneer de heup al sterk geopend is terwijl de globale lichaamsuitlijning nog onvoldoende is, en dit gedurende meerdere opeenvolgende meetrijen. Op die manier wordt niet de normale opening na de heupsluiting bestraft, maar enkel een opening die te vroeg gebeurt ten opzichte van de positie van het lichaam.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            early_hip_opening_problem_rows = (
+                (
+                    hip_opening_transition_data["hip_angle_smooth"] >
+                    EARLY_HIP_OPENING_HIP_THRESHOLD
+                ) &
+                (
+                    hip_opening_transition_data["body_angle_smooth"] <
+                    EARLY_HIP_OPENING_BODY_THRESHOLD
+                )
+            ).sum()
+            
+            early_hip_opening_detected = (
+                early_hip_opening_problem_rows >=
+                EARLY_HIP_OPENING_MIN_ROWS
+            )
+        \end{minted}
+        \caption{Verfijnde detectieregel voor te vroege heupopening uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
+        \label{lst:early_hip_opening_rule}
+    \end{listing}
+    
+    Een tweede belangrijke verfijning had betrekking op \textit{Weak shoulder push}. In de eerste versie werd deze fout gedetecteerd wanneer meer dan vijf procent van de steunfase-rijen een ellebooghoek onder 160° vertoonde. Deze regel bleek echter te gevoelig bij de goede uitvoering \textit{Good\_kip5}. In die poging kwamen slechts twee korte steunfase-rijen onder deze drempel voor, maar omdat de steunfase relatief weinig meetrijen bevatte, was dit procentueel al voldoende om de fout te activeren. Daardoor ontstond een false positive.
+    
+    Om dit te vermijden werd de regel uitgebreid met een bijkomende minimumvoorwaarde. In de finale versie moet niet alleen het aandeel afwijkende steunfase-rijen boven vijf procent liggen, maar moeten er ook minstens drie steunfase-rijen met een ellebooghoek onder 160° aanwezig zijn. Hierdoor worden zeer korte afwijkingen minder snel als technische fout geïnterpreteerd.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            weak_shoulder_push_detected = (
+                support_body_angle_mean < WEAK_SUPPORT_BODY_ANGLE_THRESHOLD or
+                support_elbow_angle_mean < WEAK_SUPPORT_ELBOW_MEAN_THRESHOLD or
+                (
+                    support_bent_elbow_rows >=
+                    WEAK_SUPPORT_BENT_ELBOW_MIN_ROWS and
+                    support_bent_elbow_ratio >
+                    WEAK_SUPPORT_BENT_ELBOW_RATIO_THRESHOLD
+                ) or
+                support_shoulder_angle_mean >
+                WEAK_SUPPORT_SHOULDER_ANGLE_THRESHOLD
+            )
+        \end{minted}
+        \caption{Verfijnde detectieregel voor onvoldoende schouderdruk in de steunfase uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
+        \label{lst:weak_shoulder_push_rule}
+    \end{listing}
+    
+    De aanpassing aan de regel voor \textit{Weak shoulder push} werd gecontroleerd op de drie belangrijkste testpogingen. Bij \textit{Good\_kip5} werd de eerdere false positive opgelost: de twee korte afwijkende steunfase-rijen waren niet langer voldoende om de fout te activeren. Bij \textit{Bad\_kip1} bleef de fout wel aanwezig, omdat daar drie steunfase-rijen onder de drempel vielen. Ook bij \textit{Bad\_kip2} bleef de fout duidelijk gedetecteerd, aangezien daar een veel groter deel van de steunfase afwijkende elleboogwaarden vertoonde.
+    
+    Deze verfijningen tonen aan dat de gekozen regelgebaseerde aanpak controleerbaar en aanpasbaar is, maar ook gevoelig blijft voor de gekozen drempelwaarden. De regels werden daarom niet beschouwd als definitief gevalideerde gymnastische beoordelingscriteria, maar als expliciete en reproduceerbare beslisregels binnen het proof-of-concept. Dit maakt het mogelijk om de werking van het systeem transparant te volgen en gericht bij te sturen wanneer een regel te gevoelig of te algemeen blijkt.
+    
+    \subsection{Structurering van de analyse-output in JSON}
+    
+    Na de verfijning van de foutregels werd de output van de analyse gestructureerd opgeslagen in JSON-formaat. Deze stap was noodzakelijk omdat de console-output wel bruikbaar was tijdens het ontwikkelen en testen, maar minder geschikt is als interface tussen de regelgebaseerde analyse en de feedbackgeneratie. Door de resultaten als JSON op te slaan, wordt duidelijk vastgelegd welke fasen werden herkend, welke meetwaarden werden gebruikt, welke regels werden toegepast en welke fouten uiteindelijk gedetecteerd werden.
+    
+    De JSON-output bevat zowel technische analyse-informatie als een beperkte taakomschrijving voor het taalmodel. De technische informatie blijft nodig om de werking van het systeem te controleren en achteraf te kunnen nagaan waarom een bepaalde fout wel of niet werd gedetecteerd. Tegelijk wordt in de JSON ook expliciet aangegeven dat de LLM geen nieuwe foutdetectie mag uitvoeren, maar enkel de reeds gedetecteerde fouten mag omzetten naar begrijpelijke feedback.
+    
+    Voor elke geanalyseerde poging worden onder meer het analysevenster, de bewegingsfasen, de kernmomenten, de gebruikte gewrichtshoeken, de relevante meetwaarden per fase en de toegepaste detectieregels opgeslagen. Daarnaast bevat de JSON een lijst met alle gecontroleerde fouttypes en een aparte lijst met enkel de effectief gedetecteerde fouten. Dit onderscheid is belangrijk, omdat het systeem zo kan bijhouden welke fouten gecontroleerd maar niet waargenomen werden, zonder dat deze automatisch als feedback aan de turnster worden meegegeven.
+    
+    Tabel~\ref{tab:json_structure} geeft een overzicht van de belangrijkste onderdelen van de JSON-output.
+    
+    \begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabular}{p{4cm}p{9cm}}
+            \toprule
+            \textbf{JSON-onderdeel} & \textbf{Inhoud} \\
+            \midrule
+            \texttt{exercise} & Algemene beschrijving van de geanalyseerde oefening. \\
+            \texttt{video} & Naam van de poging en verwijzing naar de gebruikte CSV-data. \\
+            \texttt{analysis\_window} & Gekozen start- en eindframe en het aantal beschikbare meetrijen. \\
+            \texttt{phases} & Afgebakende bewegingsfasen met startframe, eindframe en aantal meetrijen. \\
+            \texttt{key\_moments} & Automatisch gevonden kernmomenten, zoals minimale heuphoek en start van de steunfase. \\
+            \texttt{joint\_angles} & Betekenis van de gebruikte hoekparameters. \\
+            \texttt{measurements} & Relevante meetwaarden per analysegebied, zoals trekfase, heupsluiting, overgang en steunfase. \\
+            \texttt{detection\_rules} & Beschrijving van de gebruikte drempelwaarden en beslisregels per fouttype. \\
+            \texttt{error\_checks} & Resultaat van alle gecontroleerde fouttypes, inclusief niet-gedetecteerde fouten. \\
+            \texttt{detected\_errors} & Enkel de fouten die effectief door het regelgebaseerde systeem werden gedetecteerd. \\
+            \texttt{llm\_task} & Afbakening van wat het taalmodel wel en niet mag doen bij feedbackgeneratie. \\
+            \bottomrule
+        \end{tabular}
+        \caption{Hoofdstructuur van de JSON-output die door de analysepipeline wordt gegenereerd}
+        \label{tab:json_structure}
+    \end{table}
+    
+    Codefragment~\ref{lst:json_detected_errors} toont een verkort voorbeeld van het onderdeel waarin de effectief gedetecteerde fouten worden bijgehouden. In dit voorbeeld bevat de analyse twee gedetecteerde fouten: gebogen armen tijdens de trekfase en onvoldoende schouderdruk in de steunfase. De volledige JSON-output bevat daarnaast ook de niet-gedetecteerde controles, de gebruikte meetwaarden en de detectieregels.
+    
+    \begin{listing}[H]
+        \begin{minted}{json}
+            {
+                "detected_errors": [
+                {
+                    "type": "Bent arms",
+                    "phase": "Pull phase",
+                    "detected": true,
+                    "evidence": "Mean elbow angle during pull phase was 136.38°, minimum elbow angle was 132.64°."
+                },
+                {
+                    "type": "Weak shoulder push",
+                    "phase": "Support phase",
+                    "detected": true,
+                    "evidence": "3 support-phase rows had an elbow angle below 160°."
+                }
+                ],
+                "detected_error_types": [
+                "Bent arms",
+                "Weak shoulder push"
+                ],
+                "detected_error_count": 2
+            }
+        \end{minted}
+        \caption{Verkort voorbeeld van de gedetecteerde fouten in de JSON-output uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/data/V2/json/Bad_kip1_analysis_result_V2.json}{Bad\_kip1\_analysis\_result\_V2.json} (video: Bad\_kip1)}
+        \label{lst:json_detected_errors}
+    \end{listing}
+    
+    Deze structuur maakt de analyse beter controleerbaar. In plaats van enkel een finale conclusie te geven, bewaart het systeem ook de onderliggende argumentatie. Zo kan achteraf worden nagegaan welke meetwaarden en regels tot een foutdetectie geleid hebben. Dit is vooral belangrijk binnen een proof-of-concept, omdat de gekozen drempelwaarden nog niet op een grote dataset gevalideerd zijn en dus transparant moeten blijven.
+    
+    Daarnaast vormt de JSON-output de technische koppeling met de feedbackmodule. De volledige JSON blijft beschikbaar als analysebestand, maar wordt niet ongewijzigd naar de LLM gestuurd. Voor de feedbackgeneratie wordt later een gefilterde versie gebruikt waarin enkel de informatie wordt behouden die nodig is om feedback te formuleren over effectief gedetecteerde fouten. Op die manier blijft de taakverdeling duidelijk. Het Python-script voert de foutdetectie uit, terwijl de LLM enkel instaat voor het verwoorden van de resultaten.
+    
+    \section{Finale testresultaten van de foutdetectie}
+    
+    Na de iteratieve verfijning van de ankerpuntdetectie, foutregels en JSON-output werd de finale versie van de regelgebaseerde analyse getest op meerdere pogingen. Hierbij werd bewust gewerkt met zowel een goede uitvoering als foutieve uitvoeringen. Op die manier kon nagegaan worden of het systeem enerzijds geen onterechte fouten detecteert bij een correcte poging en anderzijds de verwachte fouten behoudt bij minder goede uitvoeringen.
+    
+    De testset binnen deze proof-of-concept bleef beperkt. De resultaten mogen daarom niet geïnterpreteerd worden als een formele validatie van de foutdetectie, maar wel als een controle van de technische werking van de ontwikkelde pipeline. Per poging werd het relevante analysevenster manueel ingesteld, waarna de analyse automatisch de fasen, meetwaarden, foutdetecties en JSON-output genereerde.
+    
+    \subsection{Goede uitvoering: Good\_kip5}
+    
+    De poging \textit{Good\_kip5} werd gebruikt als voorbeeld van een goede uitvoering. Deze video bevatte relatief weinig detectieruis en werd daarom eerder ook gebruikt om de eerste fase-indeling en ankerpuntdetectie uit te werken. In de finale test werd nagegaan of de aangepaste foutregels geen onterechte technische fouten detecteerden binnen de vier fouttypes van deze proof-of-concept.
+    
+    Voor deze poging werd het analysevenster ingesteld van frame 80 tot en met frame 170. Binnen dit venster werden de bewegingsfasen opnieuw automatisch afgebakend. De trekfase liep van frame 117 tot en met frame 120, de heupsluitingsfase van frame 121 tot en met frame 127 en de steunfase van frame 145 tot en met frame 170. De maximale heupsluiting werd gevonden rond frame 124, wat overeenkomt met de eerdere visuele controle van deze uitvoering.
+    
+    Figuur~\ref{fig:goodkip5_final_analysis} toont de finale fase-indeling voor deze goede uitvoering. De grafiek toont dat de automatisch afgebakende fasen logisch aansluiten bij het verloop van de heuphoek, romphoek, schouderhoek en ellebooghoek. Vooral de duidelijke daling van de heup- en romphoek rond de heupsluitingsfase en de daaropvolgende stijging richting steunfase zijn herkenbaar.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{Good_kip5_analyze_final.png}
+        \caption{Finale fase-indeling en hoekcurves voor de goede uitvoering \textit{Good\_kip5}.}
+        \label{fig:goodkip5_final_analysis}
+    \end{figure}
+    
+    In de finale analyse werden geen van de vier gecontroleerde fouttypes gedetecteerd. De gemiddelde ellebooghoek in de trekfase bleef voldoende hoog, waardoor \textit{Bent arms} niet werd geactiveerd. Ook de minimale heuphoek tijdens de heupsluitingsfase wees niet op onvoldoende heupsluiting. Verder werden er geen overgangsrijen gevonden waarin de heup al sterk geopend was terwijl de lichaamsuitlijning nog onvoldoende was, waardoor \textit{Early hip opening} niet werd gedetecteerd.
+    
+    Een belangrijk aandachtspunt bij deze poging was de foutregel voor \textit{Weak shoulder push}. In een eerdere versie van de analyse werd deze fout nog onterecht gedetecteerd, doordat twee korte steunfase-rijen een ellebooghoek onder 160° vertoonden. Omdat de steunfase relatief weinig meetrijen bevatte, was dit in de oorspronkelijke regel procentueel al voldoende om de fout te activeren. Na de verfijning van de regel, waarbij minstens drie afwijkende steunfase-rijen vereist zijn, werd deze false positive niet langer gedetecteerd.
+    
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{lc}
+            \toprule
+            \textbf{Fouttype} & \textbf{Resultaat voor \textit{Good\_kip5}} \\
+            \midrule
+            Bent arms & Niet gedetecteerd \\
+            Insufficient hip closure & Niet gedetecteerd \\
+            Early hip opening & Niet gedetecteerd \\
+            Weak shoulder push & Niet gedetecteerd \\
+            \bottomrule
+        \end{tabular}
+        \caption{Finale foutdetectie voor de goede uitvoering \textit{Good\_kip5}}
+        \label{tab:goodkip5_detection}
+    \end{table}
+    
+    De analyse van \textit{Good\_kip5} toont aan dat de finale foutregels in staat zijn om binnen deze testpoging geen onterechte correcties te genereren. Dit is belangrijk omdat een proof-of-concept niet enkel fouten moet kunnen detecteren, maar ook moet kunnen vermijden dat een correcte uitvoering onnodig gecorrigeerd wordt. Tegelijk blijft deze conclusie beperkt tot de geteste video en de vier fouttypes binnen de huidige scope.
+    
+    \subsection{Foutieve uitvoeringen: Bad\_kip1 en Bad\_kip2}
+    
+    Naast de goede uitvoering werd de finale analyse ook toegepast op twee foutieve pogingen: \textit{Bad\_kip1} en \textit{Bad\_kip2}. Deze pogingen werden door de coach aangeleverd als voorbeelden van minder goede uitvoeringen, waarbij ook technische fouten werden meegegeven. Niet alle door de coach benoemde aandachtspunten vielen binnen de scope van deze proof-of-concept. De analyse werd daarom enkel beoordeeld op de vier vooraf gedefinieerde fouttypes. Binnen die afbakening werd nagegaan of de verfijnde foutregels de relevante fouten bleven detecteren.
+    
+    Voor \textit{Bad\_kip1} werd het analysevenster ingesteld van frame 61 tot en met frame 175. Binnen dit venster werd de start van de trekfase automatisch gevonden op frame 92, de maximale heupsluiting rond frame 99 en de start van de steunfase op frame 136. De finale analyse detecteerde twee fouten: \textit{Bent arms} in de trekfase en \textit{Weak shoulder push} in de steunfase.
+    
+    De detectie van \textit{Bent arms} werd ondersteund door de ellebooghoek in de trekfase. Zowel de minimale als de gemiddelde ellebooghoek lagen voldoende laag om de foutregel te activeren. Dit wijst erop dat de armen tijdens de trekfase onvoldoende gestrekt bleven. Daarnaast werd \textit{Weak shoulder push} gedetecteerd in de steunfase. Hoewel de gemiddelde ellebooghoek in deze fase relatief hoog bleef, kwamen er drie steunfase-rijen voor waarin de ellebooghoek onder de ingestelde drempel viel. Daardoor bleef de fout ook na de verfijning van de regel behouden.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{Bad_kip1_analyze_with_smoothing_hip_angle.png}
+        \caption{Finale hoekcurves en fase-indeling met gefilterde heuphoek voor de foutieve uitvoering \textit{Bad\_kip1}.}
+        \label{fig:badkip1_final_analysis}
+    \end{figure}
+    
+    Voor \textit{Bad\_kip2} werd het analysevenster ingesteld van frame 63 tot en met frame 182. De start van de trekfase werd automatisch gevonden op frame 98, de maximale heupsluiting rond frame 103 en de start van de steunfase op frame 117. In deze poging werd één fout gedetecteerd: \textit{Weak shoulder push} in de steunfase.
+    
+    De fout in de steunfase was bij \textit{Bad\_kip2} duidelijker aanwezig dan bij \textit{Bad\_kip1}. In de steunfase kwamen 25 meetrijen voor waarin de ellebooghoek onder de ingestelde drempel lag. Dit kwam overeen met een groot aandeel van de volledige steunfase. Daarnaast lagen ook de gemiddelde romphoek en gemiddelde ellebooghoek in de steunfase lager dan bij de goede uitvoering. Hierdoor bleef \textit{Weak shoulder push} duidelijk gedetecteerd na de finale aanpassing van de foutregel.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.95\linewidth]{Bad_kip2_analyze_with_smoothing_hip_angle.png}
+        \caption{Finale hoekcurves en fase-indeling met gefilterde heuphoek voor de foutieve uitvoering \textit{Bad\_kip2}.}
+        \label{fig:badkip2_final_analysis}
+    \end{figure}
+    
+    Bij beide foutieve pogingen werden \textit{Insufficient hip closure} en \textit{Early hip opening} niet gedetecteerd. Dit betekent niet noodzakelijk dat de uitvoeringen technisch volledig correct waren op deze onderdelen, maar wel dat de gemeten waarden binnen de huidige drempelwaarden van het proof-of-concept niet voldeden aan de voorwaarden om deze fouten te activeren. Vooral bij \textit{Early hip opening} is dit belangrijk, omdat de regel bewust werd verfijnd zodat een normale heupopening na de heupsluiting niet automatisch als fout wordt beschouwd.
+    
+    De resultaten voor \textit{Bad\_kip1} en \textit{Bad\_kip2} tonen dat de verfijnde foutregels niet enkel bij de goede uitvoering correcter reageren, maar ook de relevante fouten in foutieve pogingen blijven detecteren. De gedetecteerde fouten komen overeen met de coachaanduidingen die binnen de scope van deze proof-of-concept vallen. Tegelijk blijft de interpretatie beperkt tot de vier vooraf gedefinieerde fouttypes en de ingestelde drempelwaarden. De analyse geeft dus geen volledige technische beoordeling van de volledige kip, maar een gecontroleerde detectie van een beperkte set foutpatronen binnen het proof-of-concept.
+    
+    \subsection{Samenvattende vergelijking van de detectieresultaten}
+    
+    Tabel~\ref{tab:final_detection_results} geeft een samenvattend overzicht van de finale foutdetectie voor de drie geteste pogingen. De tabel toont per poging welke van de vier fouttypes door het regelgebaseerde systeem werden gedetecteerd.
+    
+    \begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabular}{lccccc}
+            \toprule
+            \textbf{Poging} & \textbf{Bent arms} & \textbf{Insufficient hip closure} & \textbf{Early hip opening} & \textbf{Weak shoulder push} & \textbf{Aantal fouten} \\
+            \midrule
+            Good\_kip5 & Niet gedetecteerd & Niet gedetecteerd & Niet gedetecteerd & Niet gedetecteerd & 0 \\
+            Bad\_kip1 & Gedetecteerd & Niet gedetecteerd & Niet gedetecteerd & Gedetecteerd & 2 \\
+            Bad\_kip2 & Niet gedetecteerd & Niet gedetecteerd & Niet gedetecteerd & Gedetecteerd & 1 \\
+            \bottomrule
+        \end{tabular}
+        \caption{Samenvatting van de finale regelgebaseerde foutdetectie voor de drie geteste pogingen}
+        \label{tab:final_detection_results}
+    \end{table}
+    
+    De samenvatting toont dat de finale analyse binnen de beperkte testset het verwachte onderscheid maakt tussen de goede en foutieve uitvoeringen. Bij \textit{Good\_kip5} worden geen fouten gedetecteerd, terwijl bij \textit{Bad\_kip1} en \textit{Bad\_kip2} de fouttypes worden gevonden die binnen de scope van deze proof-of-concept en de coachaanduidingen vallen. Tegelijk blijft dit resultaat verkennend. De testset is klein, de analysevensters werden manueel gekozen en de drempelwaarden zijn nog niet gevalideerd op een grotere dataset.
+    
+    \section{Feedbackgeneratie met een lokale LLM}
+    
+    Na de regelgebaseerde foutdetectie werd onderzocht of de gestructureerde analyse-output automatisch kon worden omgezet naar begrijpelijke coachingfeedback. In tegenstelling tot het eerdere verkennende experiment met Gemini kreeg het taalmodel in deze fase niet langer de opdracht om zelf technische fouten te detecteren. De foutdetectie was reeds uitgevoerd door het Python-script. De rol van de LLM werd daardoor beperkt tot het verwoorden van de effectief gedetecteerde fouten in begrijpelijke feedback voor een recreatieve turnster en trainer.
+    
+    Voor deze stap werd gewerkt met een lokaal taalmodel via Ollama. Deze keuze sloot aan bij het proof-of-concept, omdat de feedbackgeneratie lokaal kon worden uitgevoerd zonder de analysegegevens naar een externe cloudservice te sturen. Binnen de finale test werd gebruikgemaakt van het model \texttt{qwen2.5:7b}. De keuze voor dit model was niet bedoeld als definitieve modelvergelijking, maar als praktische configuratie waarmee nagegaan kon worden of lokale feedbackgeneratie technisch haalbaar was.
+    
+    \subsection{Promptiteraties en modelkeuze}
+    
+    De eerste promptiteraties waren bedoeld om na te gaan hoe goed een lokaal taalmodel de JSON-output van de analyse kon omzetten naar coachingfeedback. Daarbij werd het model expliciet geïnstrueerd om enkel te werken met de fouten die door het regelgebaseerde systeem waren gedetecteerd. Het model mocht dus geen nieuwe foutdetectie uitvoeren, geen niet-gedetecteerde fouten bespreken en geen fouten buiten de scope van het proof-of-concept toevoegen.
+    
+    Tijdens de eerste testen bleek dat deze afbakening noodzakelijk was. Hoewel de LLM doorgaans inhoudelijk aansloot bij de gedetecteerde fouten, nam het model soms Engelstalige foutnamen of technische termen uit de JSON over in de Nederlandstalige feedback. Daarnaast kwamen er soms onnatuurlijke formuleringen voor, zoals letterlijke vertalingen van Engelse fasebenamingen. Dit maakte duidelijk dat niet alleen de JSON-inhoud, maar ook de prompttaal en de gebruikte labels een invloed hadden op de uiteindelijke feedbackkwaliteit.
+    
+    Daarom werden de prompts iteratief aangescherpt. In latere versies werd sterker benadrukt dat het model geen ruwe meetwaarden, drempelwaarden, bestandsnamen, JSON-velden of Engelse termen mocht tonen aan de gebruiker. Ook werd de gewenste outputstructuur explicieter vastgelegd: een korte algemene beoordeling, een lijst met de belangrijkste aandachtspunten, concrete coachingtips en een korte positieve afsluiter. Deze structuur moest vermijden dat het model een technisch rapport genereerde in plaats van bruikbare coachingfeedback.
+    
+    Een belangrijke keuze in deze fase was de overgang naar een volledig Nederlandstalige prompt. De eerdere Engelstalige promptversies konden inhoudelijk wel bruikbare feedback opleveren, maar vergrootten de kans dat Engelse termen uit de JSON letterlijk in de output terechtkwamen. Omdat de beoogde context van deze bachelorproef een Nederlandstalige Belgische trainingsomgeving is, werd uiteindelijk verdergewerkt met een Nederlandstalige promptversie.
+    
+    Tabel~\ref{tab:prompt_iterations} vat de belangrijkste promptiteraties samen.
+    
+    \begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabular}{p{2.4cm}p{4.2cm}p{5.8cm}}
+            \toprule
+            \textbf{Promptversie} & \textbf{Doel} & \textbf{Belangrijkste vaststelling} \\
+            \midrule
+            Versie 1 & Eerste test met lokale LLM-feedback op basis van de JSON-output & Het model bleef grotendeels bij de gedetecteerde fouten, maar nam nog technische en Engelstalige termen over. \\
+            Versie 2 & Strengere afbakening van de taak en beperkingen & De output werd beter gestuurd, maar bleef gevoelig voor onnatuurlijke formuleringen en te technische feedback. \\
+            Versie 3 & Nederlandstalige prompt met expliciete outputstructuur & Deze versie sloot het best aan bij de Belgische recreatieve context en werd gebruikt voor de finale feedbacktests. \\
+            \bottomrule
+        \end{tabular}
+        \caption{Samenvatting van de promptiteraties voor lokale LLM-feedbackgeneratie}
+        \label{tab:prompt_iterations}
+    \end{table}
+    
+    De finale configuratie combineerde dus \texttt{qwen2.5:7b} met een Nederlandstalige prompt en een beperkte JSON-input. Deze keuze leverde bruikbare resultaten op binnen de huidige proof-of-concept, maar de feedback bleef niet volledig foutloos. Het model kon de gedetecteerde fouten omzetten naar begrijpelijke tekst, maar bleef soms algemene of onnatuurlijke formuleringen gebruiken. Daarom wordt de LLM-output in deze bachelorproef beschouwd als een technische demonstratie van automatische feedbackgeneratie, niet als volledig gevalideerde coachingsfeedback.
+    
+    \subsection{Gefilterde LLM-input en nul-foutenlogica}
+    
+    Na de promptiteraties werd ook de input naar de LLM verder beperkt. De volledige JSON-output van de analyse bevat immers meer informatie dan nodig is voor feedbackgeneratie. Naast de effectief gedetecteerde fouten bevat deze JSON ook de volledige lijst met gecontroleerde fouttypes, de detectieregels, drempelwaarden, meetwaarden en niet-gedetecteerde fouten. Wanneer deze volledige JSON rechtstreeks aan het taalmodel werd aangeboden, bestond het risico dat de LLM ook niet-gedetecteerde fouten of technische details begon te bespreken.
+    
+    Daarom werd vóór de LLM-aanroep een beperkte JSON-structuur opgebouwd. Deze structuur bevat enkel de informatie die relevant is voor feedbackgeneratie: de oefening, het analysevenster, de bewegingsfasen, de effectief gedetecteerde fouten, het aantal gedetecteerde fouten, de taakomschrijving voor de LLM en enkele algemene opmerkingen. De onderdelen \texttt{error\_checks} en \texttt{detection\_rules} worden bewust niet doorgestuurd naar de LLM, omdat deze informatie vooral dient voor technische controle en niet voor de formulering van feedback.
+    
+    Codefragment~\ref{lst:llm_filtered_input} toont hoe deze gefilterde input werd opgebouwd.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            llm_input = {
+                "exercise": analysis_result.get("exercise"),
+                "analysis_window": analysis_result.get("analysis_window"),
+                "phases": analysis_result.get("phases"),
+                "detected_errors": analysis_result.get("detected_errors", []),
+                "detected_error_types": analysis_result.get(
+                    "detected_error_types", []
+                ),
+                "detected_error_count": analysis_result.get(
+                    "detected_error_count", 0
+                ),
+                "llm_task": analysis_result.get("llm_task"),
+                "notes": analysis_result.get("notes")
+            }
+        \end{minted}
+        \caption{Opbouw van een gefilterde JSON-input voor de LLM uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/generate_feedback.py}{\texttt{generate\_feedback.py}}}
+        \label{lst:llm_filtered_input}
+    \end{listing}
+    
+    Deze filtering versterkt de taakverdeling binnen de pipeline. Het Python-script blijft verantwoordelijk voor de foutdetectie, terwijl de LLM enkel de gedetecteerde fouten mag omzetten naar natuurlijke taal. Hierdoor wordt vermeden dat het taalmodel op basis van technische tusseninformatie alsnog eigen conclusies trekt of fouten vermeldt die door het regelgebaseerde systeem niet werden geactiveerd.
+    
+    Daarnaast werd een nul-foutenlogica toegevoegd. Wanneer \texttt{detected\_error\_count} gelijk is aan nul, wordt de LLM niet aangeroepen. In dat geval genereert het script rechtstreeks een vaste neutrale melding. Deze keuze werd gemaakt omdat taalmodellen de neiging kunnen hebben om ook bij een foutloze analyse toch algemene verbeterpunten of aandachtspunten te formuleren. Voor een feedbacksysteem is dat ongewenst, omdat een correcte uitvoering dan alsnog onnodige correctieve feedback zou krijgen.
+    
+    Codefragment~\ref{lst:no_error_logic} toont deze nul-foutenlogica.
+    
+    \begin{listing}[H]
+        \begin{minted}{python}
+            if analysis_result.get("detected_error_count", 0) != 0:
+                # Prompt wordt naar Ollama gestuurd
+                # en de LLM genereert feedback.
+                ...
+            else:
+                feedback = (
+                    "Binnen de huidige proof-of-concept werden geen technische "
+                    "fouten gedetecteerd voor de gecontroleerde fouttypes. "
+                    "Er wordt daarom geen aanvullende correctieve feedback "
+                    "gegenereerd."
+                )
+        \end{minted}
+        \caption{Nul-foutenlogica waarbij de LLM niet wordt aangeroepen wanneer geen fouten gedetecteerd zijn uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/generate_feedback.py}{\texttt{generate\_feedback.py}}}
+        \label{lst:no_error_logic}
+    \end{listing}
+    
+    Deze logica werd toegepast op de goede uitvoering \textit{Good\_kip5}. Aangezien de finale foutdetectie voor deze poging geen fouten opleverde, werd geen LLM-feedback gegenereerd. In plaats daarvan werd de vaste melding weergegeven dat er binnen de huidige proof-of-concept geen technische fouten werden gedetecteerd voor de gecontroleerde fouttypes. Dit sluit aan bij het doel om onnodige of verzonnen feedback te vermijden.
+    
+    Voor de foutieve pogingen, waarbij wel fouten werden gedetecteerd, werd de gefilterde JSON-input doorgestuurd naar het lokale taalmodel. De LLM kreeg daarbij enkel toegang tot de effectief gedetecteerde fouten en de bijhorende context. Op die manier werd de kans verkleind dat het model feedback zou geven over fouten die niet door het regelgebaseerde systeem waren vastgesteld.
+    
+    \subsection{Kwaliteit en beperkingen van de gegenereerde feedback}
+    
+    Na het toevoegen van de gefilterde LLM-input en de nul-foutenlogica werd de feedbackgeneratie getest op de drie finale pogingen. Voor \textit{Good\_kip5} werden geen fouten gedetecteerd, waardoor de LLM niet werd aangeroepen. Het systeem gaf in dat geval enkel de vaste melding dat er binnen de huidige proof-of-concept geen technische fouten werden gevonden voor de gecontroleerde fouttypes. Dit resultaat was gewenst, omdat zo vermeden werd dat het taalmodel alsnog algemene verbeterpunten zou formuleren bij een uitvoering waarvoor het regelgebaseerde systeem geen fout had vastgesteld.
+    
+    Voor \textit{Bad\_kip1} werd de LLM wel aangeroepen, aangezien het regelgebaseerde systeem twee fouten detecteerde: \textit{Bent arms} en \textit{Weak shoulder push}. De gegenereerde feedback sloot inhoudelijk aan bij deze twee fouten. Het model gaf aan dat de armen tijdens de trekfase onvoldoende gestrekt bleven en dat de steunfase onvoldoende krachtig of stabiel werd afgewerkt. Daarmee werd de kern van de JSON-analyse correct omgezet naar begrijpelijke coachingfeedback.
+    
+    Ook voor \textit{Bad\_kip2} werd feedback gegenereerd op basis van de gefilterde JSON-input. In deze poging werd enkel \textit{Weak shoulder push} gedetecteerd. De LLM beperkte de feedback daardoor tot de steunfase en formuleerde geen bijkomende opmerkingen over gebogen armen, onvoldoende heupsluiting of te vroege heupopening. Dit bevestigt dat de filtering van de input helpt om de feedback beter te laten aansluiten bij de effectief gedetecteerde fouten.
+    
+    \begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabular}{p{2.6cm}p{4.2cm}p{5.8cm}}
+            \toprule
+            \textbf{Poging} & \textbf{Gedetecteerde fouten} & \textbf{Resultaat feedbackgeneratie} \\
+            \midrule
+            Good\_kip5 & Geen fouten & Geen LLM-aanroep; vaste neutrale melding. \\
+            Bad\_kip1 & Bent arms; Weak shoulder push & Feedback bespreekt de gebogen armen in de trekfase en de zwakkere steunfase. \\
+            Bad\_kip2 & Weak shoulder push & Feedback blijft beperkt tot de zwakkere steunfase. \\
+            \bottomrule
+        \end{tabular}
+        \caption{Samenvatting van de feedbackgeneratie op basis van de finale foutdetectie}
+        \label{tab:llm_feedback_summary}
+    \end{table}
+    
+    De resultaten tonen aan dat de LLM bruikbaar is als taalcomponent bovenop de regelgebaseerde analyse. De technische foutdetectie gebeurt niet door het taalmodel zelf, maar door het Python-script. De LLM vertaalt deze resultaten enkel naar een begrijpelijkere vorm. Hierdoor blijft de pipeline beter controleerbaar dan bij het eerdere Gemini-experiment, waarbij het model zelf technische conclusies formuleerde op basis van video, CSV of grafiek.
+    
+    Toch bleef de kwaliteit van de gegenereerde feedback beperkt. Ondanks de strengere prompt en de gefilterde input kwamen soms nog algemene formuleringen of minder natuurlijke zinnen voor. Ook moest in de prompt expliciet worden verboden om Engelse termen, meetwaarden, JSON-velden of technische variabelen over te nemen. Dit toont aan dat de LLM-output niet zonder controle als afgewerkte coachingsfeedback beschouwd mag worden.
+    
+    De feedbackgeneratie bewijst dus vooral dat automatische tekstuele terugkoppeling technisch mogelijk is binnen de ontwikkelde pipeline. De combinatie van regelgebaseerde foutdetectie en een lokale LLM maakt het mogelijk om meetbare fouten om te zetten naar Nederlandstalige feedback. Binnen deze bachelorproef blijft dit echter een proof-of-concept. Voor praktisch gebruik in een trainingscontext zou de feedback nog verder moeten worden geëvalueerd door coaches en getest moeten worden op een grotere variatie aan uitvoeringen.
+    
