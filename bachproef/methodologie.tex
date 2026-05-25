@@ -25,7 +25,7 @@
 %%
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
-Dit onderzoek volgt een ontwerpgericht en experimenteel onderzoeksdesign waarbij een proof-of-concept wordt ontwikkeld en geëvalueerd. Het doel is om na te gaan in welke mate AI-technieken ingezet kunnen worden voor automatische foutdetectie en feedbackgeneratie bij de kip aan barre.
+Dit onderzoek volgt een ontwerpgericht en experimenteel onderzoeksdesign waarbij een proof-of-concept wordt ontwikkeld en getest. Het doel is om na te gaan in welke mate AI-technieken ingezet kunnen worden voor automatische foutdetectie en feedbackgeneratie bij de kip aan de barre. De nadruk ligt hierbij niet op een volledig gevalideerd coachesysteem, maar op het technisch uitwerken en verkennend beoordelen van een analysepipeline.
 
 Het onderzoeksproces wordt onderverdeeld in vijf grote fasen.
 
@@ -62,73 +62,82 @@ De integratie van via-points als aanvullende analysemethode wordt voorzien als m
 \subsection{Systeemvereisten}
 \subsubsection{Functionele vereisten}
 
-De functionele vereisten beschrijven welke functionaliteiten het systeem moet implementeren om de vooropgestelde doelstelling te bereiken. Voor dit proof-of-concept worden de volgende vereisten gedefinieerd:
+De functionele vereisten beschrijven welke functionaliteiten het systeem binnen de scope van het proof-of-concept moet implementeren. Deze vereisten worden opgevat als ontwikkeldoelen voor een beperkte testopstelling.
 
 \begin{enumerate}
     \item Het systeem moet een videofragment van een kip aan de barre kunnen inladen.
     \item Het systeem moet automatisch gewrichtsposities extraheren uit de video via markerloze pose-estimatie.
-    \item Het systeem moet de beweging opdelen in relevante fasen (zwaai, trek, heupsluiting en steunfase).
+    \item Het systeem moet relevante gewrichtshoeken berekenen en opslaan in een gestructureerd CSV-bestand.
+    \item Het systeem moet de beweging opdelen in relevante fasen, namelijk zwaaifase, trekfase, heupsluitingsfase en steunfase.
     \item Het systeem moet vooraf gedefinieerde technische fouten detecteren op basis van pose-data:
     \begin{itemize}
-        \item Gebogen armen tijdens de trekfase
-        \item Onvoldoende heupsluiting
-        \item Te vroege heupopening
-        \item Onvoldoende schouderdruk in de steunfase
+        \item gebogen armen tijdens de trekfase,
+        \item onvoldoende heupsluiting,
+        \item te vroege heupopening,
+        \item onvoldoende schouderdruk in de steunfase.
     \end{itemize}
-    \item Het systeem moet de gedetecteerde fouten omzetten naar gestructureerde parameters.
-    \item Het systeem moet op basis van deze parameters automatisch tekstuele feedback genereren via een Large Language Model.
-    \item Het systeem moet de gegenereerde feedback tonen aan de gebruiker.
+    \item Het systeem moet de analyse-output structureren in JSON-formaat.
+    \item Het systeem moet op basis van de effectief gedetecteerde fouten tekstuele feedback kunnen genereren via een Large Language Model.
+    \item Het systeem moet vermijden dat de LLM feedback genereert over fouten die niet door het regelgebaseerde systeem werden gedetecteerd.
 \end{enumerate}
 
-\subsubsection{Niet-functionele vereisten}
+\subsubsection{Niet-functionele aandachtspunten}
 
-Naast de functionele vereisten worden ook niet-functionele vereisten gedefinieerd. Deze beschrijven kwaliteitsaspecten waaraan het systeem moet voldoen en worden opgesteld volgens het SMART-principe.
+Naast de functionele vereisten worden ook enkele niet-functionele aandachtspunten geformuleerd. In een volledig productiesysteem zouden deze criteria kwantitatief geëvalueerd moeten worden. Binnen deze bachelorproef worden ze echter vooral gebruikt om de kwaliteit van het proof-of-concept richting te geven. Ze worden dus niet allemaal formeel gemeten.
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{llll}
+    \begin{tabular}{p{3.2cm}p{4.2cm}p{5.5cm}}
         \toprule
-        NFR & Indicator & Meetvoorschrift & Norm \\
+        \textbf{Aandachtspunt} & \textbf{Betekenis binnen de PoC} & \textbf{Evaluatie binnen dit onderzoek} \\
         \midrule
-        Prestatie-efficiëntie & Snelheid & Tijd tussen input video en gegenereerde feedback & $\leq$ 10 s \\
-        Functionele geschiktheid & Correctheid & Vergelijking met annotatie door expert & $\geq$ 70\% \\
-        Bruikbaarheid & Begrijpelijkheid & Evaluatie door coach (Likert-schaal) & $\geq$ 3/5 \\
-        Betrouwbaarheid & Foutbestendigheid & Testen met verschillende video’s & Geen crashes \\
-        Overdraagbaarheid & Compatibiliteit & Ondersteunde videoformaten & Minstens MP4 \\
+        Prestatie-efficiëntie & De pipeline moet binnen een redelijke tijd uitvoerbaar zijn op een gewone laptop. & Verkennend beoordeeld tijdens het uitvoeren van de scripts, niet formeel gebenchmarkt. \\
+        Functionele geschiktheid & De foutdetectie moet technisch relevante fouten kunnen detecteren binnen de vooraf bepaalde fouttypes. & Kwalitatief gecontroleerd op een beperkte set testvideo's. \\
+        Bruikbaarheid & De feedback moet begrijpelijk zijn voor een recreatieve turnster en trainer. & Kwalitatief beoordeeld op basis van de gegenereerde feedback, zonder formele gebruikersstudie. \\
+        Betrouwbaarheid & Het systeem moet reproduceerbare output genereren voor de geteste video’s en niet crashen bij normale invoer. & Getest tijdens de ontwikkeling op meerdere pogingen. \\
+        Overdraagbaarheid & Het systeem moet werken met standaard videobestanden en CSV-output. & Beperkt getest met de gebruikte videobestanden binnen de proof-of-concept. \\
         \bottomrule
     \end{tabular}
-    \caption{Niet-functionele vereisten}
+    \caption{Niet-functionele aandachtspunten binnen het proof-of-concept}
+    \label{tab:nfr_poc}
 \end{table}
 
 \subsection{Prioritering van vereisten (MoSCoW)}
 
-Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereisten geprioriteerd volgens de MoSCoW-methode.
+Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereisten geprioriteerd volgens de MoSCoW-methode. De prioritering heeft betrekking op de implementatie van de proof-of-concept en niet op een volledig gevalideerde eindtoepassing.
 
 \textbf{Must have}
 \begin{itemize}
-    \item Video-invoer
-    \item Pose-estimatie
-    \item Detectie van de vier gedefinieerde fouttypes
-    \item Generatie van tekstuele feedback
+    \item Video-invoer voor een kip aan de barre.
+    \item Markerloze pose-estimatie op basis van standaard videobeelden.
+    \item Extractie en opslag van relevante gewrichtshoeken in CSV-formaat.
+    \item Regelgebaseerde fase-indeling van de beweging.
+    \item Implementatie van detectieregels voor de vier vooraf gedefinieerde fouttypes.
+    \item Structurering van de analyse-output in JSON-formaat.
+    \item Generatie van tekstuele feedback op basis van effectief gedetecteerde fouten.
 \end{itemize}
 
 \textbf{Should have}
 \begin{itemize}
-    \item Opsplitsing van de beweging in fasen
-    \item Structurering van parameters
+    \item Visuele controle van de berekende hoekcurves via grafieken.
+    \item Beperking van de LLM-input tot de effectief gedetecteerde fouten.
+    \item Een veilige afhandeling wanneer geen fouten worden gedetecteerd.
 \end{itemize}
 
 \textbf{Could have}
 \begin{itemize}
-    \item Visualisatie van het skelet op de video
-    \item Vergelijking van meerdere pogingen
+    \item Visualisatie van het skelet op de video.
+    \item Vergelijking van meerdere pogingen binnen dezelfde pipeline.
+    \item Verdere verfijning van drempelwaarden op basis van een grotere dataset.
 \end{itemize}
 
 \textbf{Won't have}
 \begin{itemize}
-    \item Real-time analyse
-    \item Mobiele applicatie
-    \item Volledig gevalideerd coachesysteem
+    \item Real-time analyse.
+    \item Mobiele applicatie.
+    \item Volledig automatisch trainingsplatform.
+    \item Volledig gevalideerd coachesysteem.
+    \item Automatische detectie van fouten buiten de vooraf gedefinieerde fouttypes, zoals gebogen knieën, tenenpositie, hoofdpositie of algemene elegantie.
 \end{itemize}
 
 \textbf{Doelstelling:} afbakenen wat het systeem precies moet detecteren en genereren.  
@@ -175,9 +184,9 @@ Meer geavanceerde modellen, zoals beschreven door \textcite{Yamasaki2010}, sugge
 
 Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
 
-Om de output van het systeem te structureren en consistent te maken, wordt een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken en gedetecteerde technische fouten.
+Om de output van het systeem te structureren en consistent te maken, wordt een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken, toegepaste detectieregels en gedetecteerde technische fouten.
 
-Deze gestructureerde representatie vormt de interface tussen de rule-based foutdetectie en de feedbackgeneratie via een Large Language Model. Om deze gegevens op een consistente manier door het taalmodel te laten interpreteren, wordt gebruikgemaakt van function calling en een vooraf gedefinieerd JSON-schema.
+Deze gestructureerde representatie vormt de interface tussen de regelgebaseerde foutdetectie en de feedbackgeneratie via een Large Language Model. De LLM wordt daarbij niet gebruikt om nieuwe fouten te detecteren, maar enkel om de door het regelgebaseerde systeem vastgestelde fouten te verwoorden.
 
 \textbf{Doelstelling:} inzicht verkrijgen in de beperkingen van vrije AI-analyse en op basis daarvan een gecontroleerde feedbackpipeline ontwikkelen.  
 
@@ -187,15 +196,15 @@ Deze gestructureerde representatie vormt de interface tussen de rule-based foutd
 
 \section{Fase 5: Evaluatie}
 
-Tot slot wordt het systeem geëvalueerd op twee niveaus: technische detectienauwkeurigheid en bruikbaarheid van de gegenereerde feedback.
+Tot slot wordt het proof-of-concept verkennend geëvalueerd aan de hand van een beperkte set videopogingen. Daarbij wordt nagegaan of de regelgebaseerde analyse bij een goede uitvoering geen fout detecteert en of bij foutieve uitvoeringen de relevante fouttypes binnen de scope van het systeem worden herkend.
 
-De automatische foutdetectie wordt vergeleken met manuele beoordeling door een trainer. De feedbackoutput wordt kwalitatief beoordeeld op technische correctheid en toepasbaarheid binnen een trainingscontext.
+Daarnaast wordt de gegenereerde feedback kwalitatief beoordeeld. Hierbij wordt gecontroleerd of de LLM enkel feedback geeft over effectief gedetecteerde fouten en geen bijkomende fouten of verbeterpunten verzint.
 
-Daarnaast wordt geëvalueerd in welke mate de huidige fase- en hoekgebaseerde benadering voldoende is om relevante technische fouten te detecteren, en of een uitbreiding naar een via-point gebaseerde analyse noodzakelijk is.
+Deze evaluatie heeft niet als doel om het systeem formeel te valideren, maar om na te gaan of de volledige pipeline technisch werkt en welke beperkingen zichtbaar worden binnen de geteste pogingen.
 
-\textbf{Doelstelling:} inschatten in welke mate het systeem betrouwbaar en pedagogisch bruikbaar is.  
+\textbf{Doelstelling:} verkennend beoordelen of de ontwikkelde pipeline technisch werkt binnen de beperkte testset.  
 
-\textbf{Deliverable:} evaluatie-analyse en interpretatie van de resultaten.  
+\textbf{Deliverable:} overzicht van de foutdetectie, feedbackgeneratie en belangrijkste beperkingen.  
 
-\textbf{Onderzoeksmethode:} vergelijkende analyse en kwalitatieve expertbeoordeling.
+\textbf{Onderzoeksmethode:} verkennende test op meerdere videopogingen, visuele controle van grafieken en kwalitatieve beoordeling van de gegenereerde feedback.
 
