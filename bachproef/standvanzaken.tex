@@ -100,7 +100,7 @@ Aangezien onderzoek aantoont dat de kwaliteit van een beweging in sterke mate be
 
 Binnen dit onderzoek worden verschillende Large Language Models (LLM’s) geëvalueerd op hun geschiktheid voor het genereren van technische feedback op basis van bewegingsanalyse.
 
-Naast de modellen die effectief in het proof-of-concept worden gebruikt, worden ook alternatieven in overweging genomen, zoals open-source modellen (bijvoorbeeld LLaMA) en andere commerciële systemen. Open-source modellen bieden voordelen op vlak van privacy en lokale verwerking, maar vereisen doorgaans meer configuratie en tonen in de praktijk minder consistente prestaties bij complexe taalopdrachten. Om deze reden worden ze binnen dit onderzoek niet verder meegenomen.
+Naast de modellen die in de verkennende vergelijking worden opgenomen, worden ook lokale open-source modellen in overweging genomen. Dergelijke modellen bieden voordelen op vlak van privacy en lokale verwerking, maar vereisen doorgaans meer configuratie en kunnen minder consistente prestaties tonen bij complexe taalopdrachten. Binnen dit onderzoek worden ze daarom niet gebruikt voor vrije multimodale analyse, maar wel onderzocht als lokale taalcomponent voor gecontroleerde feedbackgeneratie op basis van reeds gedetecteerde fouten.
 
 De selectie van geschikte modellen gebeurt op basis van volgende criteria:
 \begin{itemize}
@@ -127,7 +127,7 @@ Commerciële modellen zoals Google Gemini en OpenAI GPT bieden opties waarbij da
 
 Deze vergelijking is niet bedoeld als een alomvattende benchmarkstudie, maar als een praktische onderbouwing voor de keuze van tools binnen dit onderzoek. In het bijzonder wordt nagegaan in welke mate de modellen geschikt zijn voor (1) analyse van videodata, (2) genereren van gestructureerde output en (3) integratie binnen een proof-of-concept systeem.
 
-Naast de in deze studie gebruikte modellen (Google Gemini en OpenAI GPT) worden ook alternatieve systemen opgenomen in de vergelijking, met name Anthropic Claude en het open-source model LLaMA. Deze selectie laat toe om zowel commerciële cloudgebaseerde oplossingen als privacygerichte lokale modellen te evalueren.
+Naast Google Gemini en OpenAI GPT-4o worden ook alternatieve systemen opgenomen in de vergelijking, met name Anthropic Claude en het open-source model LLaMA. Deze selectie laat toe om zowel commerciële cloudgebaseerde oplossingen als privacygerichte lokale modellen te evalueren.
 
 \begin{table}[h]
     \centering
@@ -179,8 +179,7 @@ Anthropic Claude vormt een interessant alternatief vanwege zijn focus op betrouw
 
 Open-source modellen zoals LLaMA bieden belangrijke voordelen op het vlak van privacy, aangezien verwerking lokaal kan gebeuren zonder dat data externe servers verlaat. Dit maakt dergelijke modellen aantrekkelijk vanuit GDPR-perspectief. Tegelijk brengen ze aanzienlijke implementatiecomplexiteit met zich mee en is de betrouwbaarheid van output minder consistent zonder bijkomende optimalisatie \autocite{llama_privacy}.
 
-Op basis van deze analyse wordt in dit onderzoek gekozen om Google Gemini te gebruiken in een verkennende fase voor de analyse van videoinput, terwijl OpenAI GPT-4o wordt ingezet binnen het proof-of-concept voor het genereren van gestructureerde feedback. Deze combinatie laat toe om zowel de sterktes van multimodale analyse als betrouwbare tekstgeneratie optimaal te benutten.
-
+Op basis van deze analyse wordt in dit onderzoek Google Gemini gebruikt in een verkennende fase voor de analyse van videoinput. Voor de verdere proof-of-concept wordt gekozen voor een lokale LLM-opstelling via Ollama, zodat nagegaan kan worden in welke mate feedbackgeneratie lokaal en privacyvriendelijk kan worden uitgevoerd. Deze keuze laat toe om zowel de mogelijkheden van multimodale analyse als de haalbaarheid van lokaal gecontroleerde feedbackgeneratie te onderzoeken.
 %Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
 %
 %Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.

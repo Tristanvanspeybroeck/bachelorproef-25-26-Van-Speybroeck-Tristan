@@ -87,7 +87,8 @@ Naast de functionele vereisten worden ook enkele niet-functionele aandachtspunte
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{p{3.2cm}p{4.2cm}p{5.5cm}}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{p{3cm}p{4cm}X}
         \toprule
         \textbf{Aandachtspunt} & \textbf{Betekenis binnen de PoC} & \textbf{Evaluatie binnen dit onderzoek} \\
         \midrule
@@ -97,7 +98,7 @@ Naast de functionele vereisten worden ook enkele niet-functionele aandachtspunte
         Betrouwbaarheid & Het systeem moet reproduceerbare output genereren voor de geteste video’s en niet crashen bij normale invoer. & Getest tijdens de ontwikkeling op meerdere pogingen. \\
         Overdraagbaarheid & Het systeem moet werken met standaard videobestanden en CSV-output. & Beperkt getest met de gebruikte videobestanden binnen de proof-of-concept. \\
         \bottomrule
-    \end{tabular}
+    \end{tabularx}
     \caption{Niet-functionele aandachtspunten binnen het proof-of-concept}
     \label{tab:nfr_poc}
 \end{table}

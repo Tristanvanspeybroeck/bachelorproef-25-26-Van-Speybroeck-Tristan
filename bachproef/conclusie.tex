@@ -44,7 +44,7 @@ Tijdens de ontwikkeling werd ook duidelijk dat een negatieve of beperkte uitkoms
 
 De belangrijkste beperking van dit onderzoek is de beperkte testset. De foutregels werden getest op een klein aantal pogingen en zijn daardoor niet statistisch gevalideerd. De gebruikte drempelwaarden zijn gebaseerd op iteratieve ontwikkeling, visuele controle en de beschikbare testvideo’s. Voor een praktijkklaar systeem zouden deze regels op een grotere en meer diverse dataset getest moeten worden.
 
-Een tweede beperking is dat de analyse gebaseerd is op 2D pose-estimatie. Hierdoor kunnen perspectiefvertekening, camerahoek en occlusie invloed hebben op de berekende hoeken. Zeker bij gymnastiek, waar bewegingen snel verlopen en lichaamsdelen elkaar tijdelijk kunnen overlappen, kan dit leiden tot ruis in de landmarkdetectie. De toegevoegde smoothing vermindert dit probleem gedeeltelijk, maar lost het niet volledig op.
+Een tweede beperking is dat de analyse gebaseerd is op 2D pose-estimatie. Hierdoor kunnen perspectiefvertekening, camerahoek en tijdelijk afgedekte lichaamsdelen invloed hebben op de berekende hoeken. Zeker bij gymnastiek, waar bewegingen snel verlopen en lichaamsdelen elkaar tijdelijk kunnen overlappen, kan dit leiden tot ruis in de landmarkdetectie. De toegevoegde smoothing vermindert dit probleem gedeeltelijk, maar lost het niet volledig op.
 
 Een derde beperking is dat het analysevenster manueel werd gekozen. Dit was binnen de proof-of-concept aanvaardbaar, maar voor een volledig automatisch systeem zou ook de start en het einde van de relevante kipbeweging automatisch bepaald moeten worden.
 
