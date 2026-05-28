@@ -247,8 +247,8 @@
         \caption{Selectie van het relevante analysevenster binnen de CSV-data uit \href{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan/blob/main/Methodologie/pose_project/src/analyze_kip_execution.py}{\texttt{analyze\_kip\_execution.py}}}
         \label{lst:analysis_window_selection}
     \end{listing}
-    
-    Het geselecteerde bereik omvat theoretisch 91 videoframes. In de CSV-data bleken binnen dit analysevenster 86 meetrijen beschikbaar te zijn. Dit verschil komt doordat MediaPipe niet voor elk videoframe een bruikbare pose-output opsloeg. De verdere analyse werd daardoor uitgevoerd op de beschikbare geldige meetrijen binnen het gekozen framebereik, in plaats van op exact één datarij per videoframe.
+       
+    Het geselecteerde bereik omvat theoretisch 91 videoframes. In de CSV-data bleken binnen dit analysevenster 86 meetrijen beschikbaar te zijn. Dit verschil komt doordat MediaPipe niet voor elk videoframe een bruikbare pose-output opsloeg. Binnen deze proof-of-concept werden ontbrekende frames niet geïnterpoleerd, omdat dit bijkomende schattingen zou toevoegen bovenop de pose-estimatie. De verdere analyse werd daarom uitgevoerd op de beschikbare geldige meetrijen binnen het gekozen framebereik.
     
     Figuur~\ref{fig:analysis_window_goodkip5} toont het verloop van de vier berekende gewrichtshoeken binnen dit geselecteerde analysevenster. Door enkel het relevante deel van de beweging te tonen, worden de veranderingen in heuphoek, schouderhoek, romphoek en ellebooghoek duidelijker zichtbaar dan in de oorspronkelijke grafiek over de volledige video. Deze afbakening vormt daarmee een noodzakelijke voorbereidende stap voor het automatisch detecteren van kritieke momenten en het opdelen van de beweging in afzonderlijke fasen.
     
@@ -382,7 +382,7 @@
     
     In de eerste versie van de analyse werden kernmomenten, zoals de maximale heupsluiting, rechtstreeks bepaald op basis van de ruwe hoekwaarden. Dit werkte voldoende goed voor de propere uitvoering, maar bleek gevoeliger bij pogingen waarin de hoekcurves korte uitschieters vertoonden. Bij één van de foutieve pogingen zorgde een korte ruispiek ervoor dat een minder representatief frame als maximale heupsluiting werd gekozen.
     
-    Om dit te beperken werd een eenvoudige smoothingstap toegevoegd. Voor de heuphoek en romphoek werd een rolling median met een venster van vijf meetrijen berekend. Deze gefilterde reeksen worden gebruikt om de belangrijkste ankerpunten, zoals minimale heuphoek en minimale romphoek, stabieler te bepalen. De oorspronkelijke ruwe hoekwaarden blijven wel behouden voor de verdere analyse, visualisatie en rapportering.
+    Om dit te beperken werd een eenvoudige smoothingstap toegevoegd. Voor de heuphoek en romphoek werd een rolling median met een venster van vijf meet\-rijen berekend. Deze gefilterde reeksen worden gebruikt om de belangrijkste ankerpunten, zoals minimale heuphoek en minimale romphoek, stabieler te bepalen. De oorspronkelijke ruwe hoekwaarden blijven wel behouden voor de verdere analyse, visualisatie en rapportering.
     
     \begin{listing}[H]
         \begin{minted}{python}
@@ -627,7 +627,7 @@
     
     \begin{table}[H]
         \centering
-        \footnotesize
+        \scriptsize
         \begin{tabular}{lccccc}
             \toprule
             \textbf{Poging} & \textbf{Bent arms} & \textbf{Insufficient hip closure} & \textbf{Early hip opening} & \textbf{Weak shoulder push} & \textbf{Aantal fouten} \\
@@ -640,6 +640,8 @@
         \caption{Samenvatting van de finale regelgebaseerde foutdetectie voor de drie geteste pogingen}
         \label{tab:final_detection_results}
     \end{table}
+    
+    Binnen de beschikbare testset werden niet alle vier fouttypes positief vastgesteld. Vooral voor onvoldoende heupsluiting en te vroege heupopening konden geen extra voorbeelden worden opgenomen in de finale evaluatie. De resultaten tonen daardoor vooral aan dat de pipeline technisch werkt voor de geteste pogingen, maar vormen nog geen volledige validatie van alle foutregels.
     
     De samenvatting toont dat de finale analyse binnen de beperkte testset het verwachte onderscheid maakt tussen de goede en foutieve uitvoeringen. Bij \textit{Good\_kip5} worden geen fouten gedetecteerd, terwijl bij \textit{Bad\_kip1} en \textit{Bad\_kip2} de fouttypes worden gevonden die binnen de scope van deze proof-of-concept en de coachaanduidingen vallen. Tegelijk blijft dit resultaat verkennend. De testset is klein, de analysevensters werden manueel gekozen en de drempelwaarden zijn nog niet gevalideerd op een grotere dataset.
     

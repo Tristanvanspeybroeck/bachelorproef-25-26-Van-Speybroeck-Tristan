@@ -105,7 +105,7 @@ Naast de functionele vereisten worden ook enkele niet-functionele aandachtspunte
 
 \subsection{Prioritering van vereisten (MoSCoW)}
 
-Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereisten geprioriteerd volgens de MoSCoW-methode. De prioritering heeft betrekking op de implementatie van de proof-of-concept en niet op een volledig gevalideerde eindtoepassing.
+Om de scope van het proof-of-concept duidelijk af te bakenen, worden de functionele vereisten en niet-functionele aandachtspunten samen geprioriteerd volgens de MoSCoW-methode. De prioritering heeft betrekking op de implementatie van de proof-of-concept en niet op een volledig gevalideerde eindtoepassing. Daarbij wordt niet enkel gekeken naar de functionaliteiten die technisch geïmplementeerd moeten worden, maar ook naar de kwaliteitsaspecten die richting geven aan de ontwikkeling en interpretatie van de resultaten.
 
 \textbf{Must have}
 \begin{itemize}
@@ -116,6 +116,7 @@ Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereiste
     \item Implementatie van detectieregels voor de vier vooraf gedefinieerde fouttypes.
     \item Structurering van de analyse-output in JSON-formaat.
     \item Generatie van tekstuele feedback op basis van effectief gedetecteerde fouten.
+    \item Vermijden dat de LLM feedback genereert over fouten die niet door het regelgebaseerde systeem werden gedetecteerd.
 \end{itemize}
 
 \textbf{Should have}
@@ -123,6 +124,8 @@ Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereiste
     \item Visuele controle van de berekende hoekcurves via grafieken.
     \item Beperking van de LLM-input tot de effectief gedetecteerde fouten.
     \item Een veilige afhandeling wanneer geen fouten worden gedetecteerd.
+    \item Verkennende controle of de pipeline reproduceerbare output geeft voor de geteste videopogingen.
+    \item Kwalitatieve beoordeling of de gegenereerde feedback begrijpelijk is voor een recreatieve turnster en trainer.
 \end{itemize}
 
 \textbf{Could have}
@@ -130,6 +133,8 @@ Om de scope van het proof-of-concept duidelijk af te bakenen, worden de vereiste
     \item Visualisatie van het skelet op de video.
     \item Vergelijking van meerdere pogingen binnen dezelfde pipeline.
     \item Verdere verfijning van drempelwaarden op basis van een grotere dataset.
+    \item Formele benchmarking van uitvoeringstijd en performantie.
+    \item Uitgebreide gebruikersstudie met trainers en turnsters.
 \end{itemize}
 
 \textbf{Won't have}
