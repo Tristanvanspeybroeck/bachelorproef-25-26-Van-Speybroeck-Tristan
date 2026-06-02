@@ -33,28 +33,31 @@
 % Wie zijn bachelorproef in het Nederlands schrijft, kan dit negeren, de inhoud
 % wordt niet in het document ingevoegd.
 
-\IfLanguageName{english}{%
-\selectlanguage{dutch}
-\chapter*{Samenvatting}
-\lipsum[1-4]
-\selectlanguage{english}
-}{}
+%\IfLanguageName{english}{%
+%\selectlanguage{dutch}
+%\chapter*{Samenvatting}
+%\lipsum[1-4]
+%\selectlanguage{english}
+%}{}
 
 %%---------- Samenvatting -----------------------------------------------------
 % De samenvatting in de hoofdtaal van het document
 
 \chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
 
-Dit onderzoek gaat na in welke mate een AI-gebaseerd systeem op basis van mark\-er\-loze video-analyse technisch bruikbare feedback kan genereren voor recreatieve turnsters bij de kip aan de barre. Binnen recreatieve gymnastiekclubs begeleiden trainers vaak meerdere turnsters tegelijk, waardoor technische fouten niet altijd systematisch worden opgemerkt. Tegelijk is gerichte feedback belangrijk om de uitvoering van complexe elementen veilig en efficiënt aan te leren.
+This research investigates to what extent an AI-based system using markerless video analysis can generate technically useful feedback for recreational gymnasts performing the kip on bars. In recreational gymnastics clubs, coaches often supervise several gymnasts at the same time, which means that technical errors are not always systematically noticed. At the same time, targeted feedback is important for learning complex skills safely and efficiently.
 
-Het doel van dit onderzoek is het ontwikkelen en verkennend evalueren van een proof-of-concept dat standaard videobeelden omzet naar pose-data, daaruit relevante gewrichtshoeken berekent, vooraf gedefinieerde technische fouten regelgebaseerd detecteert en deze detecties omzet naar tekstuele feedback via een Large Language Model. De nadruk ligt daarbij niet op een volledig gevalideerd coachesysteem, maar op de technische haalbaarheid en beperkingen van een dergelijke analysepipeline.
+The aim of this research is to develop and exploratively evaluate a proof-of-concept that converts standard video footage into pose data, calculates relevant joint angles from this data, detects predefined technical errors using rule-based logic, and translates these detections into textual feedback through a Large Language Model. The focus is therefore not on a fully validated coaching system, but on the technical feasibility and limitations of such an analysis pipeline.
 
-De proof-of-concept werd opgebouwd in verschillende stappen. Eerst werd Media\-Pipe Pose Landmarker gebruikt om lichaamslandmarks uit videobeelden te extraheren. Vervolgens werden op basis van deze landmarks de heuphoek, schouderhoek, romphoek en ellebooghoek berekend en opgeslagen in CSV-formaat. Daarna werd een Python-script ontwikkeld dat een manueel gekozen analysevenster verwerkt, kritieke ankerpunten detecteert, de beweging opdeelt in fasen en vier vooraf bepaalde fouttypes analyseert: gebogen armen, onvoldoende heupsluiting, te vroege heupopening en onvoldoende schouderdruk in de steunfase. De analyse-output werd gestructureerd opgeslagen in JSON-formaat en in gefilterde vorm gebruikt als input voor een lokale LLM via Ollama.
+The proof-of-concept was built in several steps. First, MediaPipe Pose Landmarker was used to extract body landmarks from video footage. Then, based on these landmarks, the hip angle, shoulder angle, trunk angle and elbow angle were calculated and stored in CSV format. After that, a Python script was developed that processes a manually selected analysis window, detects critical anchor points, divides the movement into phases and analyses four predefined error types: bent arms, insufficient hip closure, early hip opening and weak shoulder push in the support phase. The analysis output was stored in a structured JSON format and used in a filtered form as input for a local LLM through Ollama.
 
-Uit de resultaten blijkt dat markerloze pose-estimatie bruikbare bewegingsdata kan opleveren uit standaard videobeelden, maar dat de kwaliteit afhankelijk blijft van de opname. Achtergrondbewegingen, tijdelijk minder zichtbare lich\-aams\-delen en detectieruis kunnen abrupte afwijkingen veroorzaken in de berekende hoekcurves. Daarom werd de analyse iteratief verfijnd, onder meer door smoothing toe te passen en foutregels aan te passen om foutieve detecties te beperken.
+The results show that markerless pose estimation can produce usable movement data from standard video footage, but that the quality remains dependent on the recording. Background movements, temporarily less visible body parts and detection noise can cause abrupt deviations in the calculated angle curves. For this reason, the analysis was refined iteratively, among other things by applying smoothing and adjusting error rules to reduce incorrect detections.
 
-De finale analyse werd getest op drie pogingen: één goede uitvoering en twee foutieve uitvoeringen. Bij de goede uitvoering werden geen fouten gedetecteerd. Bij de eerste foutieve uitvoering werden gebogen armen in de trekfase en onvoldoende schouderdruk in de steunfase vastgesteld. Bij de tweede foutieve uitvoering werd vooral onvoldoende schouderdruk in de steunfase gedetecteerd. De resultaten tonen aan dat de regelgebaseerde aanpak binnen de beperkte testset relevante verschillen tussen pogingen kan herkennen, maar niet als formele validatie mag worden beschouwd.
+The final analysis was tested on three attempts: one good execution and two incorrect executions. In the good execution, no errors were detected. In the first incorrect execution, bent arms during the pull phase and weak shoulder push in the support phase were detected. In the second incorrect execution, mainly weak shoulder push in the support phase was detected. The results show that the rule-based approach can recognise relevant differences between attempts within the limited test set, but should not be considered a formal validation.
 
-De LLM-feedback bleek technisch haalbaar, maar niet volledig betrouwbaar zonder strikte afbakening. Wanneer het taalmodel te veel informatie kreeg, bestond het risico dat het niet-gedetecteerde fouten of algemene verbeterpunten formuleerde. Daarom werd de LLM-input beperkt tot de effectief gedetecteerde fouten en wordt geen LLM-call uitgevoerd wanneer het regelgebaseerde systeem geen fouten detecteert.
+The LLM feedback proved technically feasible, but not fully reliable without strict delimitation. When the language model received too much information, there was a risk that it would formulate non-detected errors or general improvement points. Therefore, the LLM input was limited to the errors that were actually detected, and no LLM call is performed when the rule-based system detects no errors.
 
-Dit onderzoek toont aan dat automatische technische feedback op de kip aan de barre in beperkte mate haalbaar is via een combinatie van markerloze pose-estimatie, regelgebaseerde foutdetectie en LLM-gebaseerde tekstgeneratie. De aanpak biedt potentieel als ondersteunend hulpmiddel voor trainers, maar vervangt geen menselijke expertise. Verdere evaluatie op een grotere dataset en met feedback van ervaren coaches blijft noodzakelijk.
+This research shows that automatic technical feedback on the kip on bars is feasible to a limited extent through a combination of markerless pose estimation, rule-based error detection and LLM-based text generation. The approach offers potential as a supporting tool for coaches, but does not replace human expertise. Further evaluation on a larger dataset and with feedback from experienced coaches remains necessary.
+
+
+

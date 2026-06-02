@@ -25,192 +25,191 @@
 %%
 %% Maak voor elke fase (behalve het literatuuronderzoek) een NIEUW HOOFDSTUK aan
 %% en geef het een gepaste titel.
-Dit onderzoek volgt een ontwerpgericht en experimenteel onderzoeksdesign waarbij een proof-of-concept wordt ontwikkeld en getest. Het doel is om na te gaan in welke mate AI-technieken ingezet kunnen worden voor automatische foutdetectie en feedbackgeneratie bij de kip aan de barre. De nadruk ligt hierbij niet op een volledig gevalideerd coachesysteem, maar op het technisch uitwerken en verkennend beoordelen van een analysepipeline.
+This research follows a design-oriented and experimental research design in which a proof-of-concept is developed and tested. The goal is to investigate to what extent AI techniques can be used for automatic error detection and feedback generation for the kip on bars. The emphasis is not on a fully validated coaching system, but on technically developing and exploratively assessing an analysis pipeline.
 
-Het onderzoeksproces wordt onderverdeeld in vijf grote fasen.
+The research process is divided into five major phases.
 
-\section{Fase 1: Literatuurstudie}
+\section{Phase 1: Literature study}
 
-In de eerste fase gebeurt een literatuurstudie uitgevoerd rond drie kerncomponenten: 
+In the first phase, a literature study is carried out around three core components: 
 
 \begin{itemize}
-    \item biomechanische kenmerken van de kip aan barre en veelvoorkomende fouten
-    \item markerloze pose-estimatie in sportanalyse
-    \item automatische foutdetectie en AI-gebaseerde feedbacksystemen
+    \item biomechanical characteristics of the kip on bars and common errors
+    \item markerless pose estimation in sports analysis
+    \item automatic error detection and AI-based feedback systems
 \end{itemize}
 
-\textbf{Doelstelling:} theoretisch kader opbouwen en technische haalbaarheid inschatten.  
+\textbf{Objective:} building a theoretical framework and estimating technical feasibility.  
 
-\textbf{Deliverable:} uitgewerkt literatuurhoofdstuk met onderbouwing van de gekozen aanpak.  
+\textbf{Deliverable:} developed literature chapter with justification of the chosen approach.  
 
-\textbf{Onderzoeksmethode:} systematische analyse van wetenschappelijke publicaties en bestaande toepassingen binnen sportanalyse.
+\textbf{Research method:} systematic analysis of scientific publications and existing applications within sports analysis.
 
-\section{Fase 2: Specificatie van fouttypes en systeemvereisten}
+\section{Phase 2: Specification of error types and system requirements}
 
-\subsection{Specificatie van detecteerbare fouttypes}
+\subsection{Specification of detectable error types}
 
-Op basis van de literatuur en praktijkervaring binnen recreatieve gymnastiek worden concrete fouttypes gedefinieerd die automatisch detecteerbaar moeten zijn (zoals gebogen armen of onvoldoende heupsluiting).
+Based on the literature and practical experience within recreational gymnastics, concrete error types are defined that should be automatically detectable, such as bent arms or insufficient hip closure.
 
-Daarnaast worden systeemvereisten opgesteld die bepalen welke functionaliteiten het proof-of-concept minimaal moet bevatten. Hierbij wordt expliciet rekening gehouden met de praktische context van recreatieve gymnastiek, waarin gewerkt wordt met standaard videobeelden en beperkte technische infrastructuur.
+In addition, system requirements are drawn up that determine which functionalities the proof-of-concept must contain at minimum. This explicitly takes into account the practical context of recreational gymnastics, in which standard video footage and limited technical infrastructure are used.
 
-Naast deze foutdefinities op basis van gewrichtshoeken wordt in de literatuur ook gewezen op het belang van kritieke tussenpunten (via-points) in de beweging \autocite{Yamasaki2010}.
+In addition to these error definitions based on joint angles, the literature also points to the importance of critical intermediate points, or via-points, in the movement \autocite{Yamasaki2010}.
 
-Binnen dit onderzoek worden deze via-points initieel niet expliciet gemodelleerd in de eerste versie van het systeem. In plaats daarvan wordt gekozen voor een vereenvoudigde representatie op basis van fasen en gewrichtshoeken, om de technische haalbaarheid van automatische foutdetectie eerst te valideren.
+Within this research, these via-points are initially not explicitly modelled in the first version of the system. Instead, a simplified representation based on phases and joint angles is chosen, in order to first validate the technical feasibility of automatic error detection.
 
-De integratie van via-points als aanvullende analysemethode wordt voorzien als mogelijke uitbreiding in een iteratieve ontwikkelingsfase.
+The integration of via-points as an additional analysis method is foreseen as a possible extension in an iterative development phase.
 
-\subsection{Systeemvereisten}
-\subsubsection{Functionele vereisten}
+\subsection{System requirements}
+\subsubsection{Functional requirements}
 
-De functionele vereisten beschrijven welke functionaliteiten het systeem binnen de scope van het proof-of-concept moet implementeren. Deze vereisten worden opgevat als ontwikkeldoelen voor een beperkte testopstelling.
+The functional requirements describe which functionalities the system must implement within the scope of the proof-of-concept. These requirements are considered development goals for a limited test setup.
 
 \begin{enumerate}
-    \item Het systeem moet een videofragment van een kip aan de barre kunnen inladen.
-    \item Het systeem moet automatisch gewrichtsposities extraheren uit de video via markerloze pose-estimatie.
-    \item Het systeem moet relevante gewrichtshoeken berekenen en opslaan in een gestructureerd CSV-bestand.
-    \item Het systeem moet de beweging opdelen in relevante fasen, namelijk zwaaifase, trekfase, heupsluitingsfase en steunfase.
-    \item Het systeem moet vooraf gedefinieerde technische fouten detecteren op basis van pose-data:
+    \item The system must be able to load a video fragment of a kip on bars.
+    \item The system must automatically extract joint positions from the video through markerless pose estimation.
+    \item The system must calculate relevant joint angles and store them in a structured CSV file.
+    \item The system must divide the movement into relevant phases, namely the swing phase, pull phase, hip closure phase and support phase.
+    \item The system must detect predefined technical errors based on pose data:
     \begin{itemize}
-        \item gebogen armen tijdens de trekfase,
-        \item onvoldoende heupsluiting,
-        \item te vroege heupopening,
-        \item onvoldoende schouderdruk in de steunfase.
+        \item bent arms during the pull phase,
+        \item insufficient hip closure,
+        \item early hip opening,
+        \item weak shoulder push in the support phase.
     \end{itemize}
-    \item Het systeem moet de analyse-output structureren in JSON-formaat.
-    \item Het systeem moet op basis van de effectief gedetecteerde fouten tekstuele feedback kunnen genereren via een Large Language Model.
-    \item Het systeem moet vermijden dat de LLM feedback genereert over fouten die niet door het regelgebaseerde systeem werden gedetecteerd.
+    \item The system must structure the analysis output in JSON format.
+    \item The system must be able to generate textual feedback through a Large Language Model based on the errors that were actually detected.
+    \item The system must prevent the LLM from generating feedback about errors that were not detected by the rule-based system.
 \end{enumerate}
 
-\subsubsection{Niet-functionele aandachtspunten}
+\subsubsection{Non-functional points of attention}
 
-Naast de functionele vereisten worden ook enkele niet-functionele aandachtspunten geformuleerd. In een volledig productiesysteem zouden deze criteria kwantitatief geëvalueerd moeten worden. Binnen deze bachelorproef worden ze echter vooral gebruikt om de kwaliteit van het proof-of-concept richting te geven. Ze worden dus niet allemaal formeel gemeten.
+In addition to the functional requirements, several non-functional points of attention are formulated. In a full production system, these criteria would have to be evaluated quantitatively. Within this bachelor thesis, however, they are mainly used to guide the quality of the proof-of-concept. They are therefore not all formally measured.
 
 \begin{table}[h]
     \centering
     \footnotesize
     \begin{tabularx}{\textwidth}{p{3cm}p{4cm}X}
         \toprule
-        \textbf{Aandachtspunt} & \textbf{Betekenis binnen de PoC} & \textbf{Evaluatie binnen dit onderzoek} \\
+        \textbf{Point of attention} & \textbf{Meaning within the PoC} & \textbf{Evaluation within this research} \\
         \midrule
-        Prestatie-efficiëntie & De pipeline moet binnen een redelijke tijd uitvoerbaar zijn op een gewone laptop. & Verkennend beoordeeld tijdens het uitvoeren van de scripts, niet formeel gebenchmarkt. \\
-        Functionele geschiktheid & De foutdetectie moet technisch relevante fouten kunnen detecteren binnen de vooraf bepaalde fouttypes. & Kwalitatief gecontroleerd op een beperkte set testvideo's. \\
-        Bruikbaarheid & De feedback moet begrijpelijk zijn voor een recreatieve turnster en trainer. & Kwalitatief beoordeeld op basis van de gegenereerde feedback, zonder formele gebruikersstudie. \\
-        Betrouwbaarheid & Het systeem moet reproduceerbare output genereren voor de geteste video’s en niet crashen bij normale invoer. & Getest tijdens de ontwikkeling op meerdere pogingen. \\
-        Overdraagbaarheid & Het systeem moet werken met standaard videobestanden en CSV-output. & Beperkt getest met de gebruikte videobestanden binnen de proof-of-concept. \\
+        Performance efficiency & The pipeline must be executable within a reasonable time on a standard laptop. & Exploratively assessed while running the scripts, not formally benchmarked. \\
+        Functional suitability & The error detection must be able to detect technically relevant errors within the predefined error types. & Qualitatively checked on a limited set of test videos. \\
+        Usability & The feedback must be understandable for a recreational gymnast and coach. & Qualitatively assessed based on the generated feedback, without a formal user study. \\
+        Reliability & The system must generate reproducible output for the tested videos and must not crash with normal input. & Tested during development on multiple attempts. \\
+        Portability & The system must work with standard video files and CSV output. & Limited testing with the video files used within the proof-of-concept. \\
         \bottomrule
     \end{tabularx}
-    \caption{Niet-functionele aandachtspunten binnen het proof-of-concept}
+    \caption{Non-functional points of attention within the proof-of-concept}
     \label{tab:nfr_poc}
 \end{table}
 
-\subsection{Prioritering van vereisten (MoSCoW)}
+\subsection{Prioritisation of requirements (MoSCoW)}
 
-Om de scope van het proof-of-concept duidelijk af te bakenen, worden de functionele vereisten en niet-functionele aandachtspunten samen geprioriteerd volgens de MoSCoW-methode. De prioritering heeft betrekking op de implementatie van de proof-of-concept en niet op een volledig gevalideerde eindtoepassing. Daarbij wordt niet enkel gekeken naar de functionaliteiten die technisch geïmplementeerd moeten worden, maar ook naar de kwaliteitsaspecten die richting geven aan de ontwikkeling en interpretatie van de resultaten.
+To clearly define the scope of the proof-of-concept, the functional requirements and non-functional points of attention are prioritised together according to the MoSCoW method. The prioritisation relates to the implementation of the proof-of-concept and not to a fully validated final application. This does not only consider the functionalities that must be technically implemented, but also the quality aspects that guide the development and interpretation of the results.
 
 \textbf{Must have}
 \begin{itemize}
-    \item Video-invoer voor een kip aan de barre.
-    \item Markerloze pose-estimatie op basis van standaard videobeelden.
-    \item Extractie en opslag van relevante gewrichtshoeken in CSV-formaat.
-    \item Regelgebaseerde fase-indeling van de beweging.
-    \item Implementatie van detectieregels voor de vier vooraf gedefinieerde fouttypes.
-    \item Structurering van de analyse-output in JSON-formaat.
-    \item Generatie van tekstuele feedback op basis van effectief gedetecteerde fouten.
-    \item Vermijden dat de LLM feedback genereert over fouten die niet door het regelgebaseerde systeem werden gedetecteerd.
+    \item Video input for a kip on bars.
+    \item Markerless pose estimation based on standard video footage.
+    \item Extraction and storage of relevant joint angles in CSV format.
+    \item Rule-based phase division of the movement.
+    \item Implementation of detection rules for the four predefined error types.
+    \item Structuring of the analysis output in JSON format.
+    \item Generation of textual feedback based on errors that were actually detected.
+    \item Prevention of the LLM generating feedback about errors that were not detected by the rule-based system.
 \end{itemize}
 
 \textbf{Should have}
 \begin{itemize}
-    \item Visuele controle van de berekende hoekcurves via grafieken.
-    \item Beperking van de LLM-input tot de effectief gedetecteerde fouten.
-    \item Een veilige afhandeling wanneer geen fouten worden gedetecteerd.
-    \item Verkennende controle of de pipeline reproduceerbare output geeft voor de geteste videopogingen.
-    \item Kwalitatieve beoordeling of de gegenereerde feedback begrijpelijk is voor een recreatieve turnster en trainer.
+    \item Visual inspection of the calculated angle curves through graphs.
+    \item Limitation of the LLM input to the errors that were actually detected.
+    \item Safe handling when no errors are detected.
+    \item Exploratory check of whether the pipeline gives reproducible output for the tested video attempts.
+    \item Qualitative assessment of whether the generated feedback is understandable for a recreational gymnast and coach.
 \end{itemize}
 
 \textbf{Could have}
 \begin{itemize}
-    \item Visualisatie van het skelet op de video.
-    \item Vergelijking van meerdere pogingen binnen dezelfde pipeline.
-    \item Verdere verfijning van drempelwaarden op basis van een grotere dataset.
-    \item Formele benchmarking van uitvoeringstijd en performantie.
-    \item Uitgebreide gebruikersstudie met trainers en turnsters.
+    \item Visualisation of the skeleton on the video.
+    \item Comparison of multiple attempts within the same pipeline.
+    \item Further refinement of threshold values based on a larger dataset.
+    \item Formal benchmarking of execution time and performance.
+    \item Extensive user study with coaches and gymnasts.
 \end{itemize}
 
 \textbf{Won't have}
 \begin{itemize}
-    \item Real-time analyse.
-    \item Mobiele applicatie.
-    \item Volledig automatisch trainingsplatform.
-    \item Volledig gevalideerd coachesysteem.
-    \item Automatische detectie van fouten buiten de vooraf gedefinieerde fouttypes, zoals gebogen knieën, tenenpositie, hoofdpositie of algemene elegantie.
+    \item Real-time analysis.
+    \item Mobile application.
+    \item Fully automatic training platform.
+    \item Fully validated coaching system.
+    \item Automatic detection of errors outside the predefined error types, such as bent knees, toe position, head position or general elegance.
 \end{itemize}
 
-\textbf{Doelstelling:} afbakenen wat het systeem precies moet detecteren en genereren.  
+\textbf{Objective:} defining what exactly the system must detect and generate.  
 
-\textbf{Deliverable:} lijst van fouttypes, systeemvereisten en bijhorende meetbare parameters.  
+\textbf{Deliverable:} list of error types, system requirements and corresponding measurable parameters.  
 
-\textbf{Onderzoeksmethode:} conceptuele analyse en vertaling van biomechanische fouten naar kwantificeerbare bewegingskenmerken.
+\textbf{Research method:} conceptual analysis and translation of biomechanical errors into quantifiable movement characteristics.
 
-\section{Fase 3: Initiële technische implementatie van pose-estimatie en parameterextractie}
+\section{Phase 3: Initial technical implementation of pose estimation and parameter extraction}
 
-Na het afbakenen van de systeemvereisten wordt in een eerste ontwikkelingsstap een technische analysepipeline opgezet waarin videobeelden automatisch verwerkt worden via markerloze pose-estimatie.
+After defining the system requirements, a technical analysis pipeline is set up in a first development step, in which video footage is automatically processed through markerless pose estimation.
 
-De videobeelden worden verwerkt met behulp van een Python-gebaseerde pipeline. Hiervoor wordt gebruikgemaakt van het MediaPipe Pose Landmarker model, dat markerloze pose-estimatie uitvoert op RGB-videoframes. Het gebruikte model detecteert per frame lichaamslandmarks die de positie van gewrichten beschrijven.
+The video footage is processed using a Python-based pipeline. For this, the MediaPipe Pose Landmarker model is used, which performs markerless pose estimation on RGB video frames. The model used detects body landmarks per frame that describe the position of joints.
 
-De gedetecteerde landmarks worden frame per frame geëxtraheerd en opgeslagen, waardoor een tijdreeks van lichaamsposities ontstaat. Op basis van deze gegevens worden bijkomende bewegingskenmerken berekend, zoals gewrichtshoeken. Deze eerste numerieke representatie maakte het mogelijk om in een volgende fase te onderzoeken hoe AI-systemen deze bewegingsinformatie interpreteren en in welke mate automatische feedbackgeneratie haalbaar is.
+The detected landmarks are extracted and stored frame by frame, creating a time series of body positions. Based on these data, additional movement characteristics are calculated, such as joint angles. This first numerical representation made it possible to investigate in a next phase how AI systems interpret this movement information and to what extent automatic feedback generation is feasible.
 
-\textbf{Doelstelling:} standaard videobeelden omzetten naar bruikbare pose-data en interpreteerbare biomechanische parameters.  
+\textbf{Objective:} converting standard video footage into usable pose data and interpretable biomechanical parameters.  
 
-\textbf{Deliverable:} werkende pose-estimatiepipeline met CSV-output en berekende gewrichtshoeken.  
+\textbf{Deliverable:} working pose estimation pipeline with CSV output and calculated joint angles.  
 
-\textbf{Onderzoeksmethode:} experimentele implementatie en technische validatie van de data-extractie.
+\textbf{Research method:} experimental implementation and technical validation of the data extraction.
 
-\section{Fase 4: Exploratief AI-experiment en rule-based systeemontwikkeling}
+\section{Phase 4: Exploratory AI experiment and rule-based system development}
 
-Op basis van de geëxtraheerde videodata, pose-landmarks en afgeleide gewrichtshoeken wordt vervolgens onderzocht in welke mate bestaande Large Language Models bruikbaar zijn voor automatische gymnastiekanalyse en feedbackgeneratie.
+Based on the extracted video data, pose landmarks and derived joint angles, it is then investigated to what extent existing Large Language Models are useful for automatic gymnastics analysis and feedback generation.
 
-Hiervoor wordt een verkennend experiment uitgevoerd waarbij eenzelfde kip-oefening in drie verschillende representaties aan het model wordt aangeboden:
+For this purpose, an exploratory experiment is carried out in which the same kip exercise is presented to the model in three different representations:
 
 \begin{enumerate}
-    \item ruwe videobeelden
-    \item pose-estimatie data in CSV-formaat
-    \item een grafische voorstelling van afgeleide gewrichtshoeken
+    \item raw video footage
+    \item pose estimation data in CSV format
+    \item a graphical representation of derived joint angles
 \end{enumerate}
 
-Voor elk van deze inputvormen wordt een gelijkaardige prompt gebruikt waarbij het model wordt gevraagd om de beweging te analyseren, fasen te identificeren en technische feedback te formuleren.
+For each of these input forms, a similar prompt is used in which the model is asked to analyse the movement, identify phases and formulate technical feedback.
 
-De bevindingen uit dit exploratief experiment vormen de basis voor de verdere ontwikkeling van het proof-of-concept. Omdat vrije multimodale interpretatie onvoldoende controleerbaar blijkt, wordt gekozen voor een rule-based benadering waarbij vooraf gedefinieerde drempelwaarden bepalen of een fout aanwezig is.
+The findings from this exploratory experiment form the basis for the further development of the proof-of-concept. Because free multimodal interpretation appears to be insufficiently controllable, a rule-based approach is chosen in which predefined threshold values determine whether an error is present.
 
-Gezien het exploratieve karakter van dit onderzoek en de beperkte beschikbaarheid van gelabelde trainingsdata wordt bewust gekozen voor een regelgebaseerde benadering in plaats van een volledig data-gedreven machine learning model. Deze aanpak verhoogt de interpreteerbaarheid van het systeem en laat toe om biomechanische criteria expliciet te definiëren.
+Given the exploratory nature of this research and the limited availability of labelled training data, a rule-based approach is deliberately chosen instead of a fully data-driven machine learning model. This approach increases the interpretability of the system and allows biomechanical criteria to be explicitly defined.
 
-Hoewel deze regelgebaseerde aanpak voornamelijk focust op drempelwaarden van gewrichtshoeken, sluit dit gedeeltelijk aan bij biomechanische inzichten uit de literatuur.
+Although this rule-based approach mainly focuses on threshold values of joint angles, it partly aligns with biomechanical insights from the literature.
 
-Meer geavanceerde modellen, zoals beschreven door \textcite{Yamasaki2010}, suggereren dat bewegingen zoals de kip eerder bepaald worden door kritieke overgangsmomenten (via-points). Binnen dit proof-of-concept wordt echter gekozen voor een vereenvoudigde implementatie, waarbij deze dynamische aspecten impliciet benaderd worden via tijdsafhankelijke veranderingen in gewrichtshoeken.
+More advanced models, as described by \textcite{Yamasaki2010}, suggest that movements such as the kip are determined more by critical transition moments, or via-points. Within this proof-of-concept, however, a simplified implementation is chosen, in which these dynamic aspects are implicitly approximated through time-dependent changes in joint angles.
 
-Gedetecteerde fouten worden vervolgens via een Large Language Model omgezet in gestructureerde tekstuele feedback.
+Detected errors are then converted into structured textual feedback through a Large Language Model.
 
-Om de output van het systeem te structureren en consistent te maken, wordt een gestandaardiseerd dataformaat gedefinieerd in JSON-vorm. Dit formaat bevat informatie over de geïdentificeerde bewegingsfasen, berekende gewrichtshoeken, toegepaste detectieregels en gedetecteerde technische fouten.
+To structure the output of the system and make it consistent, a standardised data format is defined in JSON form. This format contains information about the identified movement phases, calculated joint angles, applied detection rules and detected technical errors.
 
-Deze gestructureerde representatie vormt de interface tussen de regelgebaseerde foutdetectie en de feedbackgeneratie via een Large Language Model. De LLM wordt daarbij niet gebruikt om nieuwe fouten te detecteren, maar enkel om de door het regelgebaseerde systeem vastgestelde fouten te verwoorden.
+This structured representation forms the interface between the rule-based error detection and the feedback generation through a Large Language Model. The LLM is not used to detect new errors, but only to verbalise the errors identified by the rule-based system.
 
-\textbf{Doelstelling:} inzicht verkrijgen in de beperkingen van vrije AI-analyse en op basis daarvan een gecontroleerde feedbackpipeline ontwikkelen.  
+\textbf{Objective:} gaining insight into the limitations of free AI analysis and developing a controlled feedback pipeline based on this.  
 
-\textbf{Deliverable:} een proof-of-concept systeem dat biomechanische parameters structureert, technische fouten detecteert en automatische feedback genereert.  
+\textbf{Deliverable:} a proof-of-concept system that structures biomechanical parameters, detects technical errors and generates automatic feedback.  
 
-\textbf{Onderzoeksmethode:} exploratief experiment gecombineerd met iteratieve systeemontwikkeling.
+\textbf{Research method:} exploratory experiment combined with iterative system development.
 
-\section{Fase 5: Evaluatie}
+\section{Phase 5: Evaluation}
 
-Tot slot wordt het proof-of-concept verkennend geëvalueerd aan de hand van een beperkte set videopogingen. Daarbij wordt nagegaan of de regelgebaseerde analyse bij een goede uitvoering geen fout detecteert en of bij foutieve uitvoeringen de relevante fouttypes binnen de scope van het systeem worden herkend.
+Finally, the proof-of-concept is exploratively evaluated using a limited set of video attempts. It is examined whether the rule-based analysis detects no error in a good execution and whether the relevant error types within the scope of the system are recognised in incorrect executions.
 
-Daarnaast wordt de gegenereerde feedback kwalitatief beoordeeld. Hierbij wordt gecontroleerd of de LLM enkel feedback geeft over effectief gedetecteerde fouten en geen bijkomende fouten of verbeterpunten verzint.
+In addition, the generated feedback is qualitatively assessed. This involves checking whether the LLM only gives feedback on errors that were actually detected and does not invent additional errors or improvement points.
 
-Deze evaluatie heeft niet als doel om het systeem formeel te valideren, maar om na te gaan of de volledige pipeline technisch werkt en welke beperkingen zichtbaar worden binnen de geteste pogingen.
+This evaluation does not aim to formally validate the system, but to examine whether the full pipeline technically works and which limitations become visible within the tested attempts.
 
-\textbf{Doelstelling:} verkennend beoordelen of de ontwikkelde pipeline technisch werkt binnen de beperkte testset.  
+\textbf{Objective:} exploratively assessing whether the developed pipeline technically works within the limited test set.  
 
-\textbf{Deliverable:} overzicht van de foutdetectie, feedbackgeneratie en belangrijkste beperkingen.  
+\textbf{Deliverable:} overview of the error detection, feedback generation and main limitations.  
 
-\textbf{Onderzoeksmethode:} verkennende test op meerdere videopogingen, visuele controle van grafieken en kwalitatieve beoordeling van de gegenereerde feedback.
-
+\textbf{Research method:} exploratory test on multiple video attempts, visual inspection of graphs and qualitative assessment of the generated feedback.

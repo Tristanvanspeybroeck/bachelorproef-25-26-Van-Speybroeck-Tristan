@@ -1,104 +1,106 @@
 %%=============================================================================
 %% Inleiding
 %%=============================================================================
-
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
 
-Artistieke gymnastiek is een technisch veeleisende sport waarbij coördinatie, kracht, mobiliteit en timing goed op elkaar afgestemd moeten worden. Zelfs eenvoudige bewegingen vereisen een correcte uitvoering om efficiënt en veilig uitgevoerd te worden. Binnen recreatieve contexten worden gymnasten regelmatig geconfronteerd met complexe elementen waarvoor zij nog onvoldoende lichaamscontrole of kracht hebben ontwikkeld. Hierdoor ontstaan vaak technische uitvoeringsfouten.
+Artistic gymnastics is a technically demanding sport in which coordination, strength, mobility and timing must be well aligned. Even simple movements require correct execution in order to be performed efficiently and safely. In recreational contexts, gymnasts are regularly confronted with complex elements for which they have not yet developed sufficient body control or strength. As a result, technical execution errors often occur.
 
-De kip aan barre is een belangrijk overgangselement binnen de damesgymnastiek. Het element vereist een combinatie van zwaaimomentum, heupsluiting, armstrekking en actieve schouderwerking om vanuit hangpositie tot steun op de barre te komen. Vooral bij recreatieve turnsters blijkt deze beweging technisch uitdagend. Dit leidt regelmatig tot fouten zoals gebogen armen, onvoldoende heupsluiting of onvoldoende schouderdruk.
+The kip on bars is an important transition element within women's gymnastics. The element requires a combination of swing momentum, hip closure, arm extension and active shoulder action to move from a hanging position into support on the bar. Especially for recreational gymnasts, this movement appears to be technically challenging. This regularly leads to errors such as bent arms, insufficient hip closure or weak shoulder push.
 
-Een correcte technische uitvoering is niet alleen belangrijk voor prestatieverbetering, maar ook voor blessurepreventie. Herhaaldelijk uitvoeren van foutieve bewegingspatronen kan bijdragen aan overbelastingsletsels, vooral ter hoogte van schouder en pols bij bewegingen aan de barre. Het vroegtijdig detecteren en corrigeren van technische fouten is daarom belangrijk binnen een veilige trainingsomgeving.
+Correct technical execution is not only important for performance improvement, but also for injury prevention. Repeatedly performing incorrect movement patterns can contribute to overuse injuries, especially in the shoulder and wrist during movements on the bar. Early detection and correction of technical errors is therefore important within a safe training environment.
 
-Binnen recreatieve gymnastiekclubs worden technische elementen meestal in groepsverband aangeleerd. Trainers begeleiden meerdere sporters tegelijk, waardoor er beperkte tijd is voor een grondige individuele analyse van elke uitvoering. Feedback gebeurt voornamelijk op basis van visuele observatie en ervaring van de coach. Geavanceerde 3D bewegingsanalysesystemen bestaan, maar vereisen gespecialiseerde apparatuur en zijn meestal financieel niet haalbaar voor recreatieve clubs. Er is dus een duidelijke kloof tussen laboratoriumgebaseerde bewegingsanalyse en de praktische realiteit in de trainingszaal.
+Within recreational gymnastics clubs, technical elements are usually taught in groups. Coaches supervise several athletes at the same time, which means there is limited time for a thorough individual analysis of each execution. Feedback is mainly based on visual observation and the coach's experience. Advanced 3D motion analysis systems exist, but they require specialised equipment and are usually not financially feasible for recreational clubs. There is therefore a clear gap between laboratory-based motion analysis and the practical reality in the training hall.
 
-Recente ontwikkelingen in markerloze pose-estimatie maken het mogelijk om gewrichtsposities te bepalen op basis van standaard videobeelden, zonder gebruik van sensoren of markers. Daarnaast kunnen Large Language Models (LLM’s) informatie omzetten in begrijpelijke tekstuele feedback. De combinatie van deze technologieën biedt mogelijkheden voor het ontwikkelen van een laagdrempelig AI-gebaseerd ondersteuningssysteem voor technische analyse in recreatieve gymnastiek.
+Recent developments in markerless pose estimation make it possible to determine joint positions based on standard video footage, without using sensors or markers. In addition, Large Language Models (LLMs) can convert information into understandable textual feedback. The combination of these technologies offers possibilities for developing an accessible AI-based support system for technical analysis in recreational gymnastics.
 
-Deze bachelorproef onderzoekt in welke mate een dergelijk systeem haalbaar en bruikbaar is voor het genereren van technische feedback bij de kip aan barre.
+This bachelor thesis investigates to what extent such a system is feasible and usable for generating technical feedback on the kip on bars.
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
-Binnen recreatieve en laagcompetitieve gymnastiekclubs worden technische elementen zoals de kip aan barre aangeleerd aan turnsters van ongeveer 10 jaar en ouder. In deze context beschikken clubs doorgaans niet over gespecialiseerde bewegingsanalyseapparatuur en zijn trainers aangewezen op visuele observatie.
 
-De doelgroep van dit onderzoek bestaat uit:
+Within recreational and low-competitive gymnastics clubs, technical elements such as the kip on bars are taught to gymnasts aged approximately 10 years and older. In this context, clubs generally do not have access to specialised motion analysis equipment and coaches rely on visual observation.
 
-\begin{itemize}
-    \item Recreatieve en laagcompetitieve turnsters
-    \item Trainers binnen recreatieve gymnastiekclubs
-    \item Gymnastiekclubs zonder toegang tot gespecialiseerde bewegingsanalyse
-\end{itemize}
-
-Voor deze doelgroep kan een laagdrempelig video-gebaseerd analysesysteem een meerwaarde bieden door:
+The target group of this research consists of:
 
 \begin{itemize}
-    \item Consistente detectie van vooraf gedefinieerde technische fouten
-    \item Ondersteuning van trainers bij het formuleren van gerichte feedback
-    \item Verhoogd bewustzijn van uitvoeringskwaliteit bij sporters
+    \item Recreational and low-competitive gymnasts
+    \item Coaches within recreational gymnastics clubs
+    \item Gymnastics clubs without access to specialised motion analysis
 \end{itemize}
 
-De centrale uitdaging bestaat erin te onderzoeken of een AI-gebaseerde oplossing op basis van standaard videobeelden een haalbare en bruikbare ondersteuning kan vormen binnen deze recreatieve trainingscontext.
+For this target group, an accessible video-based analysis system can offer added value by:
+
+\begin{itemize}
+    \item Consistently detecting predefined technical errors
+    \item Supporting coaches in formulating targeted feedback
+    \item Increasing athletes' awareness of execution quality
+\end{itemize}
+
+The central challenge is to investigate whether an AI-based solution using standard video footage can provide feasible and usable support within this recreational training context.
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
-De centrale onderzoeksvraag luidt als volgt:
 
-\textit{In welke mate kan een AI-gebaseerd systeem op basis van markerloze video-analyse technisch bruikbare feedback genereren voor recreatieve turnsters bij de kip aan barre?}
+The central research question is as follows:
 
- Om deze onderzoeksvraag te beantwoorden worden volgende deelvragen onderzocht. Deze hebben enerzijds betrekking tot het probleemdomein en anderzijds tot het oplossingsdomein.
+\textit{To what extent can an AI-based system using markerless video analysis generate technically useful feedback for recreational gymnasts performing the kip on bars?}
+
+To answer this research question, the following sub-questions are investigated. These relate partly to the problem domain and partly to the solution domain.
 \newline
-\textbf{Probleemdomein}:
+\textbf{Problem domain}:
 
 \begin{enumerate}
-    \item Welke technische fouten komen het vaakst voor bij de kip?
-    \item Waarom worden terugkerende technische fouten door coaches soms niet opgemerkt, en hoe kan dit systematisch worden vastgelegd?
-    \item Welke kenmerken maken technische feedback effectief en bruikbaar voor recreatieve turnsters?
+    \item Which technical errors occur most frequently during the kip?
+    \item Why are recurring technical errors sometimes not noticed by coaches, and how can this be systematically recorded?
+    \item Which characteristics make technical feedback effective and useful for recreational gymnasts?
 \end{enumerate}
 
-\textbf{Oplossingsdomein}:
+\textbf{Solution domain}:
 
 \begin{enumerate}
-    \item Welke markerloze pose-estimatie methode is het meest geschikt voor het analyseren van de kip aan barre binnen een recreatieve trainingscontext?
-    \item In welke mate kunnen technische fouten automatisch worden gedetecteerd op basis van pose-data?
-    \item In hoeverre kan een Large Language Model technisch correcte en bruikbare feedback geven op basis van gedetecteerde fouten?
-    \item Wat zijn de beperkingen van een AI-gebaseerd feedbacksysteem binnen deze toepassing?
+    \item Which markerless pose estimation method is most suitable for analysing the kip on bars within a recreational training context?
+    \item To what extent can technical errors be detected automatically based on pose data?
+    \item To what extent can a Large Language Model provide technically correct and useful feedback based on detected errors?
+    \item What are the limitations of an AI-based feedback system within this application?
 \end{enumerate}
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
-Het doel van deze bachelorproef is het ontwikkelen en evalueren van een proof-of-concept van een AI-gebaseerd systeem dat:
+
+The aim of this bachelor thesis is to develop and evaluate a proof-of-concept of an AI-based system that:
 
 \begin{enumerate}
-    \item Gewrichtsposities extraheert uit 2D videobeelden via markerloze pose-estimatie.
-    \item Vier frequent voorkomende technische fouten bij de kip aan barre rule-based detecteert:
+    \item Extracts joint positions from 2D video footage using markerless pose estimation.
+    \item Detects four frequently occurring technical errors in the kip on bars using a rule-based approach:
     \begin{itemize}
-        \item Gebogen armen tijdens de trekfase
-        \item Onvoldoende heupsluiting
-        \item Te vroege heupopening
-        \item Onvoldoende schouderdruk in steunfase
+        \item Bent arms during the pull phase
+        \item Insufficient hip closure
+        \item Early hip opening
+        \item Weak shoulder push in the support phase
     \end{itemize}
-    \item Gedetecteerde fouten omzet in gestructureerde parameters.
-    \item Op basis van deze parameters via een Large Language Model begrijpelijke en gerichte technische feedback genereert.
+    \item Converts detected errors into structured parameters.
+    \item Generates understandable and targeted technical feedback through a Large Language Model based on these parameters.
 \end{enumerate}
 
-Daarnaast wordt verkennend onderzocht in welke mate de geselecteerde fouttypes detecteerbaar zijn via 2D pose-estimatie en of de gegenereerde feedback inhoudelijk aansluit bij de gedetecteerde fouten.
+In addition, this research exploratively investigates to what extent the selected error types can be detected using 2D pose estimation and whether the generated feedback is substantively aligned with the detected errors.
 
-Het onderzoek richt zich op de technische haalbaarheid en praktische bruikbaarheid binnen een recreatieve context, en niet op de ontwikkeling van een volledig gevalideerd diagnostisch systeem.
+The research focuses on technical feasibility and practical usability within a recreational context, and not on the development of a fully validated diagnostic system.
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
 
-% Het is gebruikelijk aan het einde van de inleiding een overzicht te
-% geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
-% die je kan aanvullen/aanpassen in functie van je eigen tekst.
+% It is customary at the end of the introduction to provide an overview of
+% the structure of the rest of the text. This section already contains a starting
+% point that you can complete/adapt according to your own text.
 
-De rest van deze bachelorproef is als volgt opgebouwd:
+The rest of this bachelor thesis is structured as follows:
 
-In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie.
+In Chapter~\ref{ch:stand-van-zaken}, an overview is given of the state of the art within the research domain, based on a literature study.
 
-In Hoofdstuk~\ref{ch:methodologie} wordt de methodologie toegelicht en worden de gebruikte onderzoekstechnieken besproken om een antwoord te kunnen formuleren op de onderzoeksvragen.
+In Chapter~\ref{ch:methodologie}, the methodology is explained and the research techniques used are discussed in order to formulate an answer to the research questions.
 
-% TODO: Vul hier aan voor je eigen hoofstukken, één of twee zinnen per hoofdstuk
-In Hoofdstuk~\ref{ch:resultaten} worden de implementatie van de proof-of-concept, de regelgebaseerde foutdetectie en de feedbackgeneratie besproken.
+% TODO: Complete this for your own chapters, one or two sentences per chapter
+In Chapter~\ref{ch:resultaten}, the implementation of the proof-of-concept, the rule-based error detection and the feedback generation are discussed.
 
-In Hoofdstuk~\ref{ch:conclusie}, tenslotte, wordt de conclusie gegeven en een antwoord geformuleerd op de onderzoeksvragen. Daarbij wordt ook een aanzet gegeven voor toekomstig onderzoek binnen dit domein.
+In Chapter~\ref{ch:conclusie}, finally, the conclusion is presented and an answer is formulated to the research questions. An indication for future research within this domain is also provided.

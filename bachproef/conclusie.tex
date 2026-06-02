@@ -13,97 +13,96 @@
 % niet duidelijk zijn?
 % Heeft het onderzoek geleid tot nieuwe vragen die uitnodigen tot verder 
 %onderzoek?
+This research investigated to what extent an AI-based system using markerless video analysis can generate technically useful feedback for recreational gymnasts performing the kip on bars. For this purpose, a proof-of-concept was developed in which video footage is first converted into pose data, then into biomechanical angle parameters, then into rule-based error detection and finally into textual feedback through a Large Language Model.
 
-Dit onderzoek ging na in welke mate een AI-gebaseerd systeem op basis van markerloze video-analyse technisch bruikbare feedback kan genereren voor recreatieve turnsters bij de kip aan de barre. Hiervoor werd een proof-of-concept ontwikkeld waarin videobeelden eerst worden omgezet naar pose-data, vervolgens naar biomechanische hoekparameters, daarna naar regelgebaseerde foutdetectie en ten slotte naar tekstuele feedback via een Large Language Model.
+The central conclusion is that such an approach is technically feasible, but within the current implementation it is not yet sufficiently reliable as an independent coaching system. The proof-of-concept shows that markerless pose estimation, in this case through MediaPipe, can produce usable movement data from standard video footage. Based on these data, relevant joint angles could be calculated and predefined technical errors could be detected using a rule-based approach. At the same time, the analysis proved to remain sensitive to detection noise, background movement and the chosen threshold values.
 
-De centrale conclusie is dat een dergelijke aanpak technisch haalbaar is, maar binnen de huidige uitwerking nog niet voldoende betrouwbaar is als zelfstandig coachesysteem. De proof-of-concept toont aan dat markerloze pose-estimatie, in dit geval via MediaPipe, bruikbare bewegingsdata kan opleveren uit standaard videobeelden. Op basis van deze data konden relevante gewrichtshoeken worden berekend en konden vooraf gedefinieerde technische fouten rule-based worden opgespoord. Tegelijk bleek dat deze analyse gevoelig blijft voor detectieruis, achtergrondbewegingen en de gekozen drempelwaarden.
+\section{Answering the research questions}
 
-\section{Beantwoording van de onderzoeksvragen}
+\subsection{Main research question}
 
-\subsection{Hoofdvraag}
+\textit{To what extent can an AI-based system using markerless video analysis generate technically useful feedback for recreational gymnasts performing the kip on bars?}
 
-\textit{In welke mate kan een AI-gebaseerd systeem op basis van markerloze video-analyse technisch bruikbare feedback genereren voor recreatieve turnsters bij de kip aan de barre?}
+The main research question can be answered positively to a limited extent. The developed proof-of-concept shows that automatic feedback is technically possible, but only when the error detection is controlled and rule-based. However, the approach remains limited to an exploratory proof-of-concept.
 
-De hoofdvraag kan in beperkte mate bevestigend beantwoord worden. De ontwikkelde proof-of-concept toont aan dat automatische feedback technisch mogelijk is, maar enkel wanneer de foutdetectie gecontroleerd en regelgebaseerd gebeurt. De aanpak blijft wel beperkt tot een verkennende proof-of-concept.
+\subsection{Sub-question 1}
 
-\subsection{Deelvraag 1}
+\textit{Which technical errors occur most frequently during the kip?}
 
-\textit{Welke technische fouten komen het vaakst voor bij de kip?}
+From the literature and the practical scope of this research, four relevant error types emerged: bent arms, insufficient hip closure, early hip opening and weak shoulder push. These errors correspond to important movement components of the kip, namely swing momentum, hip closure, arm extension and active shoulder action.
 
-Uit de literatuur en de praktische afbakening van dit onderzoek kwamen vier relevante fouttypes naar voren: gebogen armen, onvoldoende heupsluiting, te vroege heupopening en onvoldoende schouderdruk. Deze fouten sluiten aan bij belangrijke bewegingscomponenten van de kip, namelijk zwaaimomentum, heupsluiting, armstrekking en actieve schouderwerking.
+\subsection{Sub-question 2}
 
-\subsection{Deelvraag 2}
+\textit{Why are recurring technical errors sometimes not noticed by coaches, and how can this be systematically recorded?}
 
-\textit{Waarom worden terugkerende technische fouten door coaches soms niet opgemerkt, en hoe kan dit systematisch worden vastgelegd?}
+In recreational training contexts, coaches often supervise several gymnasts at the same time and must visually assess fast-moving, complex movements. As a result, it is difficult to analyse every execution consistently and objectively. Within this research, it was shown that pose data and calculated angle curves can help to record technical aspects of the execution more systematically. In doing so, the analysis does not replace the coach, but can serve as additional support.
 
-In recreatieve trainingscontexten begeleiden coaches vaak meerdere turnsters tegelijk en moeten zij snel bewegende, complexe bewegingen visueel beoordelen. Daardoor is het moeilijk om elke uitvoering consequent en objectief te analyseren. Binnen dit onderzoek werd aangetoond dat pose-data en berekende hoekcurves kunnen helpen om technische aspecten van de uitvoering systematischer vast te leggen. De analyse vervangt de coach daarbij niet, maar kan als extra ondersteuning dienen.
+\subsection{Sub-question 3}
 
-\subsection{Deelvraag 3}
+\textit{Which characteristics make technical feedback effective and useful for recreational gymnasts?}
 
-\textit{Welke kenmerken maken technische feedback effectief en bruikbaar voor recreatieve turnsters?}
+The literature shows that feedback should mainly be targeted, understandable and limited to the most important attention points. Too much error correction at the same time can be cognitively demanding. Therefore, in the proof-of-concept, feedback was only generated about errors that were actually detected by the rule-based system.
 
-Uit de literatuur blijkt dat feedback vooral gericht, begrijpelijk en beperkt moet blijven tot de belangrijkste aandachtspunten. Te veel foutencorrectie tegelijk kan cognitief belastend zijn. Daarom werd in de proof-of-concept gekozen om enkel feedback te genereren over fouten die effectief door het regelgebaseerde systeem werden gedetecteerd.
+\subsection{Sub-question 4}
 
-\subsection{Deelvraag 4}
+\textit{Which markerless pose estimation method is most suitable for analysing the kip on bars within a recreational training context?}
 
-\textit{Welke markerloze pose-estimatiemethode is het meest geschikt voor het analyseren van de kip aan de barre binnen een recreatieve trainingscontext?}
+Within this research, MediaPipe Pose Landmarker was chosen because this system enables markerless pose estimation based on standard video footage. The system does not require markers or specialised measurement equipment, which fits the recreational context of this research. The results show that MediaPipe can produce usable movement data, but that the quality remains dependent on recording quality, camera angle, background movements and detection noise.
 
-Binnen dit onderzoek werd gekozen voor MediaPipe Pose Landmarker, omdat dit systeem markerloze pose-estimatie mogelijk maakt op basis van standaard videobeelden. Het systeem vereist geen markers of gespecialiseerde meetapparatuur, wat aansluit bij de recreatieve context van dit onderzoek. De resultaten tonen aan dat MediaPipe bruikbare bewegingsdata kan opleveren, maar dat de kwaliteit afhankelijk blijft van opnamekwaliteit, camerahoek, achtergrondbewegingen en detectieruis.
+\subsection{Sub-question 5}
 
-\subsection{Deelvraag 5}
+\textit{To what extent can technical errors be automatically detected based on pose data?}
 
-\textit{In welke mate kunnen technische fouten automatisch worden gedetecteerd op basis van pose-data?}
+Automatic error detection based on pose data proved possible within the limited test set. In the good execution, \textit{Good\_kip5}, no errors were detected after refinement. In \textit{Bad\_kip1}, bent arms in the pull phase and weak shoulder push in the support phase were identified. In \textit{Bad\_kip2}, mainly weak shoulder push in the support phase was detected. These results show that the rule-based approach can recognise relevant differences between attempts. At the same time, they should not be interpreted as a formal validation, because only a limited set of video attempts was tested.
 
-De automatische foutdetectie op basis van pose-data bleek binnen de beperkte testset mogelijk. Bij de goede uitvoering, \textit{Good\_kip5}, werden na verfijning geen fouten gedetecteerd. Bij \textit{Bad\_kip1} werden gebogen armen in de trekfase en onvoldoende schouderdruk in de steunfase vastgesteld. Bij \textit{Bad\_kip2} werd vooral onvoldoende schouderdruk in de steunfase gedetecteerd. Deze resultaten tonen aan dat de regelgebaseerde aanpak relevante verschillen tussen pogingen kan herkennen. Tegelijk mogen ze niet als formele validatie worden geïnterpreteerd, omdat slechts een beperkte set videopogingen werd getest.
+\subsection{Sub-question 6}
 
-\subsection{Deelvraag 6}
+\textit{To what extent can a Large Language Model provide technically correct and useful feedback based on detected errors?}
 
-\textit{In hoeverre kan een Large Language Model technisch correcte en bruikbare feedback geven op basis van gedetecteerde fouten?}
+The LLM was able to convert detected errors into short Dutch-language feedback, but the quality varied. In some cases, the feedback remained too general, the model used English error names or it formulated unnatural coaching sentences. In addition, it became clear that an LLM may tend to invent additional improvement points when it receives too much information or when no errors have been detected. Therefore, the role of the LLM in the final pipeline was deliberately limited. The LLM does not detect errors, but only verbalises the errors that were already identified by the rule-based system.
 
-De LLM kon gedetecteerde fouten omzetten naar korte Nederlandstalige feedback, maar de kwaliteit was wisselend. In sommige gevallen bleef de feedback te algemeen, gebruikte het model Engelstalige foutnamen of formuleerde het onnatuurlijke coachingzinnen. Bovendien bleek dat een LLM geneigd kan zijn om bijkomende verbeterpunten te verzinnen wanneer het te veel informatie krijgt of wanneer er geen fouten gedetecteerd zijn. Daarom werd de rol van de LLM in de finale pipeline bewust beperkt. De LLM detecteert geen fouten, maar verwoordt enkel de fouten die al door het regelgebaseerde systeem werden vastgesteld.
+\subsection{Sub-question 7}
 
-\subsection{Deelvraag 7}
+\textit{What are the limitations of an AI-based feedback system within this application?}
 
-\textit{Wat zijn de beperkingen van een AI-gebaseerd feedbacksysteem binnen deze toepassing?}
+The main limitations relate to the limited test set, the sensitivity of 2D pose estimation to noise and camera angle, and the need for strict control of the LLM output. Not all error types were positively identified within the available test set either.
 
-De belangrijkste beperkingen hebben betrekking op de beperkte testset, de gevoeligheid van 2D pose-estimatie voor ruis en camerahoek, en de nood aan strikte controle van de LLM-output. Ook werden niet alle fouttypes binnen de beschikbare testset positief vastgesteld.
+\section{Reflection on the result}
 
-\section{Reflectie op het resultaat}
+The result of this research is in line with expectations, but also clearly shows the limits of the current technology and implementation. AI can certainly offer support for technical analysis in gymnastics, but not in a way where a language model independently assesses a movement. The exploratory experiment with Gemini showed that a multimodal model can formulate technically credible feedback, but also that this feedback depends on the input form and is not always controllable based on the available measurement data.
 
-Het resultaat van dit onderzoek ligt in lijn met de verwachtingen, maar toont ook duidelijk de grenzen van de huidige technologie en implementatie. AI kan zeker ondersteuning bieden bij technische analyse in gymnastiek, maar niet op de manier waarbij een taalmodel volledig zelfstandig een beweging beoordeelt. Het verkennende experiment met Gemini toonde aan dat een multimodaal model technisch geloofwaardige feedback kan formuleren, maar ook dat deze feedback afhankelijk is van de inputvorm en niet altijd controleerbaar is vanuit de beschikbare meetdata.
+The main added value of the proof-of-concept therefore lies not in the LLM as an evaluator, but in the combination of pose estimation, rule-based analysis and controlled feedback generation. MediaPipe functions as the AI component for extracting body positions from video. The rule-based analysis provides controllable error detection. The LLM is only used afterwards as a language component to formulate technical findings in a more understandable way.
 
-De belangrijkste meerwaarde van de proof-of-concept ligt daarom niet in de LLM als beoordelaar, maar in de combinatie van pose-estimatie, regelgebaseerde analyse en gecontroleerde feedbackgeneratie. MediaPipe fungeert als AI-component voor het extraheren van lichaamsposities uit video. De regelgebaseerde analyse zorgt voor controleerbare foutdetectie. De LLM wordt pas daarna ingezet als taalcomponent om technische vaststellingen begrijpelijker te formuleren.
+During the development, it also became clear that a negative or limited outcome can still be valuable. The LLM feedback was not always good enough to be used directly as final coaching feedback. This is an important result in itself: without strict delineation, an LLM can give vague feedback or interpret technical elements that were not identified by the analysis. This finding led to a more robust pipeline in which the LLM input is filtered and in which no LLM call is made when there are no errors.
 
-Tijdens de ontwikkeling werd ook duidelijk dat een negatieve of beperkte uitkomst nog steeds waardevol is. De LLM-feedback was niet altijd goed genoeg om rechtstreeks als finale coachingsfeedback te gebruiken. Dat is op zich een belangrijk resultaat: zonder strikte afbakening kan een LLM te vage feedback geven of technische elementen interpreteren die niet door de analyse werden vastgesteld. Deze vaststelling leidde tot een robuustere pipeline waarin de LLM-input gefilterd wordt en waarin geen LLM-call gebeurt wanneer er geen fouten zijn.
-
-\section{Beperkingen}
+\section{Limitations}
 \label{sec:beperkingen}
 
-De belangrijkste beperking van dit onderzoek is de beperkte testset. De foutregels werden getest op een klein aantal pogingen en zijn daardoor niet statistisch gevalideerd. De gebruikte drempelwaarden zijn gebaseerd op iteratieve ontwikkeling, visuele controle en de beschikbare testvideo’s. Door deze beperkte en niet-gelabelde dataset werd binnen dit onderzoek geen data-gedreven machine learning-model getraind voor foutdetectie. Een regelgebaseerde aanpak was in deze context beter controleerbaar, omdat elke detectie gekoppeld blijft aan expliciete meetwaarden en drempelwaarden.
+The main limitation of this research is the limited test set. The error rules were tested on a small number of attempts and are therefore not statistically validated. The threshold values used are based on iterative development, visual inspection and the available test videos. Due to this limited and unlabelled dataset, no data-driven machine learning model was trained for error detection within this research. A rule-based approach was more controllable in this context, because each detection remains linked to explicit measurement values and threshold values.
 
-Een tweede beperking is dat de analyse gebaseerd is op 2D pose-estimatie. Hierdoor kunnen perspectiefvertekening, camerahoek en tijdelijk afgedekte lichaamsdelen invloed hebben op de berekende hoeken. Zeker bij gymnastiek, waar bewegingen snel verlopen en lichaamsdelen elkaar tijdelijk kunnen overlappen, kan dit leiden tot ruis in de landmarkdetectie. De toegevoegde smoothing vermindert dit probleem gedeeltelijk, maar lost het niet volledig op.
+A second limitation is that the analysis is based on 2D pose estimation. As a result, perspective distortion, camera angle and temporarily occluded body parts can influence the calculated angles. Especially in gymnastics, where movements are fast and body parts can temporarily overlap, this can lead to noise in the landmark detection. The added smoothing partly reduces this problem, but does not solve it completely.
 
-Een derde beperking is dat het analysevenster manueel werd gekozen. Dit was binnen de proof-of-concept aanvaardbaar, maar voor een volledig automatisch systeem zou ook de start en het einde van de relevante kipbeweging automatisch bepaald moeten worden.
+A third limitation is that the analysis window was chosen manually. This was acceptable within the proof-of-concept, but for a fully automatic system, the start and end of the relevant kip movement would also have to be determined automatically.
 
-Daarnaast werken sommige detectieregels nog op basis van aantallen meetrijen in plaats van expliciete tijdsduren, waardoor verdere tijdnormalisatie nodig is bij gebruik van videobestanden met uiteenlopende framerates.
+In addition, some detection rules still work based on numbers of measurement rows instead of explicit time durations, which means that further time normalisation is needed when using video files with varying framerates.
 
-Ten slotte blijft de feedbackgeneratie via een lokale LLM beperkt. De keuze voor lokale verwerking sluit aan bij de privacy- en GDPR-overwegingen binnen dit onderzoek, omdat videodata en analysegegevens niet naar een externe clouddienst moeten worden doorgestuurd. De taaloutput van het gebruikte model was echter minder consistent dan gewenst. Mogelijk leveren krachtigere of beter afgestemde modellen betere feedback op, maar dit moet in toekomstig onderzoek verder onderzocht worden.
+Finally, feedback generation through a local LLM remains limited. The choice for local processing aligns with the privacy and GDPR considerations within this research, because video data and analysis data do not have to be sent to an external cloud service. However, the language output of the model used was less consistent than desired. More powerful or better adapted models may possibly provide better feedback, but this must be further investigated in future research.
 
-\section{Toekomstig werk}
+\section{Future work}
 
-Op basis van deze proof-of-concept zijn verschillende uitbreidingen mogelijk. Een eerste logische vervolgstap is het testen op een grotere dataset met meerdere turnsters, verschillende camerahoeken en meer variatie in uitvoeringskwaliteit. Daarbij kunnen de drempelwaarden voor foutdetectie systematischer worden geëvalueerd en verfijnd.
+Based on this proof-of-concept, several extensions are possible. A first logical next step is testing on a larger dataset with multiple gymnasts, different camera angles and more variation in execution quality. This would allow the threshold values for error detection to be evaluated and refined more systematically.
 
-Daarnaast kan toekomstig onderzoek de analyse uitbreiden met expliciete via-points, hoeksnelheden of methoden zoals Dynamic Time Warping. In dit onderzoek werd gewerkt met fasen en hoekdrempels, maar uit de literatuur blijkt dat de kip sterk afhankelijk is van kritieke overgangsmomenten. Een systeem dat deze via-points rechtstreeks detecteert, kan mogelijk beter omgaan met timingfouten en individuele variatie in uitvoering.
+In addition, future research can extend the analysis with explicit via-points, angular velocities or methods such as Dynamic Time Warping. In this research, phases and angle thresholds were used, but the literature shows that the kip strongly depends on critical transition moments. A system that directly detects these via-points could possibly deal better with timing errors and individual variation in execution.
 
-Ook de feedbackgeneratie kan verder onderzocht worden.Een krachtiger taalmodel of een model met meer domeinspecifieke instructies zou mogelijk natuurlijkere en concretere feedback kunnen geven. Daarnaast kan onderzocht worden of een domeinspecifiek getraind of gefinetuned model de JSON-output, de technische fouttypes en de kipbeweging beter kan interpreteren dan de algemeen inzetbare taalmodellen die in deze proof-of-concept werden getest. Daarbij blijft het belangrijk dat het taalmodel geen autonome foutdetectie uitvoert zonder betrouwbare analyse-output. Een vergelijking tussen lokale modellen en commerciële modellen kan hierbij interessant zijn, op voorwaarde dat privacy en gegevensverwerking correct worden beheerd.
+Feedback generation can also be investigated further. A more powerful language model or a model with more domain-specific instructions could possibly provide more natural and more concrete feedback. In addition, it can be investigated whether a domain-specific trained or fine-tuned model can interpret the JSON output, the technical error types and the kip movement better than the generally deployable language models tested in this proof-of-concept. It remains important, however, that the language model does not perform autonomous error detection without reliable analysis output. A comparison between local models and commercial models may be interesting in this regard, provided that privacy and data processing are managed correctly.
 
-Tot slot kan een toekomstige versie van het systeem gebruiksvriendelijker worden gemaakt voor turnsters en trainers. Denk daarbij aan een eenvoudige interface waarin een video opgeladen wordt, de fase-indeling zichtbaar is, de gedetecteerde fouten worden weergegeven en de gegenereerde feedback gecontroleerd kan worden door de coach.
+Finally, a future version of the system could be made more user-friendly for gymnasts and coaches. This could include a simple interface in which a video is uploaded, the phase division is visible, the detected errors are displayed and the generated feedback can be checked by the coach.
 
-\section{Eindconclusie}
+\section{Final conclusion}
 
-Dit onderzoek toont aan dat automatische technische feedback op de kip aan de barre in beperkte mate haalbaar is via een combinatie van markerloze pose-estimatie, regelgebaseerde foutdetectie en LLM-gebaseerde tekstgeneratie. De proof-of-concept slaagt erin om standaard videobeelden om te zetten naar pose-data, relevante gewrichtshoeken te berekenen, enkele vooraf gedefinieerde fouten te detecteren en deze fouten om te zetten naar begrijpelijke feedback.
+This research shows that automatic technical feedback on the kip on bars is feasible to a limited extent through a combination of markerless pose estimation, rule-based error detection and LLM-based text generation. The proof-of-concept succeeds in converting standard video footage into pose data, calculating relevant joint angles, detecting several predefined errors and converting these errors into understandable feedback.
 
-Tegelijk toont het onderzoek aan dat deze aanpak nog duidelijke beperkingen heeft. Pose-estimatie blijft gevoelig voor ruis, de foutdetectie is afhankelijk van drempelwaarden en de LLM-output is niet betrouwbaar genoeg zonder strikte controle. Het systeem is daarom vooral te beschouwen als een verkennende ondersteuning voor trainers, niet als vervanging van menselijke expertise.
+At the same time, the research shows that this approach still has clear limitations. Pose estimation remains sensitive to noise, error detection depends on threshold values and the LLM output is not reliable enough without strict control. The system should therefore mainly be considered as exploratory support for coaches, not as a replacement for human expertise.
 
-De bijdrage van dit onderzoek ligt in het uitwerken en kritisch evalueren van een volledige analysepipeline. De resultaten vormen een bruikbare basis waarop verder onderzoek kan bouwen, bijvoorbeeld met grotere datasets, betere foutregels, expliciete via-pointdetectie en krachtigere of beter gecontroleerde feedbackmodellen.
+The contribution of this research lies in developing and critically evaluating a complete analysis pipeline. The results form a useful basis on which further research can build, for example with larger datasets, better error rules, explicit via-point detection and more powerful or better controlled feedback models.
 
