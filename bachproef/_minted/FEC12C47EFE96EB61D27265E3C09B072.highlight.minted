@@ -1,0 +1,18 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{right\PYGZus{}shoulder} \PYG{o}{=} \PYG{n}{calc\PYGZus{}points}\PYG{p}{[}\PYG{l+m+mi}{12}\PYG{p}{]}
+\PYG{n}{right\PYGZus{}elbow} \PYG{o}{=} \PYG{n}{calc\PYGZus{}points}\PYG{p}{[}\PYG{l+m+mi}{14}\PYG{p}{]}
+\PYG{n}{right\PYGZus{}wrist} \PYG{o}{=} \PYG{n}{calc\PYGZus{}points}\PYG{p}{[}\PYG{l+m+mi}{16}\PYG{p}{]}
+
+\PYG{n}{elbow\PYGZus{}angle} \PYG{o}{=} \PYG{n}{calculate\PYGZus{}angle}\PYG{p}{(}
+    \PYG{n}{right\PYGZus{}shoulder}\PYG{p}{,}
+    \PYG{n}{right\PYGZus{}elbow}\PYG{p}{,}
+    \PYG{n}{right\PYGZus{}wrist}
+\PYG{p}{)}
+
+\PYG{n}{row}\PYG{o}{.}\PYG{n}{extend}\PYG{p}{([}
+    \PYG{n}{hip\PYGZus{}angle}\PYG{p}{,}
+    \PYG{n}{shoulder\PYGZus{}angle}\PYG{p}{,}
+    \PYG{n}{body\PYGZus{}angle}\PYG{p}{,}
+    \PYG{n}{elbow\PYGZus{}angle}
+\PYG{p}{])}
+\end{MintedVerbatim}

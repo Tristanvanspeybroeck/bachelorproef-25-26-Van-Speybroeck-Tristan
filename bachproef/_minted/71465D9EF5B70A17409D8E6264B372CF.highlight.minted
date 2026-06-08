@@ -1,0 +1,19 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{hip\PYGZus{}closure\PYGZus{}index} \PYG{o}{=} \PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}hip\PYGZus{}angle\PYGZdq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{idxmin}\PYG{p}{()}
+\PYG{n}{hip\PYGZus{}closure\PYGZus{}frame} \PYG{o}{=} \PYG{n+nb}{int}\PYG{p}{(}
+    \PYG{n}{analysis\PYGZus{}data}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}\PYG{n}{hip\PYGZus{}closure\PYGZus{}index}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}frame\PYGZus{}index\PYGZdq{}}\PYG{p}{]}
+\PYG{p}{)}
+\PYG{n}{hip\PYGZus{}closure\PYGZus{}angle} \PYG{o}{=} \PYG{n}{analysis\PYGZus{}data}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}
+    \PYG{n}{hip\PYGZus{}closure\PYGZus{}index}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}hip\PYGZus{}angle\PYGZdq{}}
+\PYG{p}{]}
+
+\PYG{n}{body\PYGZus{}closure\PYGZus{}index} \PYG{o}{=} \PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}body\PYGZus{}angle\PYGZdq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{idxmin}\PYG{p}{()}
+\PYG{n}{body\PYGZus{}closure\PYGZus{}frame} \PYG{o}{=} \PYG{n+nb}{int}\PYG{p}{(}
+    \PYG{n}{analysis\PYGZus{}data}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}\PYG{n}{body\PYGZus{}closure\PYGZus{}index}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}frame\PYGZus{}index\PYGZdq{}}\PYG{p}{]}
+\PYG{p}{)}
+\PYG{n}{body\PYGZus{}closure\PYGZus{}angle} \PYG{o}{=} \PYG{n}{analysis\PYGZus{}data}\PYG{o}{.}\PYG{n}{loc}\PYG{p}{[}
+    \PYG{n}{body\PYGZus{}closure\PYGZus{}index}\PYG{p}{,}
+    \PYG{l+s+s2}{\PYGZdq{}body\PYGZus{}angle\PYGZdq{}}
+\PYG{p}{]}
+\end{MintedVerbatim}

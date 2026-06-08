@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{START\PYGZus{}FRAME} \PYG{o}{=} \PYG{l+m+mi}{80}
+\PYG{n}{END\PYGZus{}FRAME} \PYG{o}{=} \PYG{l+m+mi}{170}
+
+\PYG{n}{analysis\PYGZus{}data} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}
+    \PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}frame\PYGZus{}index\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZgt{}=} \PYG{n}{START\PYGZus{}FRAME}\PYG{p}{)} \PYG{o}{\PYGZam{}}
+    \PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}frame\PYGZus{}index\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZlt{}=} \PYG{n}{END\PYGZus{}FRAME}\PYG{p}{)}
+\PYG{p}{]}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{()}
+\end{MintedVerbatim}

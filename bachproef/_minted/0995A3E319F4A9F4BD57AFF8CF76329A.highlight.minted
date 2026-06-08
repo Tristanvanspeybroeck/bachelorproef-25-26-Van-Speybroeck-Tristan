@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{weak\PYGZus{}shoulder\PYGZus{}push\PYGZus{}detected} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{support\PYGZus{}body\PYGZus{}angle\PYGZus{}mean} \PYG{o}{\PYGZlt{}} \PYG{n}{WEAK\PYGZus{}SUPPORT\PYGZus{}BODY\PYGZus{}ANGLE\PYGZus{}THRESHOLD} \PYG{o+ow}{or}
+    \PYG{n}{support\PYGZus{}elbow\PYGZus{}angle\PYGZus{}mean} \PYG{o}{\PYGZlt{}} \PYG{n}{WEAK\PYGZus{}SUPPORT\PYGZus{}ELBOW\PYGZus{}MEAN\PYGZus{}THRESHOLD} \PYG{o+ow}{or}
+    \PYG{p}{(}
+        \PYG{n}{support\PYGZus{}bent\PYGZus{}elbow\PYGZus{}rows} \PYG{o}{\PYGZgt{}=}
+        \PYG{n}{WEAK\PYGZus{}SUPPORT\PYGZus{}BENT\PYGZus{}ELBOW\PYGZus{}MIN\PYGZus{}ROWS} \PYG{o+ow}{and}
+        \PYG{n}{support\PYGZus{}bent\PYGZus{}elbow\PYGZus{}ratio} \PYG{o}{\PYGZgt{}}
+        \PYG{n}{WEAK\PYGZus{}SUPPORT\PYGZus{}BENT\PYGZus{}ELBOW\PYGZus{}RATIO\PYGZus{}THRESHOLD}
+    \PYG{p}{)} \PYG{o+ow}{or}
+    \PYG{n}{support\PYGZus{}shoulder\PYGZus{}angle\PYGZus{}mean} \PYG{o}{\PYGZgt{}}
+    \PYG{n}{WEAK\PYGZus{}SUPPORT\PYGZus{}SHOULDER\PYGZus{}ANGLE\PYGZus{}THRESHOLD}
+\PYG{p}{)}
+\end{MintedVerbatim}

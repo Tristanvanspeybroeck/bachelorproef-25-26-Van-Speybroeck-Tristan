@@ -1,0 +1,23 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{SMOOTHING\PYGZus{}WINDOW} \PYG{o}{=} \PYG{l+m+mi}{5}
+
+\PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}hip\PYGZus{}angle\PYGZus{}smooth\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}hip\PYGZus{}angle\PYGZdq{}}\PYG{p}{]}
+    \PYG{o}{.}\PYG{n}{rolling}\PYG{p}{(}
+        \PYG{n}{window}\PYG{o}{=}\PYG{n}{SMOOTHING\PYGZus{}WINDOW}\PYG{p}{,}
+        \PYG{n}{center}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+        \PYG{n}{min\PYGZus{}periods}\PYG{o}{=}\PYG{l+m+mi}{1}
+    \PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{median}\PYG{p}{()}
+\PYG{p}{)}
+
+\PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}body\PYGZus{}angle\PYGZus{}smooth\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{analysis\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}body\PYGZus{}angle\PYGZdq{}}\PYG{p}{]}
+    \PYG{o}{.}\PYG{n}{rolling}\PYG{p}{(}
+        \PYG{n}{window}\PYG{o}{=}\PYG{n}{SMOOTHING\PYGZus{}WINDOW}\PYG{p}{,}
+        \PYG{n}{center}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+        \PYG{n}{min\PYGZus{}periods}\PYG{o}{=}\PYG{l+m+mi}{1}
+    \PYG{p}{)}
+    \PYG{o}{.}\PYG{n}{median}\PYG{p}{()}
+\PYG{p}{)}
+\end{MintedVerbatim}

@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{n}{early\PYGZus{}hip\PYGZus{}opening\PYGZus{}problem\PYGZus{}rows} \PYG{o}{=} \PYG{p}{(}
+    \PYG{p}{(}
+        \PYG{n}{hip\PYGZus{}opening\PYGZus{}transition\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}hip\PYGZus{}angle\PYGZus{}smooth\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZgt{}}
+        \PYG{n}{EARLY\PYGZus{}HIP\PYGZus{}OPENING\PYGZus{}HIP\PYGZus{}THRESHOLD}
+    \PYG{p}{)} \PYG{o}{\PYGZam{}}
+    \PYG{p}{(}
+        \PYG{n}{hip\PYGZus{}opening\PYGZus{}transition\PYGZus{}data}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}body\PYGZus{}angle\PYGZus{}smooth\PYGZdq{}}\PYG{p}{]} \PYG{o}{\PYGZlt{}}
+        \PYG{n}{EARLY\PYGZus{}HIP\PYGZus{}OPENING\PYGZus{}BODY\PYGZus{}THRESHOLD}
+    \PYG{p}{)}
+\PYG{p}{)}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{()}
+
+\PYG{n}{early\PYGZus{}hip\PYGZus{}opening\PYGZus{}detected} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{early\PYGZus{}hip\PYGZus{}opening\PYGZus{}problem\PYGZus{}rows} \PYG{o}{\PYGZgt{}=}
+    \PYG{n}{EARLY\PYGZus{}HIP\PYGZus{}OPENING\PYGZus{}MIN\PYGZus{}ROWS}
+\PYG{p}{)}
+\end{MintedVerbatim}

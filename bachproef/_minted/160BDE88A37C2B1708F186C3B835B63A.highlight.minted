@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{if} \PYG{n}{analysis\PYGZus{}result}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}detected\PYGZus{}error\PYGZus{}count\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{:}
+    \PYG{c+c1}{\PYGZsh{} Prompt wordt naar Ollama gestuurd}
+    \PYG{c+c1}{\PYGZsh{} en de LLM genereert feedback.}
+    \PYG{o}{...}
+\PYG{k}{else}\PYG{p}{:}
+    \PYG{n}{feedback} \PYG{o}{=} \PYG{p}{(}
+        \PYG{l+s+s2}{\PYGZdq{}Binnen de huidige proof\PYGZhy{}of\PYGZhy{}concept werden geen technische \PYGZdq{}}
+        \PYG{l+s+s2}{\PYGZdq{}fouten gedetecteerd voor de gecontroleerde fouttypes. \PYGZdq{}}
+        \PYG{l+s+s2}{\PYGZdq{}Er wordt daarom geen aanvullende correctieve feedback \PYGZdq{}}
+        \PYG{l+s+s2}{\PYGZdq{}gegenereerd.\PYGZdq{}}
+    \PYG{p}{)}
+\end{MintedVerbatim}

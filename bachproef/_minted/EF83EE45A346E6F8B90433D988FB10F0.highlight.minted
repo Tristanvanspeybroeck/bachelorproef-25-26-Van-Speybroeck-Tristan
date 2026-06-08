@@ -1,0 +1,22 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{calculate\PYGZus{}angle}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{,} \PYG{n}{c}\PYG{p}{):}
+    \PYG{n}{a} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float64}\PYG{p}{)}
+    \PYG{n}{b} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{b}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float64}\PYG{p}{)}
+    \PYG{n}{c} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{c}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{float64}\PYG{p}{)}
+
+    \PYG{n}{ba} \PYG{o}{=} \PYG{n}{a} \PYG{o}{\PYGZhy{}} \PYG{n}{b}
+    \PYG{n}{bc} \PYG{o}{=} \PYG{n}{c} \PYG{o}{\PYGZhy{}} \PYG{n}{b}
+
+    \PYG{n}{norm\PYGZus{}ba} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{ba}\PYG{p}{)}
+    \PYG{n}{norm\PYGZus{}bc} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{bc}\PYG{p}{)}
+
+    \PYG{k}{if} \PYG{n}{norm\PYGZus{}ba} \PYG{o}{==} \PYG{l+m+mi}{0} \PYG{o+ow}{or} \PYG{n}{norm\PYGZus{}bc} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{nan}
+
+    \PYG{n}{cosine\PYGZus{}angle} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{dot}\PYG{p}{(}\PYG{n}{ba}\PYG{p}{,} \PYG{n}{bc}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{n}{norm\PYGZus{}ba} \PYG{o}{*} \PYG{n}{norm\PYGZus{}bc}\PYG{p}{)}
+    \PYG{n}{cosine\PYGZus{}angle} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{clip}\PYG{p}{(}\PYG{n}{cosine\PYGZus{}angle}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)}
+
+    \PYG{n}{angle} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{degrees}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{arccos}\PYG{p}{(}\PYG{n}{cosine\PYGZus{}angle}\PYG{p}{))}
+
+    \PYG{k}{return} \PYG{n}{angle}
+\end{MintedVerbatim}

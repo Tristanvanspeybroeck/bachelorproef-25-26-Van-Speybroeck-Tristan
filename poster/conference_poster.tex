@@ -9,78 +9,91 @@
 % Info over de opleiding
 \course{Bachelorproef}
 \studyprogramme{toegepaste informatica}
-\academicyear{2022-2023}
+\academicyear{2025-2026}
 \institution{Hogeschool Gent, Valentin Vaerwyckweg 1, 9000 Gent}
 
 % Info over de bachelorproef
-\title{Titel van uw bachelorproef}
-\subtitle{Ondertitel (eventueel)}
-\author{Voornaam Naam}
-\email{voornaam.familienaam@student.hogent.be}
-\supervisor{Voornaam Naam}
-\cosupervisor{Voornaam Naam (Bedrijf)}
+\title{Automatische technische feedback op de turnoefening
+    “kip aan barre” \\ via video-analyse
+    en Large Language Models}
+%\subtitle{Ondertitel (eventueel)}
+\author{Tristan Van Speybroeck}
+\email{tristan.vanspeybroeck@student.hogent.be}
+\supervisor{Karine Samyn}
+\cosupervisor{Bogdan Oloeriu (StriveCloud)}
 
 % Indien ingevuld, wordt deze informatie toegevoegd aan het einde van de
 % abstract. Zet in commentaar als je dit niet wilt.
-\specialisation{Systeem- en Netwerkbeheer}
-\keywords{Lambda-calculus, Scheme}
-\projectrepo{https://github.com/user/repo}
+%\specialisation{Full stack developer}
+%\keywords{Pose-estimatie, Foutdetectie, Large Language Models}
+%\projectrepo{https://github.com/Tristanvanspeybroeck/bachelorproef-Methodologie-25-26-Van-Speybroeck-Tristan}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-It's only a model.
-You don't vote for kings. Who's that then? We found them. Ni! Ni! Ni! Ni!
-The nose? On second thoughts, let's not go there. It is a silly place. Bloody Peasant! And the hat. She's a witch! Where'd you get the coconuts?
-\end{abstract}
+    Deze bachelorproef onderzoekt in welke mate automatische technische feedback op de turnoefening kip aan de barre mogelijk is via markerloze video-analyse en Large Language Models. Binnen recreatieve gymnastiek begeleiden trainers vaak meerdere turnsters tegelijk, waardoor technische fouten niet altijd systematisch worden opgemerkt.
+    
+    Hiervoor werd een proof-of-concept ontwikkeld dat standaard videobeelden omzet naar pose-data met MediaPipe Pose Landmarker. Op basis daarvan worden gewrichtshoeken berekend, bewegingsfasen afgebakend en vier vooraf gedefinieerde fouttypes regelgebaseerd geanalyseerd. De gedetecteerde fouten worden vervolgens gestructureerd in JSON-formaat en gebruikt als input voor feedbackgeneratie via een lokale LLM.
+    
+    De resultaten tonen aan dat deze aanpak binnen een beperkte testset technisch haalbaar is. De pipeline kon verschillen herkennen tussen een goede uitvoering en twee foutieve uitvoeringen. Tegelijk blijft de kwaliteit afhankelijk van opnamekwaliteit, detectieruis, gekozen drempelwaarden en strikte controle van de LLM-output. Het systeem is daarom vooral te beschouwen als een verkennende ondersteuning voor trainers, niet als vervanging van menselijke expertise.
+    \end{abstract}
 
 \begin{multicols}{2} % This is how many columns your poster will be broken into, a portrait poster is generally split into 2 columns
 
 \section{Introductie}
 
-Be quiet! Found them? In Mercia?! The coconut's tropical! But you are dressed as one… Well, what do you want? Knights of Ni, we are but simple travelers who seek the enchanter who lives beyond these woods.
+Artistieke gymnastiek is een technisch veeleisende sport waarbij timing, kracht en lichaamscontrole belangrijk zijn. Bij de kip aan de barre moeten turnsters vanuit hangpositie tot steun op de barre komen. Deze beweging vereist onder meer zwaaimomentum, heupsluiting, armstrekking en actieve schouderdruk.
 
-Well, what do you want? It's only a model. Camelot! We found them. We shall say `Ni' again to you, if you do not appease us.
+Binnen recreatieve gymnastiek begeleiden trainers vaak meerdere turnsters tegelijk. Daardoor is er weinig tijd om elke uitvoering individueel en systematisch te analyseren. Technische fouten zoals gebogen armen, onvoldoende heupsluiting, te vroege heupopening of onvoldoende schouderdruk worden hierdoor niet altijd consequent opgemerkt.
 
-The nose? Shut up! Burn her! I am your king. You don't vote for kings.
+Geavanceerde bewegingsanalyse bestaat, maar is voor recreatieve clubs meestal niet praktisch of financieel haalbaar. Markerloze video-analyse en Large Language Models bieden daarom een mogelijke laagdrempelige ondersteuning voor technische analyse en feedback.
 
-You can't expect to wield supreme power just `cause some watery tart threw a sword at you! Well, we did do the nose. I don't want to talk to you no more, you empty-headed animal food trough water! I fart in your general direction! Your mother was a hamster and your father smelt of elderberries! Now leave before I am forced to taunt you a second time!
-
-Why do you think that she is a witch? We want a shrubbery!! I don't want to talk to you no more, you empty-headed animal food trough water! I fart in your general direction! Your mother was a hamster and your father smelt of elderberries! Now leave before I am forced to taunt you a second time!
+\textbf{Onderzoeksvraag:} In welke mate kan een AI-gebaseerd systeem op basis van markerloze video-analyse technisch bruikbare feedback genereren voor recreatieve turnsters bij de kip aan barre?
 
 \section{Experimenten}
 
-A newt? Camelot! Why? No, no, no! Yes, yes. A bit. But she's got a wart.
+Voor het proof-of-concept werd een analysepipeline ontwikkeld die standaard videobeelden van de kip aan de barre omzet naar technische feedback.
 
-Shut up! I dunno. Must be a king. Who's that then? Look, my liege! On second thoughts, let's not go there. It is a silly place.
+\begin{itemize} 
+    \item \textbf{Pose-estimatie:} MediaPipe Pose Landmarker detecteert per frame de lichaamslandmarks van de turnster.
+    \item \textbf{Parameterextractie:} op basis van deze landmarks worden de heuphoek, schouderhoek, romphoek en ellebooghoek berekend.
+    \item \textbf{Fase-indeling:} de beweging wordt regelgebaseerd opgedeeld in zwaaifase, trekfase, heupsluitingsfase en steunfase.
+    \item \textbf{Foutdetectie:} vier vooraf gedefinieerde fouten worden geanalyseerd: gebogen armen, onvoldoende heupsluiting, te vroege heupopening en onvoldoende schouderdruk.
+    \item \textbf{Feedbackgeneratie:} de gedetecteerde fouten worden opgeslagen in JSON-formaat en via een lokale LLM omgezet naar Nederlandstalige feedback.
+\end{itemize}
 
-Shut up! Will you shut up?! No, no, no! Yes, yes. A bit. But she's got a wart. He hasn't got shit all over him. It's only a model. It's only a model.
-
-Bring her forward! I don't want to talk to you no more, you empty-headed animal food trough water! I fart in your general direction! Your mother was a hamster and your father smelt of elderberries! Now leave 
+De LLM detecteert dus zelf geen fouten. De technische beoordeling gebeurt door het regelgebaseerde Python-script. De LLM wordt enkel gebruikt om effectief gedetecteerde fouten begrijpelijk te verwoorden.
 
 \section{Sectie met figuur}
-
-De {\LaTeX} figure-omgeving bepaalt zelf waar een afbeelding komt en dat is meestal niet op de plek in de tekst waar de figure-omgeving gedefinieerd wordt. Als je wilt forceren dat afbeeldingen toch in de flow van de tekst blijven, dan kan je dat zoals hieronder:
-
 \begin{center}
   \captionsetup{type=figure}
-  \includegraphics[width=1.0\linewidth]{grail}
-  \captionof{figure}{He hasn't got shit all over him. The nose? Where'd you get the coconuts? What do you mean? We shall say `Ni' again to you, if you do not appease us}
+  \includegraphics[width=1.0\linewidth]{Bad\_kip2\_analyze\_with\_smoothing\_hip\_angle}
+  \captionof{figure}{Finale fase-indeling en hoekcurves voor een foutieve uitvoering. Bij deze poging werd vooral onvoldoende schouderdruk in de steunfase gedetecteerd.}
 \end{center}
 
-Let er wel op dat dit tot problemen met bladschikking kan leiden.
+
+\begin{center}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Poging} & \textbf{Gedetecteerde fout(en)} & \textbf{Aantal} \\
+        \midrule
+        Good\_kip5 & Geen & 0 \\
+        Bad\_kip1 & Gebogen armen; onvoldoende schouderdruk & 2 \\
+        Bad\_kip2 & Onvoldoende schouderdruk & 1 \\
+        \bottomrule
+    \end{tabular}
+    \captionof{table}{Samenvatting van de finale foutdetectie}
+\end{center}
 
 \section{Conclusies}
 
-Don't underestimate the Force. Oh God, my uncle. How am I ever gonna explain this? I suggest you try it again, Luke. This time, let go your conscious self and act on instinct. Don't be too proud of this technological terror you've constructed. The ability to destroy a planet is insignificant next to the power of the Force.
+De proof-of-concept toont aan dat automatische technische feedback op de kip aan de barre in beperkte mate haalbaar is. Standaard videobeelden konden worden omgezet naar pose-data, waarna relevante gewrichtshoeken berekend en vooraf gedefinieerde fouten regelgebaseerd geanalyseerd werden. De resultaten tonen dat de pipeline verschillen kon herkennen tussen een goede uitvoering en twee foutieve uitvoeringen. Bij de goede uitvoering werden geen fouten gedetecteerd, terwijl bij de foutieve pogingen vooral gebogen armen en onvoldoende schouderdruk werden vastgesteld. De LLM bleek bruikbaar als taalcomponent, maar niet als autonome beoordelaar. Daarom werd de LLM enkel gebruikt om effectief gedetecteerde fouten om te zetten naar begrijpelijke feedback. Het systeem kan trainers dus ondersteunen, maar vervangt geen menselijke expertise.
 
 \section{Toekomstig onderzoek}
 
-I care. So, what do you think of her, Han? No! Alderaan is peaceful. We have no weapons. You can't possibly… I have traced the Rebel spies to her. Now she is my only link to finding their secret base.
-
-Kid, I've flown from one side of this galaxy to the other. I've seen a lot of strange stuff, but I've never seen anything to make me believe there's one all-powerful Force controlling everything. There's no mystical energy field that controls my destiny. It's all a lot of simple tricks and nonsense. You are a part of the Rebel Alliance and a traitor! Take her away! 
+In de toekomst kan de proof-of-concept verder uitgewerkt worden door te testen op een grotere en meer diverse dataset met meerdere turnsters, camerahoeken en foutieve uitvoeringen. Zo kunnen de gekozen drempelwaarden en foutregels beter geëvalueerd en verfijnd worden. Daarnaast kan de analyse uitgebreid worden met automatische detectie van het analysevenster, expliciete via-points en eventueel hoeksnelheden of tijdnormalisatie. Hierdoor kan de pipeline beter omgaan met verschillen in timing en uitvoering. Ook de feedbackgeneratie kan verder onderzocht worden. Een krachtiger of domeinspecifiek afgestemd taalmodel kan mogelijk natuurlijkere feedback geven, zolang de foutdetectie gecontroleerd blijft. Tot slot kan een eenvoudige interface ontwikkeld worden waarmee trainers video's kunnen uploaden, resultaten bekijken en feedback controleren.
 
 \end{multicols}
 \end{document}
